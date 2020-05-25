@@ -1,0 +1,23 @@
+Package: fitMaxnet
+Title: Fit MaxEnt Model Using maxnet
+Version: 0.1
+Authors@R: 
+    person(given = "Peter D.",
+           family = "Wilson",
+           role = c("aut", "cre"),
+           email = "peterdonaldwilson@gmail.com",
+           comment = c(ORCID = "0000-0001-7375-0791"))
+Description: What the package does (one paragraph).
+License: What license it uses
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Imports: Rcpp (>= 0.11.0),
+         raster,
+         maxnet,
+         sp,
+         sf,
+         rgeos
+LinkingTo: Rcpp
+Depends: 
+    R (>= 2.10)
