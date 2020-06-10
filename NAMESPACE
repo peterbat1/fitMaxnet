@@ -3,6 +3,7 @@
 export(bufferPoints)
 export(fitModels)
 export(fit_maxnet)
+export(makeFolds)
 export(maskExtrapolation)
 export(occThin)
 export(prepData)
