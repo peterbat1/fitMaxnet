@@ -9,17 +9,17 @@
 
 #' Review impact of a sequence of thinning distances
 #'
-#' The function applies a standard sequence of thinning ditances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
+#' The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
 #'
 #' @param taxon Character. A taxon name to label output files and plots
-#' @param occData Data frame of occurrence locations. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"
-#' @param envDataPath Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the raster package can be used, and alll files in the set must have the same gridcell size, origin and resolution
+#' @param occData Data frame of occurrence locations. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partial matching on "longitude" and "latitude"
+#' @param envDataPath Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the \emph{raster} package can be used, and all files in the set must have the same gridcell size, origin and resolution
 #' @param outPath Character. A path to a folder into which out will be written
 #' @param threshold Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation
 #' @param numReplicates Integer. How many repeated thinning runs should be performed at each thinning distance?
 #' @param doPlots Logical. Should plots of results for each replicate and distance combination be produced in additional to a final summary plot?
 #' @param writeResults Logical. Should a results summary table be saved?
-#' @param quiet Logical. Should progress messages be written to the console
+#' @param quiet Logical. Should progress messages be written to the console?
 #'
 #' @return The largest distance in the standard sequence for which environmental coverage is >= threshold
 #' @export
@@ -40,7 +40,20 @@ thinningReview <- function(taxon = "",
   latColInd <- grep("LAT", toupper(colnames(occData)))
 
   if (any(c(length(longColInd), length(latColInd)) != 1))
-      stop("Cannot identify longitude and latitide cols in occData")
+  {
+    naughtyMsg <- NULL
+    if (length(longColInd) == 0)
+      naughtyMsg <- "No matches on 'LONG'"
+    else
+      if (length(longColInd) > 1) naughtyMsg <- "Multiple matches on 'LONG'"
+
+    if (length(latColInd) == 0)
+      naughtyMsg <- c(naughtyMsg, "No matches on 'LAT'")
+    else
+      if (length(latColInd) > 1) naughtyMsg <- c(naughtyMsg, "Multiple matches on 'LAT'")
+
+    stop(paste0("Cannot identify longitude and latitude cols in occData: ", paste0(naughtyMsg, collapse = "; ")))
+  }
 
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 

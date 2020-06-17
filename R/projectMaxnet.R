@@ -35,7 +35,7 @@ projectMaxnet <- function(taxonName = NULL,
   goodRows <- which(!is.na(rowSums(projData)))
 
   cat("    Projecting model\n")
-  projMod <<- predict(maxnet_model, projData[goodRows, ], type = "cloglog")
+  projMod <- predict(maxnet_model, projData[goodRows, ], type = "cloglog")
 
   cat("    Preparing and saving projection raster\n")
   projRas <- projStack[[1]]
