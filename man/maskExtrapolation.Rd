@@ -20,7 +20,7 @@ maskExtrapolation(
 
 \item{projRas}{Raster of the projected maxnet model.}
 
-\item{maskOutpath}{Full path to the folder into which the mask raster will be written}
+\item{maskOutpath}{Full path to the folder into which the mask raster and projection raster with mask applied will be written}
 
 \item{fileLabel}{Label to be used to distinguish the filename of the saved mask raster.}
 

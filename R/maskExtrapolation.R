@@ -16,7 +16,7 @@
 #' @param maxnetModel Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.
 #' @param envPath Path to a set of environmental rasters showing the environment onto which the model has been projected.
 #' @param projRas Raster of the projected maxnet model.
-#' @param maskOutpath Full path to the folder into which the mask raster will be written
+#' @param maskOutpath Full path to the folder into which the mask raster and projection raster with mask applied will be written
 #' @param fileLabel Label to be used to distinguish the filename of the saved mask raster.
 #' @param makePlots. Logical. Make basic plots of raster objects for review and quality control. Default is TRUE.
 #'
@@ -87,7 +87,7 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
   ras <- raster::raster(projRas)
 
   offInd <- which(values(ans) != 1)
-  raster::values(ras)[offInd] <- NA
+  raster::values(ras)[offInd] <- 0
 
   if (makePlots) plot(ras, main = "Masked projection raster")
 
