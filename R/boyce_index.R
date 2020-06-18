@@ -38,9 +38,9 @@
 fast_boycei <- function(interval, obs, fit)
 {
   pi <- sum(.bincode(obs, interval, FALSE), na.rm = TRUE)/length(obs)
-  cat("pi =", pi, "\n")
+  #cat("pi =", pi, "\n")
   ei <- sum(.bincode(fit, interval, FALSE), na.rm = TRUE)/length(fit)
-  cat("ei =", ei, "\n")
+  #cat("ei =", ei, "\n")
   fi <- pi/ei
   return(fi)
 }
