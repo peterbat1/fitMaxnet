@@ -56,11 +56,11 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200)
     stop("Cannot identify the 'latitude' column in 'occ_pts'")
 
   occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c("longitude", "latitude"))
-  st_crs(occ_pts_sf) <- 4326
+  sf::st_crs(occ_pts_sf) <- 4326
 
   occ_pts_albers <- sf::st_transform(occ_pts_sf, crs = 3577)
   ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_albers, dist = bufferDist))
   clippedBuffer <- sf::st_intersection(ptsBuffer, ozPolygon)
-  clippedBuffer <- st_transform(clippedBuffer, crs = 4326)
+  clippedBuffer <- sf::st_transform(clippedBuffer, crs = 4326)
   return(clippedBuffer)
 }
