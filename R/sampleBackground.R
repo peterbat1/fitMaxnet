@@ -200,18 +200,24 @@ sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method 
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000)
 {
   if (class(baseRaster) != "RasterLayer") stop("'baseRaster' must be a RasterLayer object")
-  if (!(grepl("SpatialPolygon", class(boundsPolygon)))) stop("'boundsPolygon' must be a SpatialPolygons or SpatialPolygonsDataFrame object")
+  if ((grepl("sf|sfc", class(boundsPolygon))))
+  {
+    boundsPolygon <- sf::as_Spatial(boundsPolygon)
+  }
+
+  if (!grep("SpatialPolygons", class(boundsPolygon)))
+    stop("'boundsPolygon' must be a sf, SpatialPolygons, or SpatialPolygonsDataFrame object")
 
   # Try to identify longitude and latitude columns and rename them to 'longitude' and 'latitude'
   ind <- grep("LONG", toupper(colnames(occData)))
-  if (length(ind) == 1)
-    colnames(occData)[ind] <- "longitude"
+  if (length(ind) >= 1)
+    colnames(occData)[ind[1]] <- "longitude"
   else
     stop("Cannot identify the 'longitude' column in 'occData'")
 
   ind <- grep("LAT", toupper(colnames(occData)))
-  if (length(ind) == 1)
-    colnames(occData)[ind] <- "latitude"
+  if (length(ind) >= 1)
+    colnames(occData)[ind[1]] <- "latitude"
   else
     stop("Cannot identify the 'latitude' column in 'occData'")
 
