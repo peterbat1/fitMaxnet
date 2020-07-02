@@ -37,19 +37,19 @@ thinningReview <- function(taxon = "",
 {
   # Automagically try to identify longitude and latitude columns:
   longColInd <- grep("LONG", toupper(colnames(occData)))
-  if (length(longCol) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
-  if (length(longCol) > 0)
+  if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
+  if (length(longColInd) > 0)
     {
     warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
-    longCol <- longCol[1]
+    longColInd <- longColInd[1]
   }
 
   latColInd <- grep("LAT", toupper(colnames(occData)))
-  if (length(latCol) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
-  if (length(latCol) > 0)
+  if (length(latColInd) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
+  if (length(latColInd) > 0)
   {
     warning("Cannot identify a unique 'latitude' column in occurrence data file; using first hit come-what-may...")
-    latCol <- latCol[1]
+    latColInd <- latColInd[1]
   }
 
   # if (any(c(length(longColInd), length(latColInd)) != 1))
