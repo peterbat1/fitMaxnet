@@ -44,14 +44,14 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200)
 
   # Try to identify longitude and latitude columns and rename them to 'longitude' and 'latitude'
   ind <- grep("LONG", toupper(colnames(occ_pts)))
-  if (length(ind) == 1)
-    colnames(occ_pts)[ind] <- "longitude"
+  if (length(ind) >= 1)
+    colnames(occ_pts)[ind[1]] <- "longitude"
   else
     stop("Cannot identify the 'longitude' column in 'occ_pts'")
 
   ind <- grep("LAT", toupper(colnames(occ_pts)))
-  if (length(ind) == 1)
-    colnames(occ_pts)[ind] <- "latitude"
+  if (length(ind) >= 1)
+    colnames(occ_pts)[ind[1]] <- "latitude"
   else
     stop("Cannot identify the 'latitude' column in 'occ_pts'")
 

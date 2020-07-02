@@ -42,23 +42,23 @@ thinningReview <- function(taxon = "",
   if (is.null(occData))
     stop("Please supply a data.frame or path to csv file containing occurrence data in parameter 'occData'")
 
-  if (is.character(occData))
+  if (is.data.frame(occData))
   {
-    if (file.exists(occData))
-      theseOccData <- read.csv(occData, stringsAsFactors = FALSE)
-    else
-      stop("Cannot find file given in parameter 'occData'")
+    theseOccData <- occData
   }
   else
   {
-    if (!is.data.frame(occData))
-      theseOccData <- occData
-    else
-      stop("Expected a data.frame or path to a csv file in parameter 'occData' but got neither")
+    if (is.character(occData))
+    {
+      if (file.exists(occData))
+        theseOccData <- read.csv(occData, stringsAsFactors = FALSE)
+      else
+        stop("Expected a data.frame or path to a csv file in parameter 'occData' but got neither")
+    }
   }
 
   if (is.null(envDataPath))
-    stop("Please supply a path to a fodler of environmental data layers in parameter 'envDataPath'")
+    stop("Please supply a path to a folder of environmental data layers in parameter 'envDataPath'")
 
   if (!dir.exists(envDataPath))
     stop("Cannot find environmental data folder passed in parameter 'envDataPath'")
