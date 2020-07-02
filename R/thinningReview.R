@@ -39,6 +39,20 @@ thinningReview <- function(taxon = "",
 
   if (!quiet) cat(taxon, "\n")
 
+  if ((is.null(occData)) || (!is.data.frame(occData)))
+    stop("Please supply a data.frame containing occurrence data in parameter 'occData'")
+
+  if (is.null(envDataPath))
+    stop("Please supply a path to a fodler of environmental data layers in parameter 'envDataPath'")
+
+  if (!dir.exists(envDataPath))
+    stop("Cannot find environmental data folder passed in parameter 'envDataPath'")
+
+  if (outPath == "")
+    stop("Please supply a path to an output folder in parameter 'outPath'")
+
+  if (!dir.exists(outPath)) dir.create(outPath)
+
   # Automagically try to identify longitude and latitude columns:
   longColInd <- grep("LONG", toupper(colnames(occData)))
   if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
