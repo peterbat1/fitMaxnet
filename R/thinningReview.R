@@ -12,7 +12,7 @@
 #' The function applies a standard sequence of thinning ditances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
 #'
 #' @param taxon Character. A taxon name to label output files and plots
-#' @param occData Data frame of occurrence locations. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"
+#' @param occData Data frame of occurrence locations, or a character object (string) giving the path to this file. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"
 #' @param envDataPath Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the raster package can be used, and alll files in the set must have the same gridcell size, origin and resolution
 #' @param outPath Character. A path to a folder into which out will be written
 #' @param threshold Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation
@@ -39,8 +39,23 @@ thinningReview <- function(taxon = "",
 
   if (!quiet) cat(taxon, "\n")
 
-  if ((is.null(occData)) || (!is.data.frame(occData)))
-    stop("Please supply a data.frame containing occurrence data in parameter 'occData'")
+  if (is.null(occData))
+    stop("Please supply a data.frame or path to csv file containing occurrence data in parameter 'occData'")
+
+  if (is.character(occData))
+  {
+    if (file.exists(occData))
+      theseOccData <- read.csv(occData, stringsAsFactors = FALSE)
+    else
+      stop("Cannot find file given in parameter 'occData'")
+  }
+  else
+  {
+    if (!is.data.frame(occData))
+      theseOccData <- occData
+    else
+      stop("Expected a data.frame or path to a csv file in parameter 'occData' but got neither")
+  }
 
   if (is.null(envDataPath))
     stop("Please supply a path to a fodler of environmental data layers in parameter 'envDataPath'")
@@ -57,7 +72,7 @@ thinningReview <- function(taxon = "",
   longColInd <- grep("LONG", toupper(colnames(occData)))
   if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
   if (length(longColInd) > 0)
-    {
+  {
     warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
     longColInd <- longColInd[1]
   }
@@ -83,7 +98,7 @@ thinningReview <- function(taxon = "",
     occData <- occData[-badRows, ]
   }
 
-  if (!quite) cat("  making base PCA and convex hull\n")
+  if (!quiet) cat("  making base PCA and convex hull\n")
   plotColours <- c("blue", "darkorange", "magenta1")
 
   basePCA <- stats::prcomp(envData_orig, center = TRUE, scale. = TRUE)
