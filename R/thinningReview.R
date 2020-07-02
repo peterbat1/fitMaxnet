@@ -37,10 +37,23 @@ thinningReview <- function(taxon = "",
 {
   # Automagically try to identify longitude and latitude columns:
   longColInd <- grep("LONG", toupper(colnames(occData)))
-  latColInd <- grep("LAT", toupper(colnames(occData)))
+  if (length(longCol) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
+  if (length(longCol) > 0)
+    {
+    warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
+    longCol <- longCol[1]
+  }
 
-  if (any(c(length(longColInd), length(latColInd)) != 1))
-      stop("Cannot identify longitude and latitide cols in occData")
+  latColInd <- grep("LAT", toupper(colnames(occData)))
+  if (length(latCol) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
+  if (length(latCol) > 0)
+  {
+    warning("Cannot identify a unique 'latitude' column in occurrence data file; using first hit come-what-may...")
+    latCol <- latCol[1]
+  }
+
+  # if (any(c(length(longColInd), length(latColInd)) != 1))
+  #     stop("Cannot identify longitude and latitude cols in occData")
 
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 
