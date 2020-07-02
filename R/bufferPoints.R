@@ -55,18 +55,12 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200)
   else
     stop("Cannot identify the 'latitude' column in 'occ_pts'")
 
-  sp::coordinates(occ_pts) <- ~longitude + latitude
+  occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c("longitude", "latitude"))
+  st_crs(occ_pts_sf) <- 4326
 
-  sp::proj4string(occ_pts) <- sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
-
-  occ_pts <- sp::spTransform(occ_pts, "+proj=aea +lat_1=-18 +lat_2=-36 +lat_0=0 +lon_0=132 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs ")
-
-  ptsBuffer <- rgeos::gBuffer(occ_pts, width = bufferDist)
-
-  #st <- Sys.time()
-  clippedBuffer <- sf::st_intersection(st_geometry(st_as_sf(ptsBuffer)), ozPolygon)
-  #print(Sys.time() - st)
-  clippedBuffer <- sp:: spTransform(sf::as_Spatial(clippedBuffer), sp::CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0"))
+  occ_pts_albers <- sf::st_transform(occ_pts_sf, crs = 3577)
+  ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_albers, dist = bufferDist))
+  clippedBuffer <- sf::st_intersection(ptsBuffer, ozPolygon)
+  clippedBuffer <- st_transform(clippedBuffer, crs = 4326)
   return(clippedBuffer)
 }
-
