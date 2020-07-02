@@ -35,6 +35,10 @@ thinningReview <- function(taxon = "",
                            writeResults = FALSE,
                            quiet = TRUE)
 {
+  if (taxon == "") stop("Please supply a taxon name in parameter 'taxon'")
+
+  if (!quiet) cat(taxon, "\n")
+
   # Automagically try to identify longitude and latitude columns:
   longColInd <- grep("LONG", toupper(colnames(occData)))
   if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
@@ -52,12 +56,10 @@ thinningReview <- function(taxon = "",
     latColInd <- latColInd[1]
   }
 
-  # if (any(c(length(longColInd), length(latColInd)) != 1))
-  #     stop("Cannot identify longitude and latitude cols in occData")
-
+  if (!quiet) cat("  loading env data\n")
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 
-  if (!quiet) cat(taxon, "\n")
+  if (!quiet) cat("  extracting env data at occ locations\n")
   envData_orig <- raster::extract(envStack, occData[, c(longColInd, latColInd)])
 
   badRows <- which(is.na(rowSums(envData_orig)))
@@ -67,6 +69,7 @@ thinningReview <- function(taxon = "",
     occData <- occData[-badRows, ]
   }
 
+  if (!quite) cat("  making base PCA and convex hull\n")
   plotColours <- c("blue", "darkorange", "magenta1")
 
   basePCA <- stats::prcomp(envData_orig, center = TRUE, scale. = TRUE)
@@ -85,6 +88,7 @@ thinningReview <- function(taxon = "",
     orig_area <- orig_area + (pp_xy$PC1[i + 1] + pp_xy$PC1[i]) * (pp_xy$PC2[i + 1] - pp_xy$PC2[i])/2
   }
 
+  cat("  start replicate sampling along thinning distance sequence\n")
   cellInd <- cellFromXY(envStack[[1]], occData[, c(longColInd, latColInd)])
   duplInd <- which(duplicated(cellInd))
   if (length(duplInd) > 0) cellInd <- cellInd[-duplInd]
@@ -194,7 +198,7 @@ thinningReview <- function(taxon = "",
 
   summaryTable <- accumulResults %>% dplyr::group_by(thinningDist) %>% dplyr::summarise(minPropArea = min(propArea))
   bestDist <- summaryTable$thinningDist[max(which(summaryTable$minPropArea >= threshold))]
-  if (!quiet) cat("Best distance =", bestDist, "km\n")
+  if (!quiet) cat("  Best distance =", bestDist, "km\n")
   return(bestDist)
 }
 
