@@ -69,7 +69,7 @@ thinningReview <- function(taxon = "",
   if (!dir.exists(outPath)) dir.create(outPath)
 
   # Automagically try to identify longitude and latitude columns:
-  longColInd <- grep("LONG", toupper(colnames(occData)))
+  longColInd <- grep("LONG", toupper(colnames(theseOccData)))
   if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
   if (length(longColInd) > 0)
   {
@@ -77,7 +77,7 @@ thinningReview <- function(taxon = "",
     longColInd <- longColInd[1]
   }
 
-  latColInd <- grep("LAT", toupper(colnames(occData)))
+  latColInd <- grep("LAT", toupper(colnames(theseOccData)))
   if (length(latColInd) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
   if (length(latColInd) > 0)
   {
@@ -89,13 +89,13 @@ thinningReview <- function(taxon = "",
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 
   if (!quiet) cat("  extracting env data at occ locations\n")
-  envData_orig <- raster::extract(envStack, occData[, c(longColInd, latColInd)])
+  envData_orig <- raster::extract(envStack, theseOccData[, c(longColInd, latColInd)])
 
   badRows <- which(is.na(rowSums(envData_orig)))
   if (length(badRows) > 0)
   {
     envData_orig <- envData_orig[-badRows, ]
-    occData <- occData[-badRows, ]
+    theseOccData <- theseOccData[-badRows, ]
   }
 
   if (!quiet) cat("  making base PCA and convex hull\n")
@@ -118,7 +118,7 @@ thinningReview <- function(taxon = "",
   }
 
   cat("  start replicate sampling along thinning distance sequence\n")
-  cellInd <- cellFromXY(envStack[[1]], occData[, c(longColInd, latColInd)])
+  cellInd <- cellFromXY(envStack[[1]], theseOccData[, c(longColInd, latColInd)])
   duplInd <- which(duplicated(cellInd))
   if (length(duplInd) > 0) cellInd <- cellInd[-duplInd]
 
@@ -134,7 +134,7 @@ thinningReview <- function(taxon = "",
                              origArea = rep(round(orig_area, 2), numDist),
                              thinnedArea = rep(0, numDist),
                              propArea = rep(0, numDist),
-                             numOrig = rep(nrow(occData), numDist),
+                             numOrig = rep(nrow(theseOccData), numDist),
                              numThinned = rep(0, numDist),
                              percThinned = rep(0, numDist))
 
@@ -142,8 +142,8 @@ thinningReview <- function(taxon = "",
     for (thisDist in thinDistSet)
     {
       rowInd <- which(thinDistSet == thisDist)
-      occData_thin <- occThin(occData, longColInd, latColInd, thisDist)
-      envData_thin <- raster::extract(envStack, occData_thin[, c(longColInd, latColInd)])
+      theseOccData_thin <- occThin(theseOccData, longColInd, latColInd, thisDist)
+      envData_thin <- raster::extract(envStack, theseOccData_thin[, c(longColInd, latColInd)])
 
       thinPCA_proj <- predict(basePCA, envData_thin)
 
@@ -180,8 +180,8 @@ thinningReview <- function(taxon = "",
         cat("Area original convex hull =", round(orig_area, 2), "\n")
         cat("Area of thinned convex hull =",round(thin_area, 2), "\n")
         cat("propArea =", round(thin_area/orig_area, 2), "\n")
-        cat("numThinned =", nrow(occData_thin), "\n")
-        cat("percThinned =", round(100*nrow(occData_thin)/nrow(occData), 2), "\n")
+        cat("numThinned =", nrow(theseOccData_thin), "\n")
+        cat("percThinned =", round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2), "\n")
         cat("========================================================\n\n")
       }
 
@@ -190,8 +190,8 @@ thinningReview <- function(taxon = "",
 
       if (newResults[rowInd, "propArea"] >= threshold) bestDist <- thisDist
 
-      newResults[rowInd, "numThinned"] <- nrow(occData_thin)
-      newResults[rowInd, "percThinned"] <- round(100*nrow(occData_thin)/nrow(occData), 2)
+      newResults[rowInd, "numThinned"] <- nrow(theseOccData_thin)
+      newResults[rowInd, "percThinned"] <- round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2)
     }
 
     accumulResults <- rbind(accumulResults, newResults)
