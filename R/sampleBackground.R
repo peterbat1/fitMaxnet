@@ -200,7 +200,7 @@ sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method 
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000)
 {
   if (class(baseRaster) != "RasterLayer") stop("'baseRaster' must be a RasterLayer object")
-  if ((grepl("sf|sfc", class(boundsPolygon))))
+  if (any(grepl("sf|sfc", class(boundsPolygon))))
   {
     boundsPolygon <- sf::as_Spatial(boundsPolygon)
   }
