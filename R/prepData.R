@@ -48,7 +48,7 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     }
 
     # Automagically try to identify longitude and latitude columns:
-    longColInd <- grep("LONG", toupper(colnames(theseOccData)))
+    longColInd <- grep("LONG", toupper(colnames(occData)))
     if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
     if (length(longColInd) > 0)
     {
@@ -56,7 +56,7 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
       longColInd <- longColInd[1]
     }
 
-    latColInd <- grep("LAT", toupper(colnames(theseOccData)))
+    latColInd <- grep("LAT", toupper(colnames(occData)))
     if (length(latColInd) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
     if (length(latColInd) > 0)
     {
