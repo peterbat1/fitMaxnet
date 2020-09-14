@@ -14,6 +14,6 @@
 #' @importFrom raster xyFromCell cellFromXY extract plot stack values mask dropLayer calc writeRaster
 #' @importFrom utils read.csv write.csv
 #' @importFrom sp spTransform coordinates CRS spDistsN1
-#' @importFrom sf st_geometry st_transform st_as_sf as_Spatial st_intersection
+#' @importFrom sf st_geometry st_transform st_as_sf as_Spatial st_intersection st_crs st_buffer st_union
 #' @importFrom rgeos gBuffer
 NULL

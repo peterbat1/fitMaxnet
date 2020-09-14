@@ -19,9 +19,9 @@ thinningReview(
 \arguments{
 \item{taxon}{Character. A taxon name to label output files and plots}
 
-\item{occData}{Data frame of occurrence locations. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partial matching on "longitude" and "latitude"}
+\item{occData}{Data frame of occurrence locations, or a character object (string) giving the path to this file. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"}
 
-\item{envDataPath}{Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the \emph{raster} package can be used, and all files in the set must have the same gridcell size, origin and resolution}
+\item{envDataPath}{Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the raster package can be used, and alll files in the set must have the same gridcell size, origin and resolution}
 
 \item{outPath}{Character. A path to a folder into which out will be written}
 
@@ -33,11 +33,11 @@ thinningReview(
 
 \item{writeResults}{Logical. Should a results summary table be saved?}
 
-\item{quiet}{Logical. Should progress messages be written to the console?}
+\item{quiet}{Logical. Should progress messages be written to the console}
 }
 \value{
 The largest distance in the standard sequence for which environmental coverage is >= threshold
 }
 \description{
-The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
+The function applies a standard sequence of thinning ditances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
 }

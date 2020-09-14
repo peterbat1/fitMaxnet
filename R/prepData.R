@@ -47,11 +47,24 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
       }
     }
 
-    # Identify lat/long columns in occData
-    latColInd <- grep("LAT", toupper(colnames(occData)))
+    # Automagically try to identify longitude and latitude columns:
     longColInd <- grep("LONG", toupper(colnames(occData)))
+    if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
+    if (length(longColInd) > 0)
+    {
+      warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
+      longColInd <- longColInd[1]
+    }
 
-    if ((length(latColInd) == 0) || (length(longColInd) == 0)) stop("Cannot find a lat or long column in occData")
+    latColInd <- grep("LAT", toupper(colnames(occData)))
+    if (length(latColInd) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
+    if (length(latColInd) > 0)
+    {
+      warning("Cannot identify a unique 'latitude' column in occurrence data file; using first hit come-what-may...")
+      latColInd <- latColInd[1]
+    }
+
+    #if ((length(latColInd) == 0) || (length(longColInd) == 0)) stop("Cannot find a lat or long column in occData")
 
     if (appendDate)
     {
