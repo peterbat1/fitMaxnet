@@ -9,8 +9,10 @@ thinningReview(
   occData = NULL,
   envDataPath = NULL,
   outPath = "",
+  thinDistSet = c(2, 5, 10, 15, 20, 25, 30),
   threshold = 0.9,
   numReplicates = 5,
+  isLatLong = TRUE,
   doPlots = FALSE,
   writeResults = FALSE,
   quiet = TRUE
@@ -25,9 +27,13 @@ thinningReview(
 
 \item{outPath}{Character. A path to a folder into which out will be written}
 
+\item{thinDistSet}{Numeric vector. Sequence of thining distances (in km) to be processed}
+
 \item{threshold}{Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation}
 
 \item{numReplicates}{Integer. How many repeated thinning runs should be performed at each thinning distance?}
+
+\item{isLatLong}{Logical. Are geographic coordinates (longitude/latitude) used in occData and environmental data layers?}
 
 \item{doPlots}{Logical. Should plots of results for each replicate and distance combination be produced in additional to a final summary plot?}
 

@@ -15,8 +15,10 @@
 #' @param occData Data frame of occurrence locations, or a character object (string) giving the path to this file. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"
 #' @param envDataPath Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the raster package can be used, and alll files in the set must have the same gridcell size, origin and resolution
 #' @param outPath Character. A path to a folder into which out will be written
+#' @param thinDistSet Numeric vector. Sequence of thining distances (in km) to be processed
 #' @param threshold Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation
 #' @param numReplicates Integer. How many repeated thinning runs should be performed at each thinning distance?
+#' @param isLatLong Logical. Are geographic coordinates (longitude/latitude) used in occData and environmental data layers?
 #' @param doPlots Logical. Should plots of results for each replicate and distance combination be produced in additional to a final summary plot?
 #' @param writeResults Logical. Should a results summary table be saved?
 #' @param quiet Logical. Should progress messages be written to the console
@@ -29,8 +31,10 @@ thinningReview <- function(taxon = "",
                            occData = NULL,
                            envDataPath = NULL,
                            outPath = "",
+                           thinDistSet = c(2, 5, 10, 15, 20, 25, 30),
                            threshold = 0.9,
                            numReplicates = 5,
+                           isLatLong = TRUE,
                            doPlots = FALSE,
                            writeResults = FALSE,
                            quiet = TRUE)
@@ -68,32 +72,37 @@ thinningReview <- function(taxon = "",
 
   if (!dir.exists(outPath)) dir.create(outPath)
 
+  # Check isLatLong
+  if ((isLatLong) && (!any(grepl("LONG|LAT", toupper(colnames(occData))))))
+    stop("isLatLong = 'TRUE' but no columns named longitude/latitude found in 'occData'")
+
   # Automagically try to identify longitude and latitude columns:
-  longColInd <- grep("LONG", toupper(colnames(theseOccData)))
-  if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
-  if (length(longColInd) > 0)
+  xColInd <- grep("LONG|X", toupper(colnames(theseOccData)))
+  if (length(xColInd) == 0) stop("Cannot identify a 'longitude' or 'x' column in occurrence data file")
+  if (length(xColInd) > 1)
   {
-    warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
-    longColInd <- longColInd[1]
+    warning("Cannot identify a unique 'longitude' or 'x' column in occurrence data file; using first hit come-what-may...")
+    xColInd <- xColInd[1]
   }
 
-  latColInd <- grep("LAT", toupper(colnames(theseOccData)))
-  if (length(latColInd) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
-  if (length(latColInd) > 0)
+  yColInd <- grep("LAT|Y", toupper(colnames(theseOccData)))
+  if (length(yColInd) == 0) stop("Cannot identify a 'latitude' or 'y' column in occurrence data file")
+  if (length(yColInd) > 1)
   {
-    warning("Cannot identify a unique 'latitude' column in occurrence data file; using first hit come-what-may...")
-    latColInd <- latColInd[1]
+    warning("Cannot identify a unique 'latitude' or 'y' column in occurrence data file; using first hit come-what-may...")
+    yColInd <- yColInd[1]
   }
 
   if (!quiet) cat("  loading env data\n")
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 
   if (!quiet) cat("  extracting env data at occ locations\n")
-  envData_orig <- raster::extract(envStack, theseOccData[, c(longColInd, latColInd)])
+  envData_orig <- raster::extract(envStack, theseOccData[, c(xColInd, yColInd)])
 
   badRows <- which(is.na(rowSums(envData_orig)))
   if (length(badRows) > 0)
   {
+    if (!quiet) cat("  removed", length(badRows), "bad rows from occData and environmental data matrix\n")
     envData_orig <- envData_orig[-badRows, ]
     theseOccData <- theseOccData[-badRows, ]
   }
@@ -118,11 +127,11 @@ thinningReview <- function(taxon = "",
   }
 
   cat("  start replicate sampling along thinning distance sequence\n")
-  cellInd <- cellFromXY(envStack[[1]], theseOccData[, c(longColInd, latColInd)])
+  cellInd <- cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])
   duplInd <- which(duplicated(cellInd))
   if (length(duplInd) > 0) cellInd <- cellInd[-duplInd]
 
-  thinDistSet <- c(2, 5, 10, 15, 20, 25, 30)
+  ####thinDistSet <- c(2, 5, 10, 15, 20, 25, 30)
   numDist <- length(thinDistSet)
 
   accumulResults <- NULL
@@ -136,14 +145,14 @@ thinningReview <- function(taxon = "",
                              propArea = rep(0, numDist),
                              numOrig = rep(nrow(theseOccData), numDist),
                              numThinned = rep(0, numDist),
-                             percThinned = rep(0, numDist))
+                             percRetained = rep(0, numDist))
 
     #thisDist <- 1
     for (thisDist in thinDistSet)
     {
       rowInd <- which(thinDistSet == thisDist)
-      theseOccData_thin <- occThin(theseOccData, longColInd, latColInd, thisDist)
-      envData_thin <- raster::extract(envStack, theseOccData_thin[, c(longColInd, latColInd)])
+      theseOccData_thin <- occThin(theseOccData, xColInd, yColInd, thisDist, isLatLong)
+      envData_thin <- raster::extract(envStack, theseOccData_thin[, c(xColInd, yColInd)])
 
       thinPCA_proj <- predict(basePCA, envData_thin)
 
@@ -180,8 +189,8 @@ thinningReview <- function(taxon = "",
         cat("Area original convex hull =", round(orig_area, 2), "\n")
         cat("Area of thinned convex hull =",round(thin_area, 2), "\n")
         cat("propArea =", round(thin_area/orig_area, 2), "\n")
-        cat("numThinned =", nrow(theseOccData_thin), "\n")
-        cat("percThinned =", round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2), "\n")
+        cat("numThinned =", nrow(theseOccData) - nrow(theseOccData_thin), "\n")
+        cat("percRetained =", round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2), "\n")
         cat("========================================================\n\n")
       }
 
@@ -191,7 +200,7 @@ thinningReview <- function(taxon = "",
       if (newResults[rowInd, "propArea"] >= threshold) bestDist <- thisDist
 
       newResults[rowInd, "numThinned"] <- nrow(theseOccData_thin)
-      newResults[rowInd, "percThinned"] <- round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2)
+      newResults[rowInd, "percRetained"] <- round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2)
     }
 
     accumulResults <- rbind(accumulResults, newResults)
@@ -206,7 +215,7 @@ thinningReview <- function(taxon = "",
   {
     plotData <- data.frame(thinDist = accumulResults[, "thinningDist"],
                            percNicheVol = 100*accumulResults[, "propArea"],
-                           percNumPoints = accumulResults[, "percThinned"])
+                           percNumPoints = accumulResults[, "percRetained"])
 
     grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExporation_resultSummary.png"))
     p4 <- ggplot2::ggplot(plotData, aes(x = thinDist, y = percNicheVol)) +

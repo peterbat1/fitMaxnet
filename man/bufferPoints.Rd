@@ -4,7 +4,7 @@
 \alias{bufferPoints}
 \title{Make buffer around occurrence points}
 \usage{
-bufferPoints(occ_pts, bufferDist_km = 200)
+bufferPoints(occ_pts, bufferDist_km = 200, trace = FALSE)
 }
 \arguments{
 \item{occ_pts}{A data frame or matrix with at least two columns representing latitude and longitude of occurrence records}

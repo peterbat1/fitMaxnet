@@ -48,20 +48,20 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     }
 
     # Automagically try to identify longitude and latitude columns:
-    longColInd <- grep("LONG", toupper(colnames(occData)))
-    if (length(longColInd) == 0) stop("Cannot identify a 'longitude' column in occurrence data file")
-    if (length(longColInd) > 0)
+    Xind <- grep("LONG|X", toupper(colnames(occData)))
+    if (length(Xind) == 0) stop("Cannot identify a 'longitude' or 'X' column in occurrence data file")
+    if (length(Xind) > 0)
     {
       warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
-      longColInd <- longColInd[1]
+      Xind <- Xind[1]
     }
 
-    latColInd <- grep("LAT", toupper(colnames(occData)))
-    if (length(latColInd) == 0) stop("Cannot identify a 'latitude' column in occurrence data file")
-    if (length(latColInd) > 0)
+    Yind <- grep("LAT|Y", toupper(colnames(occData)))
+    if (length(Yind) == 0) stop("Cannot identify a 'latitude' or 'Y' column in occurrence data file")
+    if (length(Yind) > 0)
     {
       warning("Cannot identify a unique 'latitude' column in occurrence data file; using first hit come-what-may...")
-      latColInd <- latColInd[1]
+      Yind <- Yind[1]
     }
 
     #if ((length(latColInd) == 0) || (length(longColInd) == 0)) stop("Cannot find a lat or long column in occData")
@@ -78,7 +78,10 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     }
 
     cat("   Extracting background samples...")
-    bkg.cells <- sampleBackground(as.matrix(occData[, c(latColInd, longColInd)]) , nBkgSamples = 10000, baseRaster = envStack[[1]], boundsPolygon = boundsPoly)
+    bkg.cells <- sampleBackground(as.matrix(occData[, c(Yind, Xind)]),
+                                  nBkgSamples = 10000,
+                                  baseRaster = envStack[[1]],
+                                  boundsPolygon = boundsPoly)
     bkg.latlong <- xyFromCell(envStack[[1]], bkg.cells)        #print(names(bkg.latlong))
 
     bkgData <- data.frame(species = rep("background", length(bkg.cells)),
@@ -92,12 +95,12 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
 
     cat("   Extracting data for occupied grid cells...")
     # Find grid cell row, col coordinates of occupied grid cells:
-    occ.cells <- cellFromXY(envStack[[1]], cbind(occData[, longColInd], occData[, latColInd]))
+    occ.cells <- cellFromXY(envStack[[1]], cbind(occData[, Xind], occData[, Yind]))
     #nPresence <- length(occ.cells)
 
     occData <- data.frame(species = rep(taxon_Name, length(occ.cells)),
-                          longitude = occData[, longColInd],
-                          latitude = occData[, latColInd],
+                          longitude = occData[, Xind],
+                          latitude = occData[, Yind],
                           extract(envStack, occ.cells),
                           stringsAsFactors = FALSE)
     badRows <- unique(which(is.na(occData), arr.ind = TRUE)[ , 1]) #nBackground <- length(bkg.cells)
