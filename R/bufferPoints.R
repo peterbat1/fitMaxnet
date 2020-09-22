@@ -21,6 +21,7 @@
 #'
 #' @param occ_pts A data frame or matrix with at least two columns representing latitude and longitude of occurrence records
 #' @param bufferDist_km Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.
+#' @param trace Logical. Should messages be emitted to assist progress tracking or debugging
 #'
 #' @details {
 #' \emph{bufferPoints()} implements the widely used simple circular buffering approach introduced to niche modelling by VanDerWal et al. 2009. 'Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know?' \emph{Ecological Modelling} 220:589–594.
@@ -50,15 +51,15 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
   # Try to identify longitude and latitude columns and rename them to 'longitude' and 'latitude'
   ind <- grep("LONG|X", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
-    X_ind <- ind #colnames(occ_pts)[ind[1]] <- "longitude"
+    X_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "longitude"
   else
-    stop("Cannot identify the 'longitude' column in 'occ_pts'")
+    stop("Cannot identify the 'longitude' or 'X' column in 'occ_pts'")
 
   ind <- grep("LAT|Y", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
-    Y_ind <- ind #colnames(occ_pts)[ind[1]] <- "latitude"
+    Y_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "latitude"
   else
-    stop("Cannot identify the 'latitude' column in 'occ_pts'")
+    stop("Cannot identify the 'latitude' or 'Y' column in 'occ_pts'")
 
   occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c(X_ind, Y_ind), crs = pts_crs)
   #sf::st_crs(occ_pts_sf) <- pts_crs
