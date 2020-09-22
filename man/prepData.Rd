@@ -21,7 +21,7 @@ prepData(
 
 \item{excludedVars}{A chracter vector of variable names to be excluded from output files. Default is NULL.}
 
-\item{boundsPoly}{A SpatialPoylgons* object defining the region within which background points will be selected.}
+\item{boundsPoly}{An sf or SpatialPoylgons* object defining the region within which background points will be selected.}
 
 \item{envDataPath}{String giving the file system path to the folder containing the geoTIFF rasters representing the environmental layers to be used to spatially project a fitted maxnet model}
 

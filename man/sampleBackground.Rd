@@ -17,7 +17,7 @@ sampleBackground(
 
 \item{baseRaster}{A raster layer object representing the geometry of the environmental data layers to be used for modelling}
 
-\item{boundsPolygon}{A SpatialPolygons* object set the boundary within which background points must be selected}
+\item{boundsPolygon}{An sf or SpatialPolygons* object defning the boundary within which background points must be selected}
 
 \item{nBkgSamples}{Numeric. The number of samples to constitute the background set with the default = maxBkgSamples}
 

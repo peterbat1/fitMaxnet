@@ -10,7 +10,7 @@
 #'
 #' @param taxonName String (character object) giving the taxonomic name of the entity for which data is being supplied.
 #' @param occData A numeric matrix or data.frame with at least two columns holding latitude and longitude values for occurrence records. Column names are matched against 'lat' and 'long' in a effort to automagically identify these columns.
-#' @param boundsPoly A SpatialPoylgons* object defining the region within which background points will be selected.
+#' @param boundsPoly An sf or SpatialPoylgons* object defining the region within which background points will be selected.
 #' @param excludedVars A chracter vector of variable names to be excluded from output files. Default is NULL.
 #' @param envDataPath String giving the file system path to the folder containing the geoTIFF rasters representing the environmental layers to be used to spatially project a fitted maxnet model
 #' @param outputPath String giving the file system path to the folder into which occurrence and background SWD files will be written. See \emph{Details} for information about the file naming convention.
@@ -51,20 +51,18 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     }
 
     # Automagically try to identify longitude and latitude columns:
-    Xind <- grep("LONG|X", toupper(colnames(occData)))
+    Xind <- grep("LONG|X", toupper(colnames(occData)))[1]
     if (length(Xind) == 0) stop("Cannot identify a 'longitude' or 'X' column in occurrence data file")
-    if (length(Xind) > 0)
+    if (length(Xind) > 1)
     {
       warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
-      Xind <- Xind[1]
     }
 
-    Yind <- grep("LAT|Y", toupper(colnames(occData)))
+    Yind <- grep("LAT|Y", toupper(colnames(occData)))[1]
     if (length(Yind) == 0) stop("Cannot identify a 'latitude' or 'Y' column in occurrence data file")
-    if (length(Yind) > 0)
+    if (length(Yind) > 1)
     {
       warning("Cannot identify a unique 'latitude' or 'Y' column in occurrence data file; using first hit come-what-may...")
-      Yind <- Yind[1]
     }
 
     # Set a flag to be used when determining column names of SWD files
