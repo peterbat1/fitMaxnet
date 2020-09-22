@@ -200,6 +200,7 @@ sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method 
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000)
 {
   if (class(baseRaster) != "RasterLayer") stop("'baseRaster' must be a RasterLayer object")
+
   if (any(grepl("sf|sfc", class(boundsPolygon))))
   {
     boundsPolygon <- sf::as_Spatial(boundsPolygon)
@@ -208,20 +209,20 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
   if (!grep("SpatialPolygons", class(boundsPolygon)))
     stop("'boundsPolygon' must be a sf, SpatialPolygons, or SpatialPolygonsDataFrame object")
 
-  # Try to identify longitude and latitude columns and rename them to 'longitude' and 'latitude'
-  ind <- grep("LONG", toupper(colnames(occData)))
+  # Try to identify longitude and latitude, or X & Y, columns in occData
+  ind <- grep("LONG|X", toupper(colnames(occData)))
   if (length(ind) >= 1)
-    colnames(occData)[ind[1]] <- "longitude"
+    X_ind <- ind #colnames(occData)[ind[1]] <- "longitude"
   else
-    stop("Cannot identify the 'longitude' column in 'occData'")
+    stop("Cannot identify the 'longitude' or 'X' column in 'occData'")
 
-  ind <- grep("LAT", toupper(colnames(occData)))
+  ind <- grep("LAT|Y", toupper(colnames(occData)))
   if (length(ind) >= 1)
-    colnames(occData)[ind[1]] <- "latitude"
+    Y_ind <- ind #colnames(occData)[ind[1]] <- "latitude"
   else
-    stop("Cannot identify the 'latitude' column in 'occData'")
+    stop("Cannot identify the 'latitude' or 'Y' column in 'occData'")
 
-  occCells <- raster::cellFromXY(baseRaster, occData[, c("longitude", "latitude")])
+  occCells <- raster::cellFromXY(baseRaster, occData[, c(X_ind, Y_ind)])
 
   raster::values(baseRaster)[which(!is.na(raster::values(baseRaster)))] <- 1
 

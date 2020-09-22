@@ -6,7 +6,7 @@
 # Peter D. Wilson 11 October 2019
 ###################################################################################
 #' @export
-occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0) #, makePlot = FALSE)
+occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong = TRUE)
 {
   #if (is.na(occ)) stop("No data supplied in paramater 'occ'")
 
@@ -26,7 +26,10 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0) #, makePlo
   {
     i <- sample(1:nrow(train), 1)
 
-    distVals <- sp::spDistsN1(as.matrix(train[, c(xCol, yCol)]), pt = unlist(train[i, c(xCol, yCol)]), longlat = TRUE)
+    distVals <- sp::spDistsN1(as.matrix(train[, c(xCol, yCol)]), pt = unlist(train[i, c(xCol, yCol)]), longlat = isLatLong)
+
+    # If isLatLong == FALSE, returned distance will be in metres, so convert to kilometres:
+    if (!isLatLong) distVals <- distVals/1000
 
     # Test if the only distance in distVals <= thinDist is the distance 0.0
     # representing the distance between the test point and itself:
@@ -38,20 +41,6 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0) #, makePlo
     # Trim the training set
     train <- train[-i,]
   }
-
-  # Code to be used if maskePlot option is desired in the future
-  # final <- occ[keep, ]
-  #
-  # if (makePlot)
-  # {
-  #   plot(initial[,c(xCol,yCol)],
-  #        main="Distribution of occurences",
-  #        sub=paste("# initial (black):",nrow(initial)," | # kept (red): ",kept),
-  #        pch=19,col="black",cex=0.4)
-  #   points(final[,c(xCol,yCol)],pch=19,col="red",cex=0.4)
-  # }
-
-  # return(final)
 
   return(occ[keep, ])
 }

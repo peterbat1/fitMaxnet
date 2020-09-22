@@ -37,30 +37,56 @@
 #'
 #' @examples
 #' \dontrun{}
-bufferPoints <- function(occ_pts, bufferDist_km = 200)
+bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 {
   # Convert buffer distance from kilometres to metres
   bufferDist <- 1000 * bufferDist_km
 
+  if (any(grepl("LONG|LAT", toupper(colnames(occ_pts)))))
+    pts_crs <- 4326
+  else
+    pts_crs <- 3577
+
   # Try to identify longitude and latitude columns and rename them to 'longitude' and 'latitude'
-  ind <- grep("LONG", toupper(colnames(occ_pts)))
+  ind <- grep("LONG|X", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
-    colnames(occ_pts)[ind[1]] <- "longitude"
+    X_ind <- ind #colnames(occ_pts)[ind[1]] <- "longitude"
   else
     stop("Cannot identify the 'longitude' column in 'occ_pts'")
 
-  ind <- grep("LAT", toupper(colnames(occ_pts)))
+  ind <- grep("LAT|Y", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
-    colnames(occ_pts)[ind[1]] <- "latitude"
+    Y_ind <- ind #colnames(occ_pts)[ind[1]] <- "latitude"
   else
     stop("Cannot identify the 'latitude' column in 'occ_pts'")
 
-  occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c("longitude", "latitude"))
-  sf::st_crs(occ_pts_sf) <- 4326
+  occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c(X_ind, Y_ind), crs = pts_crs)
+  #sf::st_crs(occ_pts_sf) <- pts_crs
 
-  occ_pts_albers <- sf::st_transform(occ_pts_sf, crs = 3577)
+  if (trace) cat("step 1\n")
+  if (pts_crs == 4326)
+    occ_pts_albers <- sf::st_transform(occ_pts_sf, crs = 3577)
+  else
+    occ_pts_albers <- occ_pts_sf
+
+  if (trace) cat("step 2\n")
   ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_albers, dist = bufferDist))
-  clippedBuffer <- sf::st_intersection(ptsBuffer, ozPolygon)
-  clippedBuffer <- sf::st_transform(clippedBuffer, crs = 4326)
+
+  if (trace)
+  {
+    cat("step 3\n")
+    cat("\nCRS(ptsBuffer:\n")
+    print(st_crs(ptsBuffer))
+
+    cat("\nCRS(ozPolygon):\n")
+    print(st_crs(ozPolygon))
+
+    cat("\nst_crs(ptsBuffer) == st_crs(ozPolygon) is", st_crs(ptsBuffer) == st_crs(ozPolygon), "\n")
+  }
+
+  clippedBuffer <- sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))
+
+  if (trace) cat("step 4\n")
+  if (pts_crs == 4326) clippedBuffer <- sf::st_transform(clippedBuffer, crs = 4326)
   return(clippedBuffer)
 }
