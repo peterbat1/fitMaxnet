@@ -151,13 +151,8 @@ thinningReview <- function(taxon = "",
     for (thisDist in thinDistSet)
     {
       rowInd <- which(thinDistSet == thisDist)
-<<<<<<< HEAD
-      theseOccData_thin <<- occThin(theseOccData, longColInd, latColInd, thisDist)
-      envData_thin <- raster::extract(envStack, theseOccData_thin[, c(longColInd, latColInd)])
-=======
       theseOccData_thin <- occThin(theseOccData, xColInd, yColInd, thisDist, isLatLong)
       envData_thin <- raster::extract(envStack, theseOccData_thin[, c(xColInd, yColInd)])
->>>>>>> 4002bf8aa03a45bfaeee2d03af1e6366537ec6c2
 
       thinPCA_proj <- predict(basePCA, envData_thin)
 
