@@ -39,5 +39,5 @@ thinningReview(
 The largest distance in the standard sequence for which environmental coverage is >= threshold
 }
 \description{
-The function applies a standard sequence of thinning ditances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
+The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
 }

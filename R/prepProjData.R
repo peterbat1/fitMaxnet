@@ -18,6 +18,8 @@
 #' @examples
 prepProjData <- function(dataPath, quiet = TRUE)
 {
+  if (!dir.exists(dataPath)) stop("dataPath not found")
+
   if (!quiet) cat("Preparing projection data: ")
   projStack <<- raster::stack(list.files(dataPath, "*.tif", full.names = TRUE))
   projData <<- raster::values(projStack)

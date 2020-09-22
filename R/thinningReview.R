@@ -9,7 +9,7 @@
 
 #' Review impact of a sequence of thinning distances
 #'
-#' The function applies a standard sequence of thinning ditances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
+#' The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
 #'
 #' @param taxon Character. A taxon name to label output files and plots
 #' @param occData Data frame of occurrence locations, or a character object (string) giving the path to this file. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"
@@ -142,7 +142,7 @@ thinningReview <- function(taxon = "",
     for (thisDist in thinDistSet)
     {
       rowInd <- which(thinDistSet == thisDist)
-      theseOccData_thin <- occThin(theseOccData, longColInd, latColInd, thisDist)
+      theseOccData_thin <<- occThin(theseOccData, longColInd, latColInd, thisDist)
       envData_thin <- raster::extract(envStack, theseOccData_thin[, c(longColInd, latColInd)])
 
       thinPCA_proj <- predict(basePCA, envData_thin)
