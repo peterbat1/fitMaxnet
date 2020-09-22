@@ -10,6 +10,8 @@ bufferPoints(occ_pts, bufferDist_km = 200, trace = FALSE)
 \item{occ_pts}{A data frame or matrix with at least two columns representing latitude and longitude of occurrence records}
 
 \item{bufferDist_km}{Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.}
+
+\item{trace}{Logical. Should messages be emitted to assist progress tracking or debugging}
 }
 \value{
 A spatial polygon object from the package \emph{sp}
