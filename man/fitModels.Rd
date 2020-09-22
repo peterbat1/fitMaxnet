@@ -11,7 +11,8 @@ fitModels(
   nBkgPoints = 5000,
   baseOutputPath = NULL,
   replTags = "",
-  multSet = 1
+  multSet = 1,
+  outputType = "link"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ fitModels(
 \item{replTags}{A character array of tags representing replicates to be fitted.}
 
 \item{multSet}{A numeric array of values to be used for overall regularisation multipliers. At least one value must be present which may be the default value of 1.}
+
+\item{outputType}{Character. Output scaling of fitted model: "link" is raw linear predictor scores, while "exponential", "logistic" and "cloglog" generate a non-linear re-scaling of the raw linear predictor scores. See \link[maxnet]{maxnet} for further information.}
 }
 \value{
 Nothing

@@ -10,6 +10,7 @@
 #' @param baseOutputPath File system path to the base folder to be used for model output. A sub-folder with the taxonomic name supplied in \emph{taxonName}. It will be created if it doesn't already exist to receive output.
 #' @param replTags A character array of tags representing replicates to be fitted.
 #' @param multSet A numeric array of values to be used for overall regularisation multipliers. At least one value must be present which may be the default value of 1.
+#' @param outputType Character. Output scaling of fitted model: "link" is raw linear predictor scores, while "exponential", "logistic" and "cloglog" generate a non-linear re-scaling of the raw linear predictor scores. See \link[maxnet]{maxnet} for further information.
 #'
 #' @return Nothing
 #' @export
@@ -21,18 +22,21 @@ fitModels <- function(taxonName = NULL,
                      nBkgPoints = 5000,
                      baseOutputPath = NULL,
                      replTags = "",
-                     multSet = 1)
+                     multSet = 1,
+                     outputType = "link")
 {
   if (is.null(taxonName)) stop("taxonName must have value")
   if (is.null(occPath)) stop("occPath must have a value")
   if (is.null(backgroundPath)) stop("backgroundPath must have a value")
   if (is.null(baseOutputPath)) stop("baseOutputPath must have a value")
   if (class(multSet) != "numeric") stop("multSet must be an array of one or more numeric values")
+  if (!(outputType %in% c("link", "exponential", "logistic", "cloglog"))) stop("Unkown value in 'outputType'")
 
   if (!file.exists(occPath)) stop("Cannot find file referenced in parameter 'occPath'")
   if (!file.exists(backgroundPath)) stop("Cannot find file referenced in parameter 'backgroundPath'")
 
   if (!exists("projData")) stop("Global object 'projData' is missing. Did you run prepData()?")
+
 
   # Load occurrence data and clean by removing rows with missing values
   occ <- read.csv(occPath, stringsAsFactors = FALSE)
@@ -75,13 +79,15 @@ fitModels <- function(taxonName = NULL,
                         predVar = predVar,
                         envData = envData,
                         featureTypes = "lpq",
-                        regMult = thisRegVal)
+                        regMult = thisRegVal,
+                        outputType = outputType)
 
       cat("    Projecting model\n")
-      projMod <- predict(ans, projData, type = "cloglog")
+      projMod <- maxnet::predict(ans, projData, type = outputType)
 
       cat("    Preparing and saving projection raster\n")
       projRas <- projStack[[1]]
+      goodCellInd <- which(!is.na(raster::values(projStack[[1]])))
       raster::values(projRas) <- NA
       raster::values(projRas)[goodCellInd] <- projMod[,1]
 

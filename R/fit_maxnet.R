@@ -10,6 +10,7 @@
 #' @param envData A numeric matrix of environmental covariates or predictor variables to be considered in the model fit
 #' @param featureTypes Character value indicating the list of feature types to be used of the model fit. Default is 'lpq' meaning that linear, product and quadratic features will be used. Other options are available (see maxnet and MaxEnt documentation/literature) but not encouraged for ENMs as they lead to serious overfitting.
 #' @param regMult A numeric array of regularisation values to be used. A single numeric value maybe passed leading to just one fitted model at that regularisation value. More than one value will gerenate a sequence of fitted models, one for each regularisation value in the array.
+#' @param outputType Character. Output scaling of fitted model: "link" is raw linear predictor scores, while "exponential", "logistic" and "cloglog" generate a non-linear re-scaling of the raw linear predictor scores. See \link[maxnet]{maxnet} for further information.
 #' @param createFolders Logical. Should the function create sub-folders below \emph{baseOutPath} using taxon name, replicate number and regularisation values? If FALSE (default) then replTag and regTag are ignored
 #' @param quiet Logical. Should the function proceed without emitting messages?
 #'
@@ -25,6 +26,7 @@ fit_maxnet <- function(taxonName = NULL,
                        envData,
                        featureTypes = "lpq",
                        regMult = 1,
+                       outputType = "link",
                        createFolders = FALSE,
                        quiet = TRUE)
 {
@@ -38,6 +40,8 @@ fit_maxnet <- function(taxonName = NULL,
 
   if ((nrow(envData) == 0) || (is.null(envData))) stop("Matrix envData contains no values")
 
+  if (!(outputType %in% c("link", "exponential", "logistic", "cloglog"))) stop("Unkown value in 'outputType'")
+
   if (!quiet)
   {
     if (is.null(replTag))
@@ -47,7 +51,11 @@ fit_maxnet <- function(taxonName = NULL,
   }
 
   ### try() ??
-  maxnet_model <- maxnet::maxnet(predVar, envData, f = maxnet::maxnet.formula(predVar, envData, classes = featureTypes), regmult = regMult)
+  maxnet_model <- maxnet::maxnet(predVar,
+                                 envData,
+                                 f = maxnet::maxnet.formula(predVar, envData, classes = featureTypes),
+                                 regmult = regMult,
+                                 type = outputType)
 
   # Save object
   if (createFolders)
@@ -64,6 +72,6 @@ fit_maxnet <- function(taxonName = NULL,
   fileName <- paste0(outputFolder, "/", gsub(" ", "_", taxonName, fixed = TRUE), ifelse(is.null(replTag), "", paste0("_", replTag)), "_", regTag, ".Rd")
 
   if (!quiet) cat("    Saving model object:", fileName, "\n")
-  save(maxnet_model, file = fileName)
+  save(list(maxnet_model, type = outputType, runDate = Sys.Date()), file = fileName)
   return(maxnet_model)
 }

@@ -13,6 +13,7 @@ fit_maxnet(
   envData,
   featureTypes = "lpq",
   regMult = 1,
+  outputType = "link",
   createFolders = FALSE,
   quiet = TRUE
 )
@@ -33,6 +34,8 @@ fit_maxnet(
 \item{featureTypes}{Character value indicating the list of feature types to be used of the model fit. Default is 'lpq' meaning that linear, product and quadratic features will be used. Other options are available (see maxnet and MaxEnt documentation/literature) but not encouraged for ENMs as they lead to serious overfitting.}
 
 \item{regMult}{A numeric array of regularisation values to be used. A single numeric value maybe passed leading to just one fitted model at that regularisation value. More than one value will gerenate a sequence of fitted models, one for each regularisation value in the array.}
+
+\item{outputType}{Character. Output scaling of fitted model: "link" is raw linear predictor scores, while "exponential", "logistic" and "cloglog" generate a non-linear re-scaling of the raw linear predictor scores. See \link[maxnet]{maxnet} for further information.}
 
 \item{createFolders}{Logical. Should the function create sub-folders below \emph{baseOutPath} using taxon name, replicate number and regularisation values? If FALSE (default) then replTag and regTag are ignored}
 
