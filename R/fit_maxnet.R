@@ -54,8 +54,8 @@ fit_maxnet <- function(taxonName = NULL,
   maxnet_model <- maxnet::maxnet(predVar,
                                  envData,
                                  f = maxnet::maxnet.formula(predVar, envData, classes = featureTypes),
-                                 regmult = regMult,
-                                 type = outputType)
+                                 regmult = regMult) #,
+                                 #type = outputType)
 
   # Save object
   if (createFolders)
@@ -72,6 +72,6 @@ fit_maxnet <- function(taxonName = NULL,
   fileName <- paste0(outputFolder, "/", gsub(" ", "_", taxonName, fixed = TRUE), ifelse(is.null(replTag), "", paste0("_", replTag)), "_", regTag, ".Rd")
 
   if (!quiet) cat("    Saving model object:", fileName, "\n")
-  save(list(maxnet_model, type = outputType, runDate = Sys.Date()), file = fileName)
+  save(maxnet_model, file = fileName)
   return(maxnet_model)
 }

@@ -38,7 +38,7 @@ projectMaxnet <- function(taxonName = NULL,
   projMod <- predict(maxnet_model, projData[goodRows, ], type = "cloglog")
 
   cat("    Preparing and saving projection raster\n")
-  projRas <- projStack[[1]]
+  projRas <- rasTemplate #projStack[[1]]
   raster::values(projRas) <- NA
   raster::values(projRas)[goodRows] <- projMod[,1]
   #raster::values(projRas) <- projMod[,1]

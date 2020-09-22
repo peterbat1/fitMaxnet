@@ -33,7 +33,7 @@
 #'
 #' The function only outputs a spatial polygon object projected on the WGS84 datum. If you need to use the buffer polygon on other projections, please reproject using, say, \emph{spTransform()} from the package \emph{sp}.
 #'}
-#' @return A spatial polygon object from the package \emph{sp}
+#' @return A spatial polygon object from the package \emph{sf}
 #' @export
 #'
 #' @examples
@@ -85,7 +85,7 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
     cat("\nst_crs(ptsBuffer) == st_crs(ozPolygon) is", st_crs(ptsBuffer) == st_crs(ozPolygon), "\n")
   }
 
-  clippedBuffer <- sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))
+  clippedBuffer <- sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577)))
 
   if (trace) cat("step 4\n")
   if (pts_crs == 4326) clippedBuffer <- sf::st_transform(clippedBuffer, crs = 4326)

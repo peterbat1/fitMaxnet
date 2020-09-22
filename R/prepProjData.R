@@ -21,9 +21,10 @@ prepProjData <- function(dataPath, quiet = TRUE)
   if (!dir.exists(dataPath)) stop("dataPath not found")
 
   if (!quiet) cat("Preparing projection data: ")
-  projStack <<- raster::stack(list.files(dataPath, "*.tif", full.names = TRUE))
+  projStack <- raster::stack(list.files(dataPath, "*.tif", full.names = TRUE))
   projData <<- raster::values(projStack)
-  goodCellInd <<- which(!is.na(rowSums(projData)))
+  #goodCellInd <<- which(!is.na(rowSums(projData)))
+  rasTemplate <<- projStack[[1]]
   if (!quiet) cat(length(projStack), " layers loaded\n")
   invisible(NULL)
 }
