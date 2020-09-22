@@ -63,11 +63,12 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     if (length(Yind) == 0) stop("Cannot identify a 'latitude' or 'Y' column in occurrence data file")
     if (length(Yind) > 0)
     {
-      warning("Cannot identify a unique 'latitude' column in occurrence data file; using first hit come-what-may...")
+      warning("Cannot identify a unique 'latitude' or 'Y' column in occurrence data file; using first hit come-what-may...")
       Yind <- Yind[1]
     }
 
-    #if ((length(latColInd) == 0) || (length(longColInd) == 0)) stop("Cannot find a lat or long column in occData")
+    # Set a flag to be used when determining column names of SWD files
+    isLatLong <- ifelse(any(grepl("LAT|LONG", toupper(colnames(occData)))), TRUE, FALSE)
 
     if (appendDate)
     {
@@ -85,13 +86,22 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
                                   nBkgSamples = 10000,
                                   baseRaster = envStack[[1]],
                                   boundsPolygon = boundsPoly)
-    bkg.latlong <- xyFromCell(envStack[[1]], bkg.cells)        #print(names(bkg.latlong))
+    bkg.xy <- xyFromCell(envStack[[1]], bkg.cells)        #print(names(bkg.latlong))
 
-    bkgData <- data.frame(species = rep("background", length(bkg.cells)),
-                          longitude = bkg.latlong[, 1],
-                          latitude = bkg.latlong[, 2],
-                          extract(envStack, bkg.cells),
-                          stringsAsFactors = FALSE)
+    if (isLatLong)
+      bkgData <- data.frame(species = rep("background", length(bkg.cells)),
+                            longitude = bkg.xy[, 1],
+                            latitude = bkg.xy[, 2],
+                            extract(envStack, bkg.cells),
+                            stringsAsFactors = FALSE)
+    else
+      bkgData <- data.frame(species = rep("background", length(bkg.cells)),
+                            x = bkg.xy[, 1],
+                            y = bkg.xy[, 2],
+                            extract(envStack, bkg.cells),
+                            stringsAsFactors = FALSE)
+
+
     badRows <- unique(which(is.na(bkgData), arr.ind = TRUE)[ , 1]) #nBackground <- length(bkg.cells)
     if (length(badRows) > 0) bkgData <- bkgData[-badRows, ]
     cat("done.\n")
@@ -101,11 +111,20 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     occ.cells <- cellFromXY(envStack[[1]], cbind(occData[, Xind], occData[, Yind]))
     #nPresence <- length(occ.cells)
 
-    occData <- data.frame(species = rep(taxon_Name, length(occ.cells)),
-                          longitude = occData[, Xind],
-                          latitude = occData[, Yind],
-                          extract(envStack, occ.cells),
-                          stringsAsFactors = FALSE)
+    if (isLatLong)
+      occData <- data.frame(species = rep(taxon_Name, length(occ.cells)),
+                            longitude = occData[, Xind],
+                            latitude = occData[, Yind],
+                            extract(envStack, occ.cells),
+                            stringsAsFactors = FALSE)
+    else
+      occData <- data.frame(species = rep(taxon_Name, length(occ.cells)),
+                            x = occData[, Xind],
+                            y = occData[, Yind],
+                            extract(envStack, occ.cells),
+                            stringsAsFactors = FALSE)
+
+
     badRows <- unique(which(is.na(occData), arr.ind = TRUE)[ , 1]) #nBackground <- length(bkg.cells)
     if (length(badRows) > 0) occData <- occData[-badRows, ]
 
