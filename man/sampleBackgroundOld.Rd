@@ -29,3 +29,6 @@ An integer array giving the indices of selected grid cells on the raster defined
 \description{
 Given a set of occupied grid cells on a specified raster, perform background cell selection using one of two methods: unconstrained, or 'union of disks' based on VanDerWal et al. (2009).
 }
+\examples{
+\dontrun{}
+}

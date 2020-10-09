@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 prepProjData <- function(dataPath, quiet = TRUE)
 {
   if (!dir.exists(dataPath)) stop("dataPath not found")

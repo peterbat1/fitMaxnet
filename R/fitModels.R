@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 fitModels <- function(taxonName = NULL,
                      occPath = NULL,
                      backgroundPath = NULL,

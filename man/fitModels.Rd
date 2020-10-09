@@ -38,3 +38,6 @@ Nothing
 \description{
 A set of MaxEnt models will be fitted using the maxnet function in the package maxnet. A model will be fitted for each combination of replTags and multSet values.
 }
+\examples{
+\dontrun{}
+}

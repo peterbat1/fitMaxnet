@@ -7,13 +7,14 @@
 #' @param occData Data.frame or matrix.
 #' @param xVar Character. Name of a variable in \emph{occData} which is interpreted as the x-coordinate. If NULL (default) a search is made for nearest match to 'longitude'.
 #' @param yVar Character. Name of a variable in \emph{occData} which is interpreted as the y-coordinate. If NULL (default) a search is made for nearest match to 'latitude'.
-#' @param threshold Numeric. A correlation value (ie between 0 and 1) used to determine which variables in \{envData} will recommended for removal. Correlations greater than or equal to \emph{threshold} will be listed.
+#' @param threshold Numeric. A correlation value (ie between 0 and 1) used to determine which variables in \emph{envData} will recommended for removal. Correlations greater than or equal to \emph{threshold} will be listed.
 #' @param outFile Character. A non-NULL value is used as a file name to save the graphical output as a PNG file. By default, the output is plotted to the default graphics device.
 #' @param outPath Character. Path used by ggsave in combination with outFile to save the plot.
 #' @return A character matrix listing the names of variables with absolute value of correlations greater than \emph{threshold} which may be candidates for removal, and the number of threshold-exceeding correlations in which a listed variable has been found.
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 envCorrAnalysis <- function(taxon = "",
                             titleText = NULL,
                             envDataPath,

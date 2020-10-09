@@ -26,3 +26,6 @@ The often \emph{very} large data objects are placed in the global environment fo
  A future version is planned wherein very large output will be stored in Rd files for fast reloading.
  }
 }
+\examples{
+\dontrun{}
+}

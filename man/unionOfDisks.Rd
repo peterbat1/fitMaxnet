@@ -19,3 +19,6 @@ An integer array of selected grid cells on the \emph{baseMap} raster
 \description{
 Perform background cell selection from a union of disks of specified radius (in km) around each occurrence cell. Based on VanDerWal et al. (2009).
 }
+\examples{
+\dontrun{}
+}

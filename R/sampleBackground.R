@@ -15,6 +15,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 unionOfDisks <- function(baseMap, seedCells, diskRadius = 200)
 {
   ##cat("   Hello from UnionOfDisks\n")
@@ -72,6 +73,7 @@ unionOfDisks <- function(baseMap, seedCells, diskRadius = 200)
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method = "unconstrained", diskRadius = 200)
 {  # Samples background points using a sampling strategy determined by parameter method.
   # Sampling is currently done without replacement.
@@ -197,6 +199,7 @@ sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method 
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000)
 {
   if (class(baseRaster) != "RasterLayer") stop("'baseRaster' must be a RasterLayer object")

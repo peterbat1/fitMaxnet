@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 projectMaxnet <- function(taxonName = NULL,
                           maxnetModel,
                           baseOutputPath,

@@ -17,11 +17,14 @@ boyce(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot = FALSE)
 
 \item{res}{resolution of the moving window (by default 100 focals)}
 
-\item{PEplot}{if True, plot the predicted to expected ratio along the suitability class}
+\item{PEplot}{if TRUE, plot the predicted to expected ratio along the suitability class}
 }
 \value{
 A named list...
 }
 \description{
 Boyce's continuous index
+}
+\examples{
+\dontrun{}
 }

@@ -64,12 +64,13 @@ fast_boycei <- function(interval, obs, fit)
 #' @param nclass Number of classes or vector with classes threshold. If nclass=0, Boyce index is calculated with a moving window (see next parameters)
 #' @param window.w width of the moving window (by default 1/10 of the suitability range)
 #' @param res resolution of the moving window (by default 100 focals)
-#' @param PEplot if True, plot the predicted to expected ratio along the suitability class
+#' @param PEplot if TRUE, plot the predicted to expected ratio along the suitability class
 #'
 #' @return A named list...
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot = FALSE)
 {
   if (class(fit) == "RasterLayer")

@@ -27,6 +27,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 thinningReview <- function(taxon = "",
                            occData = NULL,
                            envDataPath = NULL,

@@ -19,6 +19,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDataPath, outputPath, appendDate = FALSE)
 {
   taxon_Name <- gsub(" ", "_", taxonName, fixed = TRUE)

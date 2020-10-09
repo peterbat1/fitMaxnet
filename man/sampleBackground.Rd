@@ -38,3 +38,6 @@ For many taxa, sampling a constrained area means that less than 10,000 cells wil
 
 }
 }
+\examples{
+\dontrun{}
+}

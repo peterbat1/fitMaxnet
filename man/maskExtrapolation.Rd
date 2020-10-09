@@ -9,7 +9,7 @@ maskExtrapolation(
   envPath,
   projRas,
   maskOutpath = dirname(projRas),
-  fileLabel,
+  fileLabel = NULL,
   makePlots = TRUE
 )
 }
@@ -24,18 +24,32 @@ maskExtrapolation(
 
 \item{fileLabel}{Label to be used to distinguish the filename of the saved mask raster.}
 
-\item{makePlots.}{Logical. Make basic plots of raster objects for review and quality control. Default is TRUE.}
+\item{makePlots}{Logical. Make basic plots of raster objects for review and quality control? Default is TRUE.}
 }
 \value{
-Nothing but has side-effect of writing two raster files: mask raster and projection raster with mask applied.
+Nothing but has side-effect of writing two raster files: mask raster and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.
 }
 \description{
 Compute and apply a mask of areas within which strict extrapolation has been detected
 }
 \details{
 {
-Some info on method + details of coding used in the output raster...
-
-Note method for forming an output name for the mask raster
+The raster output for the nominated MaxEnt model produced by \link{fit_maxnet} is interrogated to find the list of variables used in the model. The function then proceeds to:
+\enumerate{
+\item Load a raster stack of these variables
+\item Code each non-NA cell a raster layer 1 if it is within the range of the variable recorded in the model object, 0 otherwise
+\item Compute an output raster with only cells set to 1 when all values in the stack are 1, 0 otherwise and NA cells retained
+\item Save the output raster
+}
+The file name for the output raster defaults to 'extrapolationMask.tif'. If fileLabel is not NULL, then the output file name is 'extrapolationMask_' + '\emph{fileLabel}' + '.tif'.
+}
+}
+\examples{
+{
+\dontrun{
+## Very basic use case:
+maskExtrapolation("furryCreature.Rd", "currentClimate/envVarFolder",
+                  "furryCreature_run1.tif", makePlots = FALSE)
+}
 }
 }

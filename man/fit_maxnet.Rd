@@ -47,3 +47,6 @@ A maxnet object
 \description{
 A wrapper around the function maxnet in the maxnet package to suit the workflow I prefer for fitting MaxEnt models to a set of taxa and tuning models across a spectrum of spatial thinning and regularisation parameter values
 }
+\examples{
+\dontrun{}
+}
