@@ -70,6 +70,8 @@ thinningReview <- function(taxon = "",
 
   if (outPath == "")
     stop("Please supply a path to an output folder in parameter 'outPath'")
+  else
+    if (!dir.exists(outPath)) dir.create(outPath)
 
   if (!dir.exists(outPath)) dir.create(outPath)
 
@@ -127,7 +129,7 @@ thinningReview <- function(taxon = "",
     orig_area <- orig_area + (pp_xy$PC1[i + 1] + pp_xy$PC1[i]) * (pp_xy$PC2[i + 1] - pp_xy$PC2[i])/2
   }
 
-  cat("  start replicate sampling along thinning distance sequence\n")
+  if (!quiet) cat("  start replicate sampling along thinning distance sequence\n")
   cellInd <- cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])
   duplInd <- which(duplicated(cellInd))
   if (length(duplInd) > 0) cellInd <- cellInd[-duplInd]
@@ -161,7 +163,7 @@ thinningReview <- function(taxon = "",
 
       if (doPlots)
       {
-        grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExporation_PCA_dist_", thisDist,"_repl_", thisRepl,".png"))
+        grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExploration_PCA_dist_", thisDist,"_repl_", thisRepl,".png"))
         p2 <- ggplot2::ggplot(data.frame(basePCA$x), aes(x = PC1, y = PC2)) +
           ggplot2::geom_point(data = data.frame(basePCA$x), shape = 16, colour = plotColours[1]) +
           ggplot2::geom_polygon(data = data.frame(basePCA$x[hull_orig, ]), aes(x = PC1, y = PC2), colour = plotColours[1], fill = plotColours[1], alpha = 0.2) +
