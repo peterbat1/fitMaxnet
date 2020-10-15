@@ -19,11 +19,14 @@
 #' \dontrun{}
 projectMaxnet <- function(taxonName = NULL,
                           maxnetModel,
+                          type = "exponential",
                           baseOutputPath,
                           fileLabel = NULL,
                           makeTaxonFolder = FALSE)
 {
   # Check params...
+  if(!(type %in% c('link', 'exponential', 'cloglog', 'logistic')))
+    stop("'type' must be one of 'link', 'exponential', 'cloglog', 'logistic'")
 
   # Check for existence of projStack, etc in the global environment...
 
@@ -36,13 +39,12 @@ projectMaxnet <- function(taxonName = NULL,
   goodRows <- which(!is.na(rowSums(projData)))
 
   cat("    Projecting model\n")
-  projMod <- predict(maxnet_model, projData[goodRows, ], type = "cloglog")
+  projMod <- predict(maxnet_model, projData[goodRows, ], type = type)
 
   cat("    Preparing and saving projection raster\n")
   projRas <- rasTemplate #projStack[[1]]
   raster::values(projRas) <- NA
   raster::values(projRas)[goodRows] <- projMod[,1]
-  #raster::values(projRas) <- projMod[,1]
 
   if (makeTaxonFolder)
     outputPath <- paste0(baseOutputPath, "/", taxonName)
