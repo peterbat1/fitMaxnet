@@ -63,8 +63,8 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
     cat("     Loading environmental data layers as a raster stack\n")
     envFiles <- list.files(envPath, "*.tif", full.names = TRUE)
 
-    # Filter envFIles to remove rasters not need to evalute the model
-    envFiles <- envFiles[base::match(modelVars, envFiles, nomatch = NULL)]
+    # Filter envFiles to remove rasters not need to evaluate the model
+    envFiles <- envFiles[base::match(modelVars, gsub(".tif", "",  basename(envFiles), fixed = TRUE))]
 
     envStack <- raster::stack(envFiles)
 
