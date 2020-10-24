@@ -231,8 +231,9 @@ thinningReview <- function(taxon = "",
       #annotate("text", x = 20, y = 75, hjust = 0, label = "Niche volume") +
       #annotate("text", x = 10, y = 37.5, hjust = 0, label = "Number of points") +
       #geom_point(aes(x = 1, y = 100*thin_area_unique/orig_area), colour = "purple1") +
-      ggplot2::geom_point(aes(x = 1, y = 100*length(cellInd)/nrow(envData_orig)), shape = 17, size = 2, colour = "magenta1") +
-      ggplot2::ggtitle(taxon)
+      #ggplot2::geom_point(aes(x = 1, y = 100*length(cellInd)/nrow(envData_orig)), shape = 17, size = 2, colour = "magenta1") +
+      ggplot2::ggtitle(taxon) +
+      theme(plot.title = element_text(face = "bold.italic", size = 16))
     print(p4)
     dev.off()
   }
