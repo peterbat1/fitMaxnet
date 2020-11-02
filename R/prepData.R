@@ -2,25 +2,27 @@
 #'
 #' Load a set of environmental covariate to be used to spatially project a fitted maxnet model and build pairs of SWD-format files
 #'
-#' @details Load raster stack of environmental data layers to be used for fitting a maxnet model and, using coordinate values of occurrence records supplied in \emph{occData} and a background-constraining spatial polygon object, output samples-with-data (SWD) files defined in the original Java implementation of MaxEnt. Two files are produced: an occurence SWD file, and a background points SWD file which are diferentiated by the file name assigned.
+#' @details Load raster stack of environmental data layers to be used for fitting a maxnet model and, using coordinate values of occurrence records supplied in \emph{occData} and a background-constraining spatial polygon object, output samples-with-data (SWD) files defined in the original Java implementation of MaxEnt. Two files are produced: an occurrence SWD file, and a background points SWD file which are diferentiated by the file name assigned.
 #'
 #' NOTE: No checks are made that the projection of occurrence lat/longs or X/Y values matches the raster layers used for environmental data. You must ensure they match before calling this function.
 #'
 #'
 #'
 #' @param taxonName String (character object) giving the taxonomic name of the entity for which data is being supplied.
-#' @param occData A numeric matrix or data.frame with at least two columns holding latitude and longitude values for occurrence records. Column names are matched against 'lat' and 'long' in a effort to automagically identify these columns.
-#' @param boundsPoly An sf or SpatialPoylgons* object defining the region within which background points will be selected.
-#' @param excludedVars A chracter vector of variable names to be excluded from output files. Default is NULL.
+#' @param occData A numeric matrix or data.frame with at least two columns holding latitude and longitude values for occurrence records. Column names are matched against 'lat' (or 'Y") and 'long' (or 'X') in a effort to automagically identify these columns.
+#' @param boundsPoly An sf or SpatialPolygons* object defining the region within which background points will be selected.
+#' @param excludedVars A character vector of variable names to be excluded from output files. Default is NULL.
 #' @param envDataPath String giving the file system path to the folder containing the geoTIFF rasters representing the environmental layers to be used to spatially project a fitted maxnet model
 #' @param outputPath String giving the file system path to the folder into which occurrence and background SWD files will be written. See \emph{Details} for information about the file naming convention.
 #' @param appendDate Logical. Should the current system date be appended to output file names? Default is FALSE.
-#' @return Invisibly returns NULL but has side-effect of outputing data files
+#' @param trace Logical. Emits additional diagnostic messages when TRUE; default is FALSE
+#' @return Invisibly returns NULL but has side-effect of outputting data files
 #' @export
 #'
 #' @examples
 #' \dontrun{}
-prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDataPath, outputPath, appendDate = FALSE)
+prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
+                     envDataPath, outputPath, appendDate = FALSE, trace = FALSE)
 {
   taxon_Name <- gsub(" ", "_", taxonName, fixed = TRUE)
 
@@ -39,11 +41,27 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
     # Trim envStack using excludedVars
     if (!is.null(excludedVars))
     {
+      if (trace)
+      {
+        cat("Excluded vars:\n")
+        print(excludedVars)
+        cat("----------------------------------------------------\n")
+      }
       # Are all vars names in excludedVars present in the stack?
       if (all(excludedVars %in% names(envStack)))
       {
         dropInd <- which(names(envStack) %in% excludedVars)
-        envStack <- raster::dropLayer(envStack, dropInd)
+
+        if (trace)
+          {
+          cat("\nTotal indices in stack =", nlayers(envStack), "\n")
+          cat("Drop var indices:\n")
+          print(dropInd)
+          cat("\nTotal indices in stack =", nlayers(envStack), "\n")
+          cat("----------------------------------------------------\n")
+        }
+
+         envStack <- raster::dropLayer(envStack, dropInd)
       }
       else
       {
@@ -66,6 +84,12 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
       warning("Cannot identify a unique 'latitude' or 'Y' column in occurrence data file; using first hit come-what-may...")
     }
 
+    if (trace)
+    {
+      cat("Xind =", Xind, " : Yind = ", Yind, "\n")
+      cat("----------------------------------------------------\n")
+    }
+
     # Set a flag to be used when determining column names of SWD files
     isLatLong <- ifelse(any(grepl("LAT|LONG", toupper(colnames(occData)))), TRUE, FALSE)
 
@@ -80,12 +104,41 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
       outputSWDBKGname <- paste0(outputPath, "/", taxon_Name, "_SWD_BKG.csv")
     }
 
+    if (trace)
+    {
+      cat("Output filenames:\n")
+      cat("SWD filename:", outputSWDname, "\n")
+      cat("BKG SWD filename:", outputSWDBKGname, "\n")
+      cat("----------------------------------------------------\n")
+    }
+
     cat("   Extracting background samples...")
-    bkg.cells <- sampleBackground(as.matrix(occData[, c(Yind, Xind)]),
+
+    if (trace)
+    {
+      cat("\nFilename of first envStack layer:", envStack[[1]]@file@name, "\n")
+      cat("----------------------------------------------------\n")
+    }
+
+    bkg.cells <- sampleBackground(as.matrix(occData[, c(Xind, Yind)]),
                                   nBkgSamples = 10000,
                                   baseRaster = envStack[[1]],
-                                  boundsPolygon = boundsPoly)
+                                  boundsPolygon = boundsPoly,
+                                  trace = trace)
+
+    if (trace)
+    {
+      cat("Returned from sampleBackground()\n")
+      cat("----------------------------------------------------\n")
+    }
+
     bkg.xy <- xyFromCell(envStack[[1]], bkg.cells)        #print(names(bkg.latlong))
+
+    if (trace)
+    {
+      cat("Setting bkg.xy values completed\n")
+      cat("----------------------------------------------------\n")
+    }
 
     if (isLatLong)
       bkgData <- data.frame(species = rep("background", length(bkg.cells)),
@@ -99,6 +152,12 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
                             y = bkg.xy[, 2],
                             extract(envStack, bkg.cells),
                             stringsAsFactors = FALSE)
+
+    if (trace)
+    {
+      cat("Dataframe 'bkgData' created\n")
+      cat("----------------------------------------------------\n")
+    }
 
 
     badRows <- unique(which(is.na(bkgData), arr.ind = TRUE)[ , 1]) #nBackground <- length(bkg.cells)
@@ -123,6 +182,11 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly, envDat
                             extract(envStack, occ.cells),
                             stringsAsFactors = FALSE)
 
+    if (trace)
+    {
+      cat("Dataframe 'occData' created\n")
+      cat("----------------------------------------------------\n")
+    }
 
     badRows <- unique(which(is.na(occData), arr.ind = TRUE)[ , 1]) #nBackground <- length(bkg.cells)
     if (length(badRows) > 0) occData <- occData[-badRows, ]

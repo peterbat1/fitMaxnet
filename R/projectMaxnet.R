@@ -31,7 +31,7 @@ projectMaxnet <- function(taxonName = NULL,
   # Check for existence of projStack, etc in the global environment...
 
   #featureSet_names <- names(maxnet_model$betas)
-#varNames <- sort(unique(unlist(strsplit(gsub("^2)","",gsub("I(","",featureSet_names, fixed = TRUE), fixed = TRUE), ":", fixed = TRUE))))
+  #varNames <- sort(unique(unlist(strsplit(gsub("^2)","",gsub("I(","",featureSet_names, fixed = TRUE), fixed = TRUE), ":", fixed = TRUE))))
   cat("Maxnet model projection:\n    Loading model object\n")
 
   load(maxnetModel)
@@ -53,7 +53,11 @@ projectMaxnet <- function(taxonName = NULL,
 
   if (!dir.exists(outputPath)) dir.create(outputPath, recursive = TRUE)
 
-  outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_",fileLabel,".tif") #ifelse(is.null(thisTag), "", paste0("_", thisTag)), "_reg_", thisRegVal, ".tif"))
+  if (is.null(fileLabel))
+    outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection.tif")
+  else
+    outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_",fileLabel,".tif")
+
   raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE)
   #plot(projRas, main = paste0("Regularization = ", thisRegVal))
   cat("  End model projection\n\n")
