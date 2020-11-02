@@ -9,11 +9,12 @@ sampleBackground(
   baseRaster,
   boundsPolygon,
   nBkgSamples = maxBkgSamples,
-  maxBkgSamples = 10000
+  maxBkgSamples = 10000,
+  trace = FALSE
 )
 }
 \arguments{
-\item{occData}{a data frame or matrix with at least two numeric columns which can be associated with longitude and latitude}
+\item{occData}{a data frame or matrix with at least two numeric columns which can be associated with longitude (or X) and latitude (or Y)}
 
 \item{baseRaster}{A raster layer object representing the geometry of the environmental data layers to be used for modelling}
 
@@ -21,7 +22,8 @@ sampleBackground(
 
 \item{nBkgSamples}{Numeric. The number of samples to constitute the background set with the default = maxBkgSamples}
 
-\item{maxBkgSamples}{Numeric. Maximum number of background samples to be generated (default = 10,000)}
+\item{maxBkgSamples}{Numeric. Maximum number of background samples to be generated (default = 10,000)
+#' @param trace Logical. Emits additional diagnostic messages when TRUE; default is FALSE}
 }
 \value{
 A integer array of indices to selected background cells on the base raster

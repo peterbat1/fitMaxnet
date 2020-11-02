@@ -11,32 +11,35 @@ prepData(
   boundsPoly,
   envDataPath,
   outputPath,
-  appendDate = FALSE
+  appendDate = FALSE,
+  trace = FALSE
 )
 }
 \arguments{
 \item{taxonName}{String (character object) giving the taxonomic name of the entity for which data is being supplied.}
 
-\item{occData}{A numeric matrix or data.frame with at least two columns holding latitude and longitude values for occurrence records. Column names are matched against 'lat' and 'long' in a effort to automagically identify these columns.}
+\item{occData}{A numeric matrix or data.frame with at least two columns holding latitude and longitude values for occurrence records. Column names are matched against 'lat' (or 'Y") and 'long' (or 'X') in a effort to automagically identify these columns.}
 
-\item{excludedVars}{A chracter vector of variable names to be excluded from output files. Default is NULL.}
+\item{excludedVars}{A character vector of variable names to be excluded from output files. Default is NULL.}
 
-\item{boundsPoly}{An sf or SpatialPoylgons* object defining the region within which background points will be selected.}
+\item{boundsPoly}{An sf or SpatialPolygons* object defining the region within which background points will be selected.}
 
 \item{envDataPath}{String giving the file system path to the folder containing the geoTIFF rasters representing the environmental layers to be used to spatially project a fitted maxnet model}
 
 \item{outputPath}{String giving the file system path to the folder into which occurrence and background SWD files will be written. See \emph{Details} for information about the file naming convention.}
 
 \item{appendDate}{Logical. Should the current system date be appended to output file names? Default is FALSE.}
+
+\item{trace}{Logical. Emits additional diagnostic messages when TRUE; default is FALSE}
 }
 \value{
-Invisibly returns NULL but has side-effect of outputing data files
+Invisibly returns NULL but has side-effect of outputting data files
 }
 \description{
 Load a set of environmental covariate to be used to spatially project a fitted maxnet model and build pairs of SWD-format files
 }
 \details{
-Load raster stack of environmental data layers to be used for fitting a maxnet model and, using coordinate values of occurrence records supplied in \emph{occData} and a background-constraining spatial polygon object, output samples-with-data (SWD) files defined in the original Java implementation of MaxEnt. Two files are produced: an occurence SWD file, and a background points SWD file which are diferentiated by the file name assigned.
+Load raster stack of environmental data layers to be used for fitting a maxnet model and, using coordinate values of occurrence records supplied in \emph{occData} and a background-constraining spatial polygon object, output samples-with-data (SWD) files defined in the original Java implementation of MaxEnt. Two files are produced: an occurrence SWD file, and a background points SWD file which are diferentiated by the file name assigned.
 
 NOTE: No checks are made that the projection of occurrence lat/longs or X/Y values matches the raster layers used for environmental data. You must ensure they match before calling this function.
 }

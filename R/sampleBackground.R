@@ -180,11 +180,12 @@ sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method 
 #'
 #' Select a set of background cells from a base raster layer
 #'
-#' @param occData a data frame or matrix with at least two numeric columns which can be associated with longitude and latitude
+#' @param occData a data frame or matrix with at least two numeric columns which can be associated with longitude (or X) and latitude (or Y)
 #' @param baseRaster A raster layer object representing the geometry of the environmental data layers to be used for modelling
 #' @param boundsPolygon An sf or SpatialPolygons* object defning the boundary within which background points must be selected
 #' @param nBkgSamples Numeric. The number of samples to constitute the background set with the default = maxBkgSamples
 #' @param maxBkgSamples Numeric. Maximum number of background samples to be generated (default = 10,000)
+#' #' @param trace Logical. Emits additional diagnostic messages when TRUE; default is FALSE
 #'
 #' @details
 #' {The number of background samples may need to be adjusted to suit particular situations.
@@ -200,7 +201,7 @@ sampleBackgroundOld <- function(occupiedCells, nSamples = 1000, baseMap, method 
 #'
 #' @examples
 #' \dontrun{}
-sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000)
+sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000, trace = FALSE)
 {
   if (class(baseRaster) != "RasterLayer") stop("'baseRaster' must be a RasterLayer object")
 
@@ -227,6 +228,12 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
 
   occCells <- raster::cellFromXY(baseRaster, occData[, c(X_ind, Y_ind)])
 
+  if (trace)
+  {
+    cat(length(occCells), " occCells found\n")
+    cat("----------------------------------------------------\n")
+  }
+
   raster::values(baseRaster)[which(!is.na(raster::values(baseRaster)))] <- 1
 
   # Remove occupied cells from the set available for selection
@@ -234,6 +241,12 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
 
   activeArea <- raster::mask(baseRaster, boundsPolygon)
   availableCells <- which(raster::values(activeArea) == 1)
+
+  if (trace)
+  {
+    cat("Recoding of baseRaster completed\n")
+    cat("----------------------------------------------------\n")
+  }
 
   if (length(availableCells) < nBkgSamples)
   {
