@@ -90,7 +90,7 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
     }
 
     cat("     Making mask raster layer\n")
-    ans <- raster::calc(envStack, min)
+    ans <- raster::calc(outStack, min)
     if (is.null(fileLabel))
       maskFile <- paste0(maskOutpath, "/extrapolationMask.tif")
     else
