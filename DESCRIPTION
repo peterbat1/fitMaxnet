@@ -1,6 +1,6 @@
 Package: fitMaxnet
 Title: Fit MaxEnt Model Using maxnet
-Version: 0.2
+Version: 0.3
 Authors@R: 
     person(given = "Peter D.",
            family = "Wilson",
