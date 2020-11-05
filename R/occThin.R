@@ -12,7 +12,7 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
 
   if ((is.null(xCol) || (is.null(yCol)))) stop("xCol and yCol must both have values")
 
-  if ((thinDist == 0) || (thinDist < 0)) stop("'thinDist' cannot be 0 or negative")
+  if (thinDist <= 0) stop("'thinDist' cannot be 0 or negative")
 
   if (any(is.na(occ[, c(xCol, yCol)])))
   {

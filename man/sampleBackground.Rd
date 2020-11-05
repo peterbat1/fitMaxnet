@@ -18,12 +18,13 @@ sampleBackground(
 
 \item{baseRaster}{A raster layer object representing the geometry of the environmental data layers to be used for modelling}
 
-\item{boundsPolygon}{An sf or SpatialPolygons* object defning the boundary within which background points must be selected}
+\item{boundsPolygon}{An sf or SpatialPolygons* object defining the boundary within which background points must be selected}
 
 \item{nBkgSamples}{Numeric. The number of samples to constitute the background set with the default = maxBkgSamples}
 
-\item{maxBkgSamples}{Numeric. Maximum number of background samples to be generated (default = 10,000)
-#' @param trace Logical. Emits additional diagnostic messages when TRUE; default is FALSE}
+\item{maxBkgSamples}{Numeric. Maximum number of background samples to be generated (default = 10,000)}
+
+\item{trace}{Logical. Emits additional diagnostic messages when TRUE; default is FALSE}
 }
 \value{
 A integer array of indices to selected background cells on the base raster

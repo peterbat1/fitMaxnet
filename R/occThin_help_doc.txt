@@ -8,11 +8,11 @@
 \arguments{
   \item{occ}{A dataframe which at least two numeric variables or columns giving the x- and y-coordinates of a set of species occurrence records. There is no constraint at present on the units for x and y.}
 
-  \item{xCol}{Integer value giving the index of the column for the x-coordinate; \emph{or} a character object giving the name of the column.}
+  \item{xCol}{Integer. Value giving the index of the column for the x-coordinate; \emph{or} a character object giving the name of the column.}
 
-  \item{yCol}{Integer value giving the index of the column for the y-coordinate; \emph{or} a character object giving the name of the column.}
+  \item{yCol}{Integer. Value giving the index of the column for the y-coordinate; \emph{or} a character object giving the name of the column.}
 
-  \item{thinDist}{Distance in kilometers to be used to thin occurrence records.}
+  \item{thinDist}{Numeric. Distance in kilometers to be used to thin occurrence records.}
 
   \item{plot}{Logical. Should a scatterplot be produced on the standard graphics device. Default is FALSE, do not create a plot.}
 }

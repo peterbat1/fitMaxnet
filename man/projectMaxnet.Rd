@@ -32,7 +32,7 @@ Project a maxnet model fitted using fitModel
 }
 \details{
 {
-Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare data objects needed for the projection.}
+Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.}
 }
 \examples{
 \dontrun{}

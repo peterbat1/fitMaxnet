@@ -17,3 +17,6 @@ A list of numeric vectors of length k, where the elements of each vector are the
 \description{
 The function randomly allocates sample indices to k numeric vectors. The length of each vector is set initially to be the nearest whole number which, when multiplied by the number of folds, comes as close as possible to the number of samples. Any residual of un-allocated sample indices remaining after the initial allocation are distributed randomly to the k groups. Each selected group receives only 1 additional sample index.
 }
+\examples{
+\dontrun{ }
+}

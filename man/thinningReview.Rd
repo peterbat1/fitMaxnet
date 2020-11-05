@@ -9,7 +9,7 @@ thinningReview(
   occData = NULL,
   envDataPath = NULL,
   outPath = "",
-  thinDistSet = c(2, 5, 10, 15, 20, 25, 30),
+  thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
   threshold = 0.9,
   numReplicates = 5,
   isLatLong = TRUE,
@@ -21,13 +21,13 @@ thinningReview(
 \arguments{
 \item{taxon}{Character. A taxon name to label output files and plots}
 
-\item{occData}{Data frame of occurrence locations, or a character object (string) giving the path to this file. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"}
+\item{occData}{Data frame of occurrence locations, or a character object (string) giving the path to this file. An attempt is made to identify the columns storing longitude (or X) and latitude (or Y) values by partial matching on "longitude" and "latitude"}
 
-\item{envDataPath}{Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the raster package can be used, and alll files in the set must have the same gridcell size, origin and resolution}
+\item{envDataPath}{Character. Full path to the raster layers of environmental data to be used to assess environmental coverage. Any file format accepted by the raster package can be used, and all files in the set must have the same gridcell size, origin and resolution}
 
 \item{outPath}{Character. A path to a folder into which out will be written}
 
-\item{thinDistSet}{Numeric vector. Sequence of thining distances (in km) to be processed}
+\item{thinDistSet}{Numeric vector. Sequence of thinning distances (in km) to be processed}
 
 \item{threshold}{Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation}
 
@@ -45,7 +45,7 @@ thinningReview(
 The largest distance in the standard sequence for which environmental coverage is >= threshold
 }
 \description{
-The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
+The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the impact of each prospective thinning distance on coverage of environmental conditions.
 }
 \examples{
 \dontrun{}

@@ -4,7 +4,7 @@
 #' Project a maxnet model fitted using fitModel
 #'
 #' @details {
-#' Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare data objects needed for the projection.}
+#' Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.}
 #'
 #' @param taxonName String. Taxonomic name associated with this model; used to construct a file name for the output raster file.
 #' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.

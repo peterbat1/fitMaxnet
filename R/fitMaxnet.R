@@ -5,7 +5,6 @@
 #'
 #' @name fitMaxnet
 #' @docType package
-#' @import Rcpp
 #' @import maxnet
 #' @import ggplot2
 #' @import dplyr

@@ -9,13 +9,13 @@
 
 #' Review impact of a sequence of thinning distances
 #'
-#' The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the imapct of each prospective tinnning distance on coverage of environmental conditions.
+#' The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the impact of each prospective thinning distance on coverage of environmental conditions.
 #'
 #' @param taxon Character. A taxon name to label output files and plots
-#' @param occData Data frame of occurrence locations, or a character object (string) giving the path to this file. Location coordinates are expected to be in decimal degrees. An attempt is made to identify the columns storing latitude and longitude values by partila matching on "longitude" and "latitude"
-#' @param envDataPath Characater. Full path to the raster layers of environmental data to nbe used to acssess environmental coverage. Any file format accepted by the raster package can be used, and alll files in the set must have the same gridcell size, origin and resolution
+#' @param occData Data frame of occurrence locations, or a character object (string) giving the path to this file. An attempt is made to identify the columns storing longitude (or X) and latitude (or Y) values by partial matching on "longitude" and "latitude"
+#' @param envDataPath Character. Full path to the raster layers of environmental data to be used to assess environmental coverage. Any file format accepted by the raster package can be used, and all files in the set must have the same gridcell size, origin and resolution
 #' @param outPath Character. A path to a folder into which out will be written
-#' @param thinDistSet Numeric vector. Sequence of thining distances (in km) to be processed
+#' @param thinDistSet Numeric vector. Sequence of thinning distances (in km) to be processed
 #' @param threshold Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation
 #' @param numReplicates Integer. How many repeated thinning runs should be performed at each thinning distance?
 #' @param isLatLong Logical. Are geographic coordinates (longitude/latitude) used in occData and environmental data layers?
@@ -32,7 +32,7 @@ thinningReview <- function(taxon = "",
                            occData = NULL,
                            envDataPath = NULL,
                            outPath = "",
-                           thinDistSet = c(2, 5, 10, 15, 20, 25, 30),
+                           thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
                            threshold = 0.9,
                            numReplicates = 5,
                            isLatLong = TRUE,
@@ -75,9 +75,6 @@ thinningReview <- function(taxon = "",
 
   if (!dir.exists(outPath)) dir.create(outPath)
 
-  # Check isLatLong
-  if ((isLatLong) && (!any(grepl("LONG|LAT", toupper(colnames(occData))))))
-    stop("isLatLong = 'TRUE' but no columns named longitude/latitude found in 'occData'")
 
   # Automagically try to identify longitude and latitude columns:
   xColInd <- grep("LONG|X", toupper(colnames(theseOccData)))
@@ -95,6 +92,12 @@ thinningReview <- function(taxon = "",
     warning("Cannot identify a unique 'latitude' or 'y' column in occurrence data file; using first hit come-what-may...")
     yColInd <- yColInd[1]
   }
+
+  # Set this flag which is needed for the call to occThin()
+  if (any(grepl("LONG|LAT", toupper(colnames(theseOccData)))))
+    isLatLong <- TRUE
+  else
+    isLatLong <- FALSE
 
   if (!quiet) cat("  loading env data\n")
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
@@ -150,7 +153,6 @@ thinningReview <- function(taxon = "",
                              numThinned = rep(0, numDist),
                              percRetained = rep(0, numDist))
 
-    #thisDist <- 1
     for (thisDist in thinDistSet)
     {
       rowInd <- which(thinDistSet == thisDist)
@@ -244,8 +246,6 @@ thinningReview <- function(taxon = "",
   return(bestDist)
 }
 
-
-
 ##### TEST DRIVER
 # thisTaxon <- "Correa alba"
 # bestDist <- thinningReview(thisTaxon,
@@ -261,6 +261,4 @@ thinningReview <- function(taxon = "",
 #                            "/home/peterw/Data_and_Projects/ENM_env_data/eastOZ-dataset/Current_climate/CHELSA",
 #                            "/home/peterw/Data_and_Projects/RBG Projects/Banksia modelling/B_spinulosa/thinningReview",
 #                            doPlots = TRUE)
-
-
 

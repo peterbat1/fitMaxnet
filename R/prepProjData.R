@@ -1,6 +1,6 @@
 #' Prepare environmental projection data
 #'
-#' Load a set of environmental covariate to be used to spatially project a fitted maxnet model
+#' Load a set of environmental covariates to be used to spatially project a fitted maxnet model
 #'
 #' @details {
 #' Loads a raster stack of environmental data layers to be used for projecting a maxnet model, and creates a matrix of data values and an array of indices pointing to rows with no missing values (\emph{goodCellInd}).
@@ -23,8 +23,12 @@ prepProjData <- function(dataPath, quiet = TRUE)
 
   if (!quiet) cat("Preparing projection data: ")
   projStack <- raster::stack(list.files(dataPath, "*.tif", full.names = TRUE))
+
+  # "Export" data as a large matrix where rows are raster cells and columns are environmental variables
   projData <<- raster::values(projStack)
   #goodCellInd <<- which(!is.na(rowSums(projData)))
+
+  # "Export" a template raster layer
   rasTemplate <<- projStack[[1]]
   if (!quiet) cat(length(projStack), " layers loaded\n")
   invisible(NULL)

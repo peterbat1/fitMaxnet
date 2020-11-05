@@ -6,9 +6,6 @@
 #
 # 2019-10-15
 
-#library(raster)
-
-
 #' Mask a projection raster removing extrapolation areas
 #'
 #' Compute and apply a mask of areas within which strict extrapolation has been detected
@@ -100,8 +97,12 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
 
     if (makePlots)
     {
+      png(paste0(maskOutpath, "/layer_masks.png"))
       plot(outStack)
+      dev.off()
+      png(paste0(maskOutpath, "/mask_layer.png"))
       plot(ans, main = "Mask layer")
+      dev.off()
     }
 
     cat("     Applying mask raster to projected model raster\n")
@@ -110,9 +111,14 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
     offInd <- which(values(ans) != 1)
     raster::values(ras)[offInd] <- 0
 
-    if (makePlots) plot(ras, main = "Masked projection raster")
+    if (makePlots)
+    {
+      png(paste0(maskOutpath, "/Masked_projected_raster.png"))
+      plot(ras, main = "Masked projected raster")
+      dev.off()
+    }
 
-    cat("     Saving masked projection raster\n")
+    cat("     Saving masked projected raster\n")
     outFilename <- gsub(".tif", "_masked.tif", projRas, fixed = TRUE)
     raster::writeRaster(ras, outFilename, format = "GTiff", overwrite = TRUE)
     cat("     End of masking operation.\n\n")
