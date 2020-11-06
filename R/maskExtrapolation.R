@@ -10,22 +10,22 @@
 #'
 #' Compute and apply a mask of areas within which strict extrapolation has been detected
 #'
-#' @param maxnetModel Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.
-#' @param envPath Path to a set of environmental rasters showing the environment onto which the model has been projected.
-#' @param projRas Raster of the projected maxnet model.
-#' @param maskOutpath Full path to the folder into which the mask raster and projection raster with mask applied will be written
-#' @param fileLabel Label to be used to distinguish the filename of the saved mask raster.
-#' @param makePlots Logical. Make basic plots of raster objects for review and quality control? Default is TRUE.
+#' @param maxnetModel Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.
+#' @param envPath Character. Path to a set of environmental rasters showing the environment onto which the model has been projected.
+#' @param projRas RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.
+#' @param maskOutpath Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written
+#' @param fileLabel Character. Label to be used to distinguish the filename of the saved mask raster.
+#' @param makePlots Logical. Make basic plots of raster objects for interpretation, review and quality control? Default is TRUE.
 #'
 #' @details {
-#' The raster output for the nominated MaxEnt model produced by \link{fit_maxnet} is interrogated to find the list of variables used in the model. The function then proceeds to:
+#' The nominated MaxEnt model object produced by \link{fit_maxnet} is interrogated to find the list of variables used in the model. The function then proceeds to:
 #' \enumerate{
 #' \item Load a raster stack of these variables
 #' \item Code each non-NA cell a raster layer 1 if it is within the range of the variable recorded in the model object, 0 otherwise
 #' \item Compute an output raster with only cells set to 1 when all values in the stack are 1, 0 otherwise and NA cells retained
 #' \item Save the output raster
 #'}
-#' The file name for the output raster defaults to 'extrapolationMask.tif'. If fileLabel is not NULL, then the output file name is 'extrapolationMask_' + '\emph{fileLabel}' + '.tif'.
+#' The file name for the output raster defaults to 'extrapolationMask.tif'. If \emph{fileLabel} is not NULL, then the output file name is 'extrapolationMask_' + '\emph{fileLabel}' + '.tif'.
 #' }
 #'
 #' @return Nothing but has side-effect of writing two raster files: mask raster and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.

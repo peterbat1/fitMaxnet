@@ -2,7 +2,7 @@
 % Please edit documentation in R/corrAnalysis.R
 \name{envCorrAnalysis}
 \alias{envCorrAnalysis}
-\title{Exploratory Correlation Analysis of Environmental data}
+\title{Exploratory Correlation Analysis of Environmental Data}
 \usage{
 envCorrAnalysis(
   taxon = "",
@@ -17,29 +17,29 @@ envCorrAnalysis(
 )
 }
 \arguments{
-\item{taxon}{Character string.}
+\item{taxon}{Character. The name of the taxon whose occurrence records are being analysed.}
 
-\item{titleText}{Character string.}
+\item{titleText}{Character. A title to be used in graphical output.}
 
-\item{envDataPath}{Character string.}
+\item{envDataPath}{Character. Path to the environmental data layers to be  used in the analysis.}
 
-\item{occData}{Data.frame or matrix.}
+\item{occData}{Data.frame or matrix. At least two columns must be present to provide longitude/X and latitude/Y coordinates of occurrence locations.}
 
-\item{xVar}{Character. Name of a variable in \emph{occData} which is interpreted as the x-coordinate. If NULL (default) a search is made for nearest match to 'longitude'.}
+\item{xVar}{Character. Name of a variable in \emph{occData} which is interpreted as the x-coordinate. If NULL (default) a search is made for nearest match to 'longitude' or 'X'.}
 
-\item{yVar}{Character. Name of a variable in \emph{occData} which is interpreted as the y-coordinate. If NULL (default) a search is made for nearest match to 'latitude'.}
+\item{yVar}{Character. Name of a variable in \emph{occData} which is interpreted as the y-coordinate. If NULL (default) a search is made for nearest match to 'latitude' or 'Y'.}
 
-\item{threshold}{Numeric. A correlation value (ie between 0 and 1) used to determine which variables in \emph{envData} will recommended for removal. Correlations greater than or equal to \emph{threshold} will be listed.}
+\item{threshold}{Numeric. A correlation value (ie between 0 and 1) used to determine which variables in \emph{envData} will be recommended for removal. Correlations greater than or equal to \emph{threshold} will be listed.}
 
 \item{outFile}{Character. A non-NULL value is used as a file name to save the graphical output as a PNG file. By default, the output is plotted to the default graphics device.}
 
-\item{outPath}{Character. Path used by ggsave in combination with outFile to save the plot.}
+\item{outPath}{Character. Path used by \link[ggplot2]{ggsave} in combination with \emph{outFile} to save the plot.}
 }
 \value{
 A character matrix listing the names of variables with absolute value of correlations greater than \emph{threshold} which may be candidates for removal, and the number of threshold-exceeding correlations in which a listed variable has been found.
 }
 \description{
-Exploratory Correlation Analysis of Environmental data
+Explore correlation relationships between environmental predictor values at occurrence locations
 }
 \examples{
 \dontrun{}
