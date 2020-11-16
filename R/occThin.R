@@ -5,6 +5,7 @@
 #' @param yCol Integer or Character. The column index or name of the latitude or Y coordinate.
 #' @param thinDist Numeric. The distance in kilometres used to filter points.
 #' @param isLatLong Logical. Are the coordinates latitude and longitude? Default is TRUE. If set to FALSE, the points are assumed to be on a projection with X & Y coordinates in metres relative an origin.
+#' @param quiet Logical. Should progress messages be emitted? Default if FALSE.
 #'
 #' @details {
 #'     This function is based on source code for the function \emph{ecospat.occ.dessagregation()} written by Olivier Broennimann and included in the R-package \emph{ecospat}. The original comments from that source code are included below. I think that the original algorithm is extremely clever and very efficient; it out-performs the \emph{thin()} function in package \emph{spThin} by at least an order of magnitude, and is faster than my "fast" interpretation of the \emph{thin()} algorithm by a factor of at least 5. However, the original code for this function had a number of quirks which made it tricky to use in a "production environment" ie for bulk processing hundreds or even thousands of species occurrence files. The following changes and improvements where made:
@@ -38,7 +39,7 @@
 #' @return  A data.frame with exactly the same column structure as passed in parameter \emph{occ}, but with rows for occurrence records less than \emph{thinDist} from nearest neighbours removed.
 #'
 #' @export
-occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong = TRUE)
+occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong = TRUE, quiet = TRUE)
 {
   #if (is.na(occ)) stop("No data supplied in paramater 'occ'")
 
@@ -54,8 +55,10 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
   train <- occ
   keep <- NULL
 
-  while (nrow(train) > 0)
+  while (!is.null(nrow(train)))
   {
+    if (!quiet) cat("Before nrow(train): ", nrow(train), "\n")
+
     i <- sample(1:nrow(train), 1)
 
     distVals <- sp::spDistsN1(as.matrix(train[, c(xCol, yCol)]), pt = unlist(train[i, c(xCol, yCol)]), longlat = isLatLong)
@@ -68,10 +71,13 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
     if ((sum(distVals <= thinDist) == 1))
     {
       keep <- c(keep, row.names(train)[i])
+      if (!quiet) cat("Keeping: ", i, "\n")
     }
 
     # Trim the training set
     train <- train[-i,]
+
+    if (!quiet) cat("After nrow(train): ", nrow(train), "\n")
   }
 
   return(occ[keep, ])

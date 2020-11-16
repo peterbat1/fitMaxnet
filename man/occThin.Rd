@@ -4,7 +4,14 @@
 \alias{occThin}
 \title{Occurrence thinning}
 \usage{
-occThin(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong = TRUE)
+occThin(
+  occ = NA,
+  xCol = NULL,
+  yCol = NULL,
+  thinDist = 0,
+  isLatLong = TRUE,
+  quiet = TRUE
+)
 }
 \arguments{
 \item{occ}{Data.frame. Data matrix to be thinned with at least two columns storing longitude (X) and latitude (Y) coordinates.}
@@ -16,6 +23,8 @@ occThin(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong = TRUE)
 \item{thinDist}{Numeric. The distance in kilometres used to filter points.}
 
 \item{isLatLong}{Logical. Are the coordinates latitude and longitude? Default is TRUE. If set to FALSE, the points are assumed to be on a projection with X & Y coordinates in metres relative an origin.}
+
+\item{quiet}{Logical. Should progress messages be emitted? Default if FALSE.}
 }
 \value{
 A data.frame with exactly the same column structure as passed in parameter \emph{occ}, but with rows for occurrence records less than \emph{thinDist} from nearest neighbours removed.
