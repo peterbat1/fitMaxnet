@@ -1,25 +1,9 @@
-# Produce a spatial polygon object representing the background constraint
-# boundary for ENM fitting
-#
-# Peter D. Wilson
-# Biodiversity Analyst
-# Evolutionary Ecology Research Section
-# Science and Conservation Branch
-# Royal Botanic Garden, Sydney
-#
-# 2019-09-26
-
-# library(sp)
-# library(sf)
-# library(rgeos)
-# library(rgdal)
-
 
 #' Make buffer around occurrence points
 #'
 #' Produce a spatial polygon object representing the boundary within which background points will be sampled for ENM fitting
 #'
-#' @param occ_pts A data frame or matrix with at least two columns representing latitude and longitude of occurrence records
+#' @param occ_pts A data frame or matrix with at least two columns representing longitude and latitude (X and Y) of occurrence records
 #' @param bufferDist_km Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.
 #' @param trace Logical. Should messages be emitted to assist progress tracking or debugging
 #'
@@ -31,7 +15,7 @@
 #'@note {
 #' Currently, this function can only process \bold{occurrence data from the Australian continent}. Providing global coverage is feasible and will be implemented shortly for the OzWeeds project.
 #'
-#' The function only outputs a spatial polygon object projected on the WGS84 datum. If you need to use the buffer polygon on other projections, please reproject using, say, \emph{spTransform()} from the package \emph{sp}.
+#' The function outputs a simple features ('sf') polygon object on the same projection which was inferred when \emph{occ_pts} was parsed. That is, either EPSG:4326 (WGS84) if 'longitude' and 'latitude' column names were found, or EPSG:3577 (Australian ALber's Equal Area) if 'X' and 'Y' column names were found. If you need to use the buffer polygon on other projections, please re-project the returned object using, say, \emph{st_transform()} from the package \emph{sf}.
 #'}
 #' @return A spatial polygon object from the package \emph{sf}
 #' @export
@@ -48,7 +32,7 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
   else
     pts_crs <- 3577
 
-  # Try to identify longitude and latitude columns and rename them to 'longitude' and 'latitude'
+  # Try to identify longitude (X) and latitude (Y) columns
   ind <- grep("LONG|X", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
     X_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "longitude"
@@ -85,6 +69,7 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
     cat("\nst_crs(ptsBuffer) == st_crs(ozPolygon) is", st_crs(ptsBuffer) == st_crs(ozPolygon), "\n")
   }
 
+  # Clip the buffer polygon to the Australian coastline
   clippedBuffer <- sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577)))
 
   if (trace) cat("step 4\n")

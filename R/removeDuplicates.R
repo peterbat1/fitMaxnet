@@ -23,29 +23,26 @@
 #' \dontrun{}
 removeDuplicates <- function(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet = FALSE)
 {
-
   if (is.null(data) || (nrow(data) < 2) || (ncol(data) < 2))
   {
     stop("removeDuplicates: Degenerate data matrix - no processing performed.")
   }
 
-  # Test for presence of two cols named decLat, decLong; latitude, longitude; Lat, Long, etc
-    if (!any(grepl("LAT.*",toupper(colnames(data)))) || !any(grepl("LONG.*",toupper(colnames(data)))))
-    {
-      stop("removeDuplicates: Could not find Latitude or Longitude columns in data matrix - no processing performed.")
-    }
+  # Try to identify longitude (X) and latitude (Y) columns
+  ind <- grep("LONG|X", toupper(colnames(data)))
+  if (length(ind) >= 1)
+    X_ind <- ind[1]
+  else
+    stop("Cannot identify the 'longitude' or 'X' column in 'data'")
 
-  latIndex <- grep("LAT.*",toupper(colnames(data)))
-  longIndex <- grep("LONG.*",toupper(colnames(data)))
-
-  # Test to see if all lat and all long are NAs - it does happen sometimes!
-  if (all(is.na(data[,latIndex])) || all(is.na(data[,longIndex])))
-  {
-    stop("removeDuplicates: Degenerate data matrix: all lat or all long values are NAs - no processing performed.")
-  }
+  ind <- grep("LAT|Y", toupper(colnames(data)))
+  if (length(ind) >= 1)
+    Y_ind <- ind[1]
+  else
+    stop("Cannot identify the 'latitude' or 'Y' column in 'data'")
 
   # Remove NA lat-longs
-  na.latlong <- union(which(is.na(data[,latIndex])),which(is.na(data[,longIndex])))
+  na.latlong <- union(which(is.na(data[, Y_ind])),which(is.na(data[, X_ind])))
   if (length(na.latlong) > 0)
   {
     data <- data[-na.latlong,]
@@ -60,7 +57,7 @@ removeDuplicates <- function(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet
   {
     if (class(baseGrid) == "RasterLayer")
     {
-      cellInd <- cellFromXY(baseGrid, cbind(data[, longIndex], data[, latIndex]))
+      cellInd <- cellFromXY(baseGrid, cbind(data[, X_ind], data[, Y_ind]))
       dataInd <- 1:nrow(data)
 
       # Test to see if all lat and all long are out of bounds - it does happen sometimes!
@@ -87,10 +84,10 @@ removeDuplicates <- function(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet
   }
   else
   {
-    sortIndex <- order(data[,latIndex], data[,longIndex])
+    sortIndex <- order(data[, Y_ind], data[, X_ind])
     data <- data[sortIndex, ]
-    xDuplicates <- which(duplicated(data[,longIndex]))
-    yDuplicates <- which(duplicated(data[,latIndex]))
+    xDuplicates <- which(duplicated(data[, X_ind]))
+    yDuplicates <- which(duplicated(data[, Y_ind]))
 
     duplicates <- intersect(xDuplicates, yDuplicates)
   }

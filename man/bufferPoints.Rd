@@ -7,7 +7,7 @@
 bufferPoints(occ_pts, bufferDist_km = 200, trace = FALSE)
 }
 \arguments{
-\item{occ_pts}{A data frame or matrix with at least two columns representing latitude and longitude of occurrence records}
+\item{occ_pts}{A data frame or matrix with at least two columns representing longitude and latitude (X and Y) of occurrence records}
 
 \item{bufferDist_km}{Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.}
 
@@ -30,7 +30,7 @@ This implementation uses the spatial processing resources provided by the packag
 {
 Currently, this function can only process \bold{occurrence data from the Australian continent}. Providing global coverage is feasible and will be implemented shortly for the OzWeeds project.
 
-The function only outputs a spatial polygon object projected on the WGS84 datum. If you need to use the buffer polygon on other projections, please reproject using, say, \emph{spTransform()} from the package \emph{sp}.
+The function outputs a simple features ('sf') polygon object on the same projection which was inferred when \emph{occ_pts} was parsed. That is, either EPSG:4326 (WGS84) if 'longitude' and 'latitude' column names were found, or EPSG:3577 (Australian ALber's Equal Area) if 'X' and 'Y' column names were found. If you need to use the buffer polygon on other projections, please re-project the returned object using, say, \emph{st_transform()} from the package \emph{sf}.
 }
 }
 \examples{

@@ -15,7 +15,7 @@ prepProjData(dataPath, quiet = TRUE)
 Invisibly returns NULL but has the side effect of creating several objects in the R global environment.
 }
 \description{
-Load a set of environmental covariate to be used to spatially project a fitted maxnet model
+Load a set of environmental covariates to be used to spatially project a fitted maxnet model
 }
 \details{
 {

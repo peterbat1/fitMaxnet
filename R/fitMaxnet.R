@@ -5,7 +5,6 @@
 #'
 #' @name fitMaxnet
 #' @docType package
-#' @import Rcpp
 #' @import maxnet
 #' @import ggplot2
 #' @import dplyr
@@ -16,4 +15,5 @@
 #' @importFrom sp spTransform coordinates CRS spDistsN1
 #' @importFrom sf st_geometry st_transform st_as_sf as_Spatial st_intersection st_crs st_buffer st_union
 #' @importFrom rgeos gBuffer
+#' @importFrom ggcorrplot ggcorrplot
 NULL
