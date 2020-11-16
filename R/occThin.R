@@ -1,10 +1,3 @@
-###################################################################################
-# NOTE: Because of frustrating limitations in the way roxygen markup works, I have
-# made the help file for this function manually - edit the Rd file directly to
-# make changes.
-#
-# Peter D. Wilson 11 October 2019
-###################################################################################
 
 #' Occurrence thinning
 #' @param occ Data.frame. Data matrix to be thinned with at least two columns storing longitude (X) and latitude (Y) coordinates.
