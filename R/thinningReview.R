@@ -16,12 +16,20 @@
 #' @param envDataPath Character. Full path to the raster layers of environmental data to be used to assess environmental coverage. Any file format accepted by the raster package can be used, and all files in the set must have the same gridcell size, origin and resolution
 #' @param outPath Character. A path to a folder into which out will be written
 #' @param thinDistSet Numeric vector. Sequence of thinning distances (in km) to be processed
-#' @param threshold Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation
+#' @param pThreshold Numeric. Threshold p-value used to determine optimal thinning distance.
 #' @param numReplicates Integer. How many repeated thinning runs should be performed at each thinning distance?
 #' @param isLatLong Logical. Are geographic coordinates (longitude/latitude) used in occData and environmental data layers?
-#' @param doPlots Logical. Should plots of results for each replicate and distance combination be produced in additional to a final summary plot?
-#' @param writeResults Logical. Should a results summary table be saved?
+#' @param doPlots Logical. Should a plot of results be written to the folder named in 'outPath'?
+#' @param writeResults Logical. Should a results summary table be saved to the folder named in 'outPath'?
 #' @param quiet Logical. Should progress messages be written to the console
+#'
+#' @details {
+#' The sequence of thinning distances (in kilometres) should be chosen in relation to the grid cell size of the environmental data layers.
+#'
+#' An approach which seems to be useful is to start with half the width of a grid cell and set a sequence of increments which span successive sets of grid cells.
+#'
+#' pThreshold default of 0.5 was chosen by ...
+#' }
 #'
 #' @return The largest distance in the standard sequence for which environmental coverage is >= threshold
 #' @export
@@ -33,13 +41,15 @@ thinningReview <- function(taxon = "",
                            envDataPath = NULL,
                            outPath = "",
                            thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
-                           threshold = 0.9,
+                           pThreshold = 0.5,
                            numReplicates = 5,
                            isLatLong = TRUE,
                            doPlots = FALSE,
                            writeResults = FALSE,
                            quiet = TRUE)
 {
+  #plotColours <- c("blue", "darkorange", "magenta1")
+
   if (taxon == "") stop("Please supply a taxon name in parameter 'taxon'")
 
   if (!quiet) cat(taxon, "\n")
@@ -84,7 +94,6 @@ thinningReview <- function(taxon = "",
 
   if (!dir.exists(outPath)) dir.create(outPath)
 
-
   # Automagically try to identify longitude and latitude columns:
   xColInd <- grep("LONG|X", toupper(colnames(theseOccData)))
   if (length(xColInd) == 0) stop("Cannot identify a 'longitude' or 'x' column in occurrence data file")
@@ -117,47 +126,27 @@ thinningReview <- function(taxon = "",
   badRows <- which(is.na(rowSums(envData_orig)))
   if (length(badRows) > 0)
   {
-    if (!quiet) cat("  removed", length(badRows), "bad rows from occData and environmental data matrix\n")
+    if (!quiet) cat("  removed", length(badRows), "rows from occData and environmental data matrix with missing environmental data\n")
     envData_orig <- envData_orig[-badRows, ]
     theseOccData <- theseOccData[-badRows, ]
   }
 
-  if (!quiet) cat("  making base PCA and convex hull\n")
-  plotColours <- c("blue", "darkorange", "magenta1")
-
-  basePCA <- stats::prcomp(envData_orig, center = TRUE, scale. = TRUE)
-  hull_orig <- grDevices::chull(data.frame(basePCA$x[, c("PC1", "PC2")]))
-
-  # Area of orig polygon in PC1-PC2 plane: may serve as an index of niche volume
-  # Compute using an application of Green's Theorem
-  pp <- rev(c(hull_orig, hull_orig[1]))
-
-  pp_xy <- data.frame(basePCA$x[pp, c("PC1", "PC2")])
-  ii <- 1:length(hull_orig)
-
-  orig_area <- 0
-  for (i in ii)
-  {
-    orig_area <- orig_area + (pp_xy$PC1[i + 1] + pp_xy$PC1[i]) * (pp_xy$PC2[i + 1] - pp_xy$PC2[i])/2
-  }
-
-  if (!quiet) cat("  start replicate sampling along thinning distance sequence\n")
+  if (!quiet) cat("  checking for duplicated occupied cells and removing any that are found\n")
   cellInd <- cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])
   duplInd <- which(duplicated(cellInd))
   if (length(duplInd) > 0) cellInd <- cellInd[-duplInd]
 
-  ####thinDistSet <- c(2, 5, 10, 15, 20, 25, 30)
   numDist <- length(thinDistSet)
 
   accumulResults <- NULL
 
+  if (!quiet) cat("  start replicate sampling along thinning distance sequence\n")
   for (thisRepl in 1:numReplicates)
   {
     newResults <- data.frame(repl = rep(thisRepl, numDist),
                              thinningDist = thinDistSet,
-                             origArea = rep(round(orig_area, 2), numDist),
-                             thinnedArea = rep(0, numDist),
-                             propArea = rep(0, numDist),
+                             energy_statistic = rep(0, numDist),
+                             energy_p_value = rep(0, numDist),
                              numOrig = rep(nrow(theseOccData), numDist),
                              numThinned = rep(0, numDist),
                              percRetained = rep(0, numDist))
@@ -168,53 +157,22 @@ thinningReview <- function(taxon = "",
       theseOccData_thin <- occThin(theseOccData, xColInd, yColInd, thisDist, isLatLong)
       envData_thin <- raster::extract(envStack, theseOccData_thin[, c(xColInd, yColInd)])
 
-      thinPCA_proj <- predict(basePCA, envData_thin)
-
-      hull_thin <- grDevices::chull(data.frame(thinPCA_proj[, c("PC1", "PC2")]))
-
-      if (doPlots)
-      {
-        grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExploration_PCA_dist_", thisDist,"_repl_", thisRepl,".png"))
-        p2 <- ggplot2::ggplot(data.frame(basePCA$x), aes(x = PC1, y = PC2)) +
-          ggplot2::geom_point(data = data.frame(basePCA$x), shape = 16, colour = plotColours[1]) +
-          ggplot2::geom_polygon(data = data.frame(basePCA$x[hull_orig, ]), aes(x = PC1, y = PC2), colour = plotColours[1], fill = plotColours[1], alpha = 0.2) +
-          ggplot2::geom_point(data = data.frame(thinPCA_proj), shape = 16, colour = plotColours[2]) +
-          ggplot2::geom_polygon(data = data.frame(thinPCA_proj[hull_thin, ]), aes(x = PC1, y = PC2), colour = plotColours[2], fill = plotColours[2], alpha = 0.2) +
-          ggplot2::annotate("text", x = 3, y = 8, label = paste("Thinning distance =", thisDist,"km"))
-        print(p2)
-        dev.off()
-      }
-
-      # Compute area of the thinned polygon
-      pp <- rev(c(hull_thin, hull_thin[1]))
-
-      pp_xy <- data.frame(thinPCA_proj[pp, c("PC1", "PC2")])
-      ii <- 1:length(hull_thin)
-
-      thin_area <- 0
-      for (i in ii)
-      {
-        thin_area <- thin_area + (pp_xy$PC1[i + 1] + pp_xy$PC1[i]) * (pp_xy$PC2[i + 1] - pp_xy$PC2[i])/2
-      }
+      ans <- energyStats(envData_orig, envData_thin)
 
       if (!quiet)
       {
         cat("Thinning distance =", thisDist, "km\n")
-        cat("Area original convex hull =", round(orig_area, 2), "\n")
-        cat("Area of thinned convex hull =",round(thin_area, 2), "\n")
-        cat("propArea =", round(thin_area/orig_area, 2), "\n")
-        cat("numThinned =", nrow(theseOccData) - nrow(theseOccData_thin), "\n")
-        cat("percRetained =", round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2), "\n")
+        cat("Energy statistic =", ans$statistic, "\n")
+        cat("Energy p-value =", round(ans$p.value, 3), "\n")
+        cat("Number removed =", nrow(theseOccData) - nrow(theseOccData_thin), "\n")
+        cat("Fraction retained =", round(nrow(theseOccData_thin)/nrow(theseOccData), 2), "\n")
         cat("========================================================\n\n")
       }
 
-      newResults[rowInd, "thinnedArea"] <- round(thin_area, 2)
-      newResults[rowInd, "propArea"] <- round(thin_area/orig_area, 2)
-
-      if (newResults[rowInd, "propArea"] >= threshold) bestDist <- thisDist
-
-      newResults[rowInd, "numThinned"] <- nrow(theseOccData_thin)
-      newResults[rowInd, "percRetained"] <- round(100*nrow(theseOccData_thin)/nrow(theseOccData), 2)
+      newResults[rowInd, "energy_statistic"] <- ans$statistic
+      newResults[rowInd, "energy_p_value"] <- ans$p.value
+      newResults[rowInd, "numRemoved"] <- nrow(theseOccData) - nrow(theseOccData_thin)
+      newResults[rowInd, "fracRetained"] <- round(nrow(theseOccData_thin)/nrow(theseOccData), 2)
     }
 
     accumulResults <- rbind(accumulResults, newResults)
@@ -228,30 +186,35 @@ thinningReview <- function(taxon = "",
   if (doPlots)
   {
     plotData <- data.frame(thinDist = accumulResults[, "thinningDist"],
-                           percNicheVol = 100*accumulResults[, "propArea"],
-                           percNumPoints = accumulResults[, "percRetained"])
+                           probability = accumulResults[, "energy_p_value"],
+                           fracRetained = accumulResults[, "fracRetained"])
 
     grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExporation_resultSummary.png"))
-    p4 <- ggplot2::ggplot(plotData, aes(x = thinDist, y = percNicheVol)) +
-      ggplot2::geom_hline(yintercept = 100, colour = "grey70", linetype = 3) +
+    p <- ggplot2::ggplot(plotData, aes(x = thinDist, y = probability)) +
+      ggplot2::geom_hline(yintercept = 0.5, colour = "grey70", linetype = 3) +
+      ggplot2::ylim(0, 1) +
       ggplot2::geom_point(colour = "slateblue1") +
-      #geom_line(aes(x = thinDist, y = percNicheVol), data = plotData, colour = "slateblue1") +
-      ggplot2::ylab("Percent") + xlab("Thinning distance (km)") +
-      ggplot2::geom_point(aes(x = thinDist, y = percNumPoints), data = plotData, colour = "darkorange") +
-      #geom_line(aes(x = thinDist, y = percNumPoints), data = plotData, colour = "darkorange") +
-      #annotate("text", x = 20, y = 75, hjust = 0, label = "Niche volume") +
-      #annotate("text", x = 10, y = 37.5, hjust = 0, label = "Number of points") +
-      #geom_point(aes(x = 1, y = 100*thin_area_unique/orig_area), colour = "purple1") +
-      #ggplot2::geom_point(aes(x = 1, y = 100*length(cellInd)/nrow(envData_orig)), shape = 17, size = 2, colour = "magenta1") +
+      ggplot2::ylab("Probability & Fraction retained") + xlab("Thinning distance (km)") +
+      ggplot2::geom_point(aes(x = thinDist, y = fracRetained), data = plotData, colour = "darkorange") +
       ggplot2::ggtitle(taxon) +
       theme(plot.title = element_text(face = "bold.italic", size = 16))
-    print(p4)
+    print(p)
     dev.off()
   }
 
-  summaryTable <- accumulResults %>% dplyr::group_by(thinningDist) %>% dplyr::summarise(minPropArea = min(propArea))
-  bestDist <- summaryTable$thinningDist[max(which(summaryTable$minPropArea >= threshold))]
-  if (!quiet) cat("  Best distance =", bestDist, "km\n")
+  summaryTable <- accumulResults %>% dplyr::group_by(thinningDist) %>% dplyr::summarise(mean_p_value = mean(p.value))
+  xx <- summaryTable$mean_p_value - pThreshold
+  ii <- which(xx == min(xx[xx > 0]))
+  bestDist = summaryTable$thinningDist[ii]
+
+  if (!quiet)
+    {
+    cat("\n-----------------------------------------------------\n")
+    cat("  Best distance =", bestDist, "km\n")
+    cat("\n  Results table:\n")
+    print(summaryTable)
+  }
+
   return(bestDist)
 }
 
@@ -262,7 +225,6 @@ thinningReview <- function(taxon = "",
 #                            "/home/peterw/Data_and_Projects/ENM_env_data/eastOZ-dataset/Current_climate/CHELSA",
 #                            "/home/peterw/Data_and_Projects/Personal Projects/Spatial thinning/testing",
 #                            doPlots = TRUE)
-
 
 # thisTaxon <- "Banksia spinulosa"
 # bestDist <- thinningReview(thisTaxon,
