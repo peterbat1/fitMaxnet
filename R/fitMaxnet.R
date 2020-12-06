@@ -17,4 +17,5 @@
 #' @importFrom rgeos gBuffer
 #' @importFrom ggcorrplot ggcorrplot
 #' @importFrom energy eqdist.etest
+#' @importFrom splines ns
 NULL

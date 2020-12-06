@@ -28,10 +28,10 @@
 #'
 #' An approach which seems to be useful is to start with half the width of a grid cell and set a sequence of increments which span successive sets of grid cells.
 #'
-#' pThreshold default of 0.5 was chosen by ...
+#' \emph{pThreshold} default of 0.5 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
 #' }
 #'
-#' @return The largest distance in the standard sequence for which environmental coverage is >= threshold
+#' @return The largest distance in the standard sequence for which environmental coverage is the closest to the threshold approached from above (i.e. is equal to or just greater than the \emph{pThreshold})
 #' @export
 #'
 #' @examples
@@ -202,6 +202,7 @@ thinningReview <- function(taxon = "",
     dev.off()
   }
 
+  # Produce a summary table and locate the best thinning distance using the default method
   summaryTable <- accumulResults %>% dplyr::group_by(thinningDist) %>% dplyr::summarise(mean_p_value = mean(p.value))
   xx <- summaryTable$mean_p_value - pThreshold
   ii <- which(xx == min(xx[xx > 0]))
@@ -218,18 +219,4 @@ thinningReview <- function(taxon = "",
   return(bestDist)
 }
 
-##### TEST DRIVER
-# thisTaxon <- "Correa alba"
-# bestDist <- thinningReview(thisTaxon,
-#                            read.csv(paste0("/home/peterw/Data_and_Projects/RBG Projects/Restore and Renew/RandR-webtool-maintenance/New species staging/ENM fitting/", thisTaxon, "/", gsub(" ", "_", thisTaxon, fixed = TRUE), "_herbariumRecords_filtered_cleaned.csv")),
-#                            "/home/peterw/Data_and_Projects/ENM_env_data/eastOZ-dataset/Current_climate/CHELSA",
-#                            "/home/peterw/Data_and_Projects/Personal Projects/Spatial thinning/testing",
-#                            doPlots = TRUE)
-
-# thisTaxon <- "Banksia spinulosa"
-# bestDist <- thinningReview(thisTaxon,
-#                            read.csv("/home/peterw/Data_and_Projects/RBG Projects/Banksia modelling/B_spinulosa/Occurrence data from Trevor/28_4_2020_B_spinulosa_TOTAL.csv"),
-#                            "/home/peterw/Data_and_Projects/ENM_env_data/eastOZ-dataset/Current_climate/CHELSA",
-#                            "/home/peterw/Data_and_Projects/RBG Projects/Banksia modelling/B_spinulosa/thinningReview",
-#                            doPlots = TRUE)
 

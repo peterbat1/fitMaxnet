@@ -8,6 +8,7 @@
 #'
 #' @param taxonName String. Taxonomic name associated with this model; used to construct a file name for the output raster file.
 #' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.
+#' @param type. String. The type of scaling applied to predicted model values.
 #' @param baseOutputPath String. Full path to the output folder to receive the produced raster.
 #' @param fileLabel String. An identifying tag to be included in the output filename.
 #' @param makeTaxonFolder Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?

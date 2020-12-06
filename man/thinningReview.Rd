@@ -42,7 +42,7 @@ thinningReview(
 \item{quiet}{Logical. Should progress messages be written to the console}
 }
 \value{
-The largest distance in the standard sequence for which environmental coverage is >= threshold
+The largest distance in the standard sequence for which environmental coverage is the closest to the threshold approached from above (i.e. is equal to or just greater than the \emph{pThreshold})
 }
 \description{
 The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the impact of each prospective thinning distance on coverage of environmental conditions.
@@ -53,7 +53,7 @@ The sequence of thinning distances (in kilometres) should be chosen in relation 
 
 An approach which seems to be useful is to start with half the width of a grid cell and set a sequence of increments which span successive sets of grid cells.
 
-pThreshold default of 0.5 was chosen by ...
+\emph{pThreshold} default of 0.5 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
 }
 }
 \examples{

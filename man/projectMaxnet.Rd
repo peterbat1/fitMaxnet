@@ -23,6 +23,8 @@ projectMaxnet(
 \item{fileLabel}{String. An identifying tag to be included in the output filename.}
 
 \item{makeTaxonFolder}{Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?}
+
+\item{type.}{String. The type of scaling applied to predicted model values.}
 }
 \value{
 Nothing
