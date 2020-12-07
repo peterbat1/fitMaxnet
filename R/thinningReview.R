@@ -154,9 +154,12 @@ thinningReview <- function(taxon = "",
     for (thisDist in thinDistSet)
     {
       rowInd <- which(thinDistSet == thisDist)
-      theseOccData_thin <- occThin(theseOccData, xColInd, yColInd, thisDist, isLatLong)
+
+      cat(" >>>> call occThin\n")
+      theseOccData_thin <- occThin(theseOccData, xColInd, yColInd, thisDist, isLatLong, quiet)
       envData_thin <- raster::extract(envStack, theseOccData_thin[, c(xColInd, yColInd)])
 
+      cat(" >>>> call energyStats\n")
       ans <- energyStats(envData_orig, envData_thin)
 
       if (!quiet)

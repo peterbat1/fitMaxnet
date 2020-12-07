@@ -52,10 +52,16 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
     stop ("NA values in argument 'occ'.")
   }
 
+  if (!quiet)
+  {
+    print(class(occ))
+    print(occ)
+  }
+
   train <- occ
   keep <- NULL
 
-  while (!is.null(nrow(train)))
+  while (!is.null(nrow(train))) #&(nrow(train) > 1))
   {
     if (!quiet) cat("Before nrow(train): ", nrow(train), "\n")
 
