@@ -143,11 +143,11 @@ envCorrAnalysis <- function(taxon = "",
 #' @examples
 #' \dontrun{}
 envCorrAnalysis_SWD <- function(taxon = "",
-                            titleText = NULL,
-                            swdData = NULL,
-                            threshold = 0.7,
-                            outFile = NULL,
-                            outPath = NULL)
+                                titleText = NULL,
+                                swdData = NULL,
+                                threshold = 0.7,
+                                outFile = NULL,
+                                outPath = NULL)
 {
   if (is.null(swdData)) stop("Parameter 'swdData' must have a value")
 
@@ -167,9 +167,12 @@ envCorrAnalysis_SWD <- function(taxon = "",
   # Assume that we have an SWD-formatted data.frame so we can remove first three cols:
   swdData <- swdData[, -c(1:3)]
 
+  if (!("data.frame" %in% class(swdData)))
+    stop("'swdData' appears to have only 1 variable: cannot perform correlation analysis on 1 variable!")
+
   badInd <- which(is.na(swdData), arr.ind = TRUE)
   if (nrow(badInd) > 0)
-    {
+  {
     swdData <- swdData[-badInd[, 1], ]
     warning(paste0(nrow(badInd), " rows of swdData contained 'NAs' and have been removed"))
   }
@@ -182,13 +185,20 @@ envCorrAnalysis_SWD <- function(taxon = "",
 
   if (length(ind2) > 0)
   {
-    for (i in 1:nrow(ind3))
+    if (is.matrix(ind3))
     {
-      ind3[i,] <- ind3[i, order(ind3[i, ])]
-    }
+      for (i in 1:nrow(ind3))
+      {
+        ind3[i,] <- ind3[i, order(ind3[i, ])]
+      }
 
-    ans <- as.matrix(table(colnames(swdData)[ind3[,1]]))
-    colnames(ans) <- "Frequency"
+      ans <- as.matrix(table(colnames(swdData)[ind3[,1]]))
+      colnames(ans) <- "Frequency"
+    }
+    else # Edge case of ind3 'collapsing' to a numeric vector
+    {
+      ans <- sort(colnames(swdData)[ind3])
+    }
   }
   else
     ans <- NULL
