@@ -10,7 +10,7 @@ thinningReview(
   envDataPath = NULL,
   outPath = "",
   thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
-  threshold = 0.9,
+  pThreshold = 0.5,
   numReplicates = 5,
   isLatLong = TRUE,
   doPlots = FALSE,
@@ -29,23 +29,32 @@ thinningReview(
 
 \item{thinDistSet}{Numeric vector. Sequence of thinning distances (in km) to be processed}
 
-\item{threshold}{Numeric. A value between 0 and 1 representing the fraction of environmental space which must be covered by the thinning operation}
+\item{pThreshold}{Numeric. Threshold p-value used to determine optimal thinning distance.}
 
 \item{numReplicates}{Integer. How many repeated thinning runs should be performed at each thinning distance?}
 
 \item{isLatLong}{Logical. Are geographic coordinates (longitude/latitude) used in occData and environmental data layers?}
 
-\item{doPlots}{Logical. Should plots of results for each replicate and distance combination be produced in additional to a final summary plot?}
+\item{doPlots}{Logical. Should a plot of results be written to the folder named in 'outPath'?}
 
-\item{writeResults}{Logical. Should a results summary table be saved?}
+\item{writeResults}{Logical. Should a results summary table be saved to the folder named in 'outPath'?}
 
 \item{quiet}{Logical. Should progress messages be written to the console}
 }
 \value{
-The largest distance in the standard sequence for which environmental coverage is >= threshold
+The largest distance in the standard sequence for which environmental coverage is the closest to the threshold approached from above (i.e. is equal to or just greater than the \emph{pThreshold})
 }
 \description{
 The function applies a standard sequence of thinning distances (in kilometers) to occupancy records and determines the maximum distance for thinning by examining the impact of each prospective thinning distance on coverage of environmental conditions.
+}
+\details{
+{
+The sequence of thinning distances (in kilometres) should be chosen in relation to the grid cell size of the environmental data layers.
+
+An approach which seems to be useful is to start with half the width of a grid cell and set a sequence of increments which span successive sets of grid cells.
+
+\emph{pThreshold} default of 0.5 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
+}
 }
 \examples{
 \dontrun{}
