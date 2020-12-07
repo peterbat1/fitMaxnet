@@ -28,7 +28,7 @@
 #'
 #' An approach which seems to be useful is to start with half the width of a grid cell and set a sequence of increments which span successive sets of grid cells.
 #'
-#' \emph{pThreshold} default of 0.5 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
+#' \emph{pThreshold} default of 0.9 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
 #' }
 #'
 #' @return The largest distance in the standard sequence for which environmental coverage is the closest to the threshold approached from above (i.e. is equal to or just greater than the \emph{pThreshold})
@@ -41,7 +41,7 @@ thinningReview <- function(taxon = "",
                            envDataPath = NULL,
                            outPath = "",
                            thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
-                           pThreshold = 0.5,
+                           pThreshold = 0.9,
                            numReplicates = 5,
                            isLatLong = TRUE,
                            doPlots = FALSE,
@@ -198,7 +198,7 @@ thinningReview <- function(taxon = "",
 
     grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExporation_resultSummary.png"))
     p <- ggplot2::ggplot(plotData, aes(x = thinDist, y = probability)) +
-      ggplot2::geom_hline(yintercept = 0.5, colour = "grey70", linetype = 3) +
+      ggplot2::geom_hline(yintercept = pThreshold, colour = "grey70", linetype = 3) +
       ggplot2::ylim(0, 1) +
       ggplot2::geom_point(colour = "slateblue1") +
       ggplot2::ylab("Probability & Fraction retained") + xlab("Thinning distance (km)") +
