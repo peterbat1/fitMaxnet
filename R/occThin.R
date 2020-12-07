@@ -61,9 +61,10 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
   train <- occ
   keep <- NULL
 
-  while (!is.null(nrow(train))) #&(nrow(train) > 1))
+  #while (!is.null(nrow(train))) #&(nrow(train) > 1))
+  repeat
   {
-    if (!quiet) cat("Before nrow(train): ", nrow(train), "\n")
+    #if (!quiet) cat("Before nrow(train): ", nrow(train), "\n")
 
     i <- sample(1:nrow(train), 1)
 
@@ -83,7 +84,9 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
     # Trim the training set
     train <- train[-i,]
 
-    if (!quiet) cat("After nrow(train): ", nrow(train), "\n")
+    #if (!quiet) cat("After nrow(train): ", nrow(train), "\n")
+
+    if (nrow(train) == 0) break
   }
 
   return(occ[keep, ])

@@ -120,6 +120,14 @@ thinningReview <- function(taxon = "",
   if (!quiet) cat("  loading env data\n")
   envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 
+  if (!quiet) cat("  checking for duplicated occupied cells and removing any that are found\n")
+  duplInd <- which(duplicated(cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])))
+  if (length(duplInd) > 0)
+  {
+    if (!quiet) cat("    (removed", length(duplInd), "duplicates)\n")
+    theseOccData <- theseOccData[-duplInd, ]
+  }
+
   if (!quiet) cat("  extracting env data at occ locations\n")
   envData_orig <- raster::extract(envStack, theseOccData[, c(xColInd, yColInd)])
 
@@ -131,10 +139,6 @@ thinningReview <- function(taxon = "",
     theseOccData <- theseOccData[-badRows, ]
   }
 
-  if (!quiet) cat("  checking for duplicated occupied cells and removing any that are found\n")
-  cellInd <- cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])
-  duplInd <- which(duplicated(cellInd))
-  if (length(duplInd) > 0) cellInd <- cellInd[-duplInd]
 
   numDist <- length(thinDistSet)
 
@@ -212,7 +216,7 @@ thinningReview <- function(taxon = "",
   bestDist = summaryTable$thinningDist[ii]
 
   if (!quiet)
-    {
+  {
     cat("\n-----------------------------------------------------\n")
     cat("  Best distance =", bestDist, "km\n")
     cat("\n  Results table:\n")
