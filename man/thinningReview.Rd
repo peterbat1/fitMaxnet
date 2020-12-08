@@ -10,8 +10,8 @@ thinningReview(
   envDataPath = NULL,
   outPath = "",
   thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
-  pThreshold = 0.5,
-  numReplicates = 5,
+  pThreshold = 0.9,
+  numReplicates = 10,
   isLatLong = TRUE,
   doPlots = FALSE,
   writeResults = FALSE,
@@ -53,7 +53,7 @@ The sequence of thinning distances (in kilometres) should be chosen in relation 
 
 An approach which seems to be useful is to start with half the width of a grid cell and set a sequence of increments which span successive sets of grid cells.
 
-\emph{pThreshold} default of 0.5 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
+\emph{pThreshold} default of 0.9 was chosen by trails which suggested that fitted ENMs began to show poor performance when thinning caused greater loss of environmental coverage.
 }
 }
 \examples{

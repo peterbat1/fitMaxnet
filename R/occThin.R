@@ -52,11 +52,11 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
     stop ("NA values in argument 'occ'.")
   }
 
-  if (!quiet)
-  {
-    print(class(occ))
-    print(occ)
-  }
+  # if (!quiet)
+  # {
+  #   print(class(occ))
+  #   print(occ)
+  # }
 
   train <- occ
   keep <- NULL
@@ -78,7 +78,7 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
     if ((sum(distVals <= thinDist) == 1))
     {
       keep <- c(keep, row.names(train)[i])
-      if (!quiet) cat("Keeping: ", i, "\n")
+      #if (!quiet) cat("Keeping: ", i, "\n")
     }
 
     # Trim the training set

@@ -42,13 +42,15 @@ thinningReview <- function(taxon = "",
                            outPath = "",
                            thinDistSet = c(0.5, 1, 2, 3, 4, 5, 6, 7, 10),
                            pThreshold = 0.9,
-                           numReplicates = 5,
+                           numReplicates = 10,
                            isLatLong = TRUE,
                            doPlots = FALSE,
                            writeResults = FALSE,
                            quiet = TRUE)
 {
-  #plotColours <- c("blue", "darkorange", "magenta1")
+  cat("fitMaxnet::thinningReview commenced", as.character(Sys.time()),"\n")
+
+  colours <- c("p_value" = "slateblue1", "fraction" = "darkorange")
 
   if (taxon == "") stop("Please supply a taxon name in parameter 'taxon'")
 
@@ -90,9 +92,7 @@ thinningReview <- function(taxon = "",
   if (outPath == "")
     stop("Please supply a path to an output folder in parameter 'outPath'")
   else
-    if (!dir.exists(outPath)) dir.create(outPath)
-
-  if (!dir.exists(outPath)) dir.create(outPath)
+    if (!dir.exists(outPath)) dir.create(outPath, recursive = TRUE)
 
   # Automagically try to identify longitude and latitude columns:
   xColInd <- grep("LONG|X", toupper(colnames(theseOccData)))
@@ -130,6 +130,7 @@ thinningReview <- function(taxon = "",
 
   if (!quiet) cat("  extracting env data at occ locations\n")
   envData_orig <- raster::extract(envStack, theseOccData[, c(xColInd, yColInd)])
+  rownames(envData_orig) <- rownames(theseOccData) # align rownames for later use
 
   badRows <- which(is.na(rowSums(envData_orig)))
   if (length(badRows) > 0)
@@ -139,35 +140,25 @@ thinningReview <- function(taxon = "",
     theseOccData <- theseOccData[-badRows, ]
   }
 
-
   numDist <- length(thinDistSet)
 
   accumulResults <- NULL
 
   if (!quiet) cat("  start replicate sampling along thinning distance sequence\n")
-  for (thisRepl in 1:numReplicates)
+
+  for (thisDist in thinDistSet)
   {
-    newResults <- data.frame(repl = rep(thisRepl, numDist),
-                             thinningDist = thinDistSet,
-                             energy_statistic = rep(0, numDist),
-                             energy_p_value = rep(0, numDist),
-                             numOrig = rep(nrow(theseOccData), numDist),
-                             numThinned = rep(0, numDist),
-                             percRetained = rep(0, numDist))
+    if (!quiet) cat("    thinDist =", thisDist, ": ")
 
-    for (thisDist in thinDistSet)
+    for (thisRepl in 1:numReplicates)
     {
-      rowInd <- which(thinDistSet == thisDist)
-
-      cat(" >>>> call occThin\n")
       theseOccData_thin <- occThin(theseOccData, xColInd, yColInd, thisDist, isLatLong, quiet)
-      envData_thin <- raster::extract(envStack, theseOccData_thin[, c(xColInd, yColInd)])
-
-      cat(" >>>> call energyStats\n")
+      envData_thin <- envData_orig[rownames(theseOccData_thin), ]
       ans <- energyStats(envData_orig, envData_thin)
 
       if (!quiet)
       {
+        cat("Replicate =", thisRepl, "\n")
         cat("Thinning distance =", thisDist, "km\n")
         cat("Energy statistic =", ans$statistic, "\n")
         cat("Energy p-value =", round(ans$p.value, 3), "\n")
@@ -176,13 +167,16 @@ thinningReview <- function(taxon = "",
         cat("========================================================\n\n")
       }
 
-      newResults[rowInd, "energy_statistic"] <- ans$statistic
-      newResults[rowInd, "energy_p_value"] <- ans$p.value
-      newResults[rowInd, "numRemoved"] <- nrow(theseOccData) - nrow(theseOccData_thin)
-      newResults[rowInd, "fracRetained"] <- round(nrow(theseOccData_thin)/nrow(theseOccData), 2)
-    }
+      newResults <- data.frame(repl = thisRepl,
+                               thinningDist = thisDist,
+                               energy_statistic = ans$statistic,
+                               energy_p_value = ans$p.value,
+                               numOrig = nrow(theseOccData),
+                               numRemoved = nrow(theseOccData) - nrow(theseOccData_thin),
+                               fracRetained = round(nrow(theseOccData_thin)/nrow(theseOccData), 2))
 
-    accumulResults <- rbind(accumulResults, newResults)
+      accumulResults <- rbind(accumulResults, newResults)
+    }
   }
 
   if (writeResults)
@@ -197,20 +191,24 @@ thinningReview <- function(taxon = "",
                            fracRetained = accumulResults[, "fracRetained"])
 
     grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExporation_resultSummary.png"))
-    p <- ggplot2::ggplot(plotData, aes(x = thinDist, y = probability)) +
+    p <- ggplot2::ggplot(plotData, aes(x = thinDist)) +
       ggplot2::geom_hline(yintercept = pThreshold, colour = "grey70", linetype = 3) +
       ggplot2::ylim(0, 1) +
-      ggplot2::geom_point(colour = "slateblue1") +
+      ggplot2::geom_point(aes(y = probability, colour = "p_value")) +
       ggplot2::ylab("Probability & Fraction retained") + xlab("Thinning distance (km)") +
-      ggplot2::geom_point(aes(x = thinDist, y = fracRetained), data = plotData, colour = "darkorange") +
+      ggplot2::geom_point(aes(y = fracRetained, colour = "fraction")) +
       ggplot2::ggtitle(taxon) +
-      theme(plot.title = element_text(face = "bold.italic", size = 16))
+      theme(plot.title = element_text(face = "bold.italic", size = 16)) +
+      scale_colour_manual(name = "", values = colours)
     print(p)
     dev.off()
   }
 
   # Produce a summary table and locate the best thinning distance using the default method
-  summaryTable <- accumulResults %>% dplyr::group_by(thinningDist) %>% dplyr::summarise(mean_p_value = mean(p.value))
+  thinGroup <- dplyr::group_by(accumulResults, thinningDist)
+  summaryTable <- dplyr::summarise(thinGroup,
+                                   mean_p_value = mean(energy_p_value),
+                                   mean_fracRetained = mean(fracRetained))
   xx <- summaryTable$mean_p_value - pThreshold
   ii <- which(xx == min(xx[xx > 0]))
   bestDist = summaryTable$thinningDist[ii]
@@ -220,10 +218,11 @@ thinningReview <- function(taxon = "",
     cat("\n-----------------------------------------------------\n")
     cat("  Best distance =", bestDist, "km\n")
     cat("\n  Results table:\n")
-    print(summaryTable)
+    print(as.data.frame(summaryTable))
   }
+
+  cat("\nfitMaxnet::thinningReview completed", as.character(Sys.time()),"\n")
 
   return(bestDist)
 }
-
 
