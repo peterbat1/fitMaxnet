@@ -53,7 +53,7 @@ calibplot <- function(pred,
                          yhigh = yhigh)
 
   p <- ggplot2::ggplot(plotData, aes(x = x, y = y)) +
-    ggplot2::geom_point(colour = "dodgerblue1") +
+    ggplot2::geom_point(colour = "blue") +
     ggplot2::geom_segment(x = 0, y = 0, xend = 1, yend = 1, colour = "grey30", linetype = 3) +
     ggplot2::annotate("line", x = plotData[, "x"], y = plotData[, "ylow"], linetype = 1, size = 1, colour = "orange") +
 
