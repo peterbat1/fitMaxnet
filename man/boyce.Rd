@@ -7,23 +7,28 @@
 boyce(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot = FALSE)
 }
 \arguments{
-\item{fit}{A vector or Raster-Layer containing the predicted suitability values}
+\item{fit}{A numeric vector or Raster-Layer containing the predicted suitability values}
 
-\item{obs}{A vector containing the predicted suitability values or xy-coordinates (if fit is a Raster-Layer) of the validation points (presence records)}
+\item{obs}{A numeric vector containing the predicted suitability values or xy-coordinates (if fit is a Raster-Layer) of the validation points (presence records)}
 
-\item{nclass}{Number of classes or vector with classes threshold. If nclass=0, Boyce index is calculated with a moving window (see next parameters)}
+\item{nclass}{Numeric. Number of classes or vector with classes threshold. If nclass=0, Boyce index is calculated with a moving window (see next parameters)}
 
-\item{window.w}{width of the moving window (by default 1/10 of the suitability range)}
+\item{window.w}{Numeric. Width of the moving window (by default 1/10 of the suitability range)}
 
-\item{res}{resolution of the moving window (by default 100 focals)}
+\item{res}{Numeric. Resolution of the moving window (by default 100 focals)}
 
-\item{PEplot}{if TRUE, plot the predicted to expected ratio along the suitability class}
+\item{PEplot}{Logical. If TRUE, plot the predicted to expected ratio along the suitability class}
 }
 \value{
 A named list...
 }
 \description{
 Boyce's continuous index
+}
+\details{
+{
+Hirzel et al. 2006. Evaluating the ability of habitat suitability models to predict species presences. Ecological Modelling 199:142-152.
+}
 }
 \examples{
 \dontrun{}
