@@ -18,4 +18,5 @@
 #' @importFrom ggcorrplot ggcorrplot
 #' @importFrom energy eqdist.etest
 #' @importFrom splines ns
+#' @importFrom ggpubr ggarrange ggexport ggbarplot
 NULL
