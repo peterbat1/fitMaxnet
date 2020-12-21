@@ -59,12 +59,16 @@ fast_boycei <- function(interval, obs, fit)
 
 #' Boyce's continuous index
 #'
-#' @param fit A vector or Raster-Layer containing the predicted suitability values
-#' @param obs A vector containing the predicted suitability values or xy-coordinates (if fit is a Raster-Layer) of the validation points (presence records)
-#' @param nclass Number of classes or vector with classes threshold. If nclass=0, Boyce index is calculated with a moving window (see next parameters)
-#' @param window.w width of the moving window (by default 1/10 of the suitability range)
-#' @param res resolution of the moving window (by default 100 focals)
-#' @param PEplot if TRUE, plot the predicted to expected ratio along the suitability class
+#' @param fit A numeric vector or Raster-Layer containing the predicted suitability values
+#' @param obs A numeric vector containing the predicted suitability values or xy-coordinates (if fit is a Raster-Layer) of the validation points (presence records)
+#' @param nclass Numeric. Number of classes or vector with classes threshold. If nclass=0, Boyce index is calculated with a moving window (see next parameters)
+#' @param window.w Numeric. Width of the moving window (by default 1/10 of the suitability range)
+#' @param res Numeric. Resolution of the moving window (by default 100 focals)
+#' @param PEplot Logical. If TRUE, plot the predicted to expected ratio along the suitability class
+#'
+#' @details {
+#' Hirzel et al. 2006. Evaluating the ability of habitat suitability models to predict species presences. Ecological Modelling 199:142-152.
+#' }
 #'
 #' @return A named list...
 #' @export
