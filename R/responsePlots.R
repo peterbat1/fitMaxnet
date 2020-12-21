@@ -2,16 +2,29 @@
 
 #' Response plots for maxnet-produced MaxEnt models
 #'
+#' Response plots are produced for some or all variables in the supplied maxnet model object.
+#'
 #' @param thisModel A maxnet model object.
-#' @param variable Character. Names of one or more variables present in the model object.
+#' @param variable Character. Names of one or more variables present in the model object. The default of 'all' causes all variables to included.
 #' @param responseType Character. Response type (scaling of model output) to be used.
 #' @param ylimits Numeric vector. Limits to be used on the plot y-axis.
-#' @param ylabel Character. Label to be used on the y-axis replacing the default value.
-#' @param filename Character. Filename (with full path) into which graohics will be plotted.
+#' @param ylabel Character. Label to be used on the \emph{y}-axis replacing the default value formed from the prefix "Response" and the value of \emph{responseType}.
+#' @param filename Character. Filename (with full path) into which graphics will be plotted.
 #' @param occSWD Data.frame. Environmental data at occurrence locations in SWD format; used to compute variable importance.
 #' @param bkgSWD Data.frame. Environmental data at background locations in SWD format; used to compute variable importance.
 #'
-#' @return A named list of ggplot graphics objects order in decreasing varaible importance.
+#' @details {
+#' This function is closely based on the source code for the corresponding function in the R package \pkg{maxnet} and draws inspiration from the response plots produced for Boosted Regression Tree (BRT) models produced by the package \pkg{gbm}.
+#'
+#' Features of this function include:
+#' \itemize{
+#' \item Returns a list of ggplot objects allowing individual plots to be extracted and used for other purposes
+#' \item Following the approach in package \pkg{gbm}, incorporation of variable importance scores supplied by the companion function \link{varImportance}
+#' \item Ability to produce a plot for \emph{all} variables in the maxnet model or a selection
+#' }
+#' }
+#'
+#' @return A named list of ggplot graphics objects ordered in decreasing variable importance, plus the side-effect of a pdf of plots.
 #' @export
 #'
 #' @examples
@@ -85,7 +98,7 @@ responsePlot <- function(thisModel,
 
     if (is.null(ylabel))
       ylabel <- paste0("Response (", responseType, ")")
-    predVals <- predict(thisModel, d, type = "logistic") #responseType)
+    predVals <- predict(thisModel, d, type = responseType)
 
     plotData <- data.frame(prediction = predVals[,1], d)
 
@@ -95,7 +108,6 @@ responsePlot <- function(thisModel,
     }
     else
     {
-
       plotyBits[[thisVar]] <- ggplot2::ggplot(plotData, aes(x = plotData[, thisVar], y = prediction)) +
         geom_line(colour = "blue", size = 1) + ylab(ylabel) + xlab(thisVar) + ylim(ylimits) +
         theme(axis.title.x = element_text(size = 8),
