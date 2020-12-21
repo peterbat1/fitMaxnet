@@ -67,6 +67,8 @@ fast_boycei <- function(interval, obs, fit)
 #' @param PEplot Logical. If TRUE, plot the predicted to expected ratio along the suitability class
 #'
 #' @details {
+#' This is a daft bit of text.
+#'
 #' Hirzel et al. 2006. Evaluating the ability of habitat suitability models to predict species presences. Ecological Modelling 199:142-152.
 #' }
 #'
