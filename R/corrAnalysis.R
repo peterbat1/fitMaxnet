@@ -22,7 +22,7 @@
 #' }
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{#}
 envCorrAnalysis <- function(taxon = "",
                             titleText = NULL,
                             envDataPath,
