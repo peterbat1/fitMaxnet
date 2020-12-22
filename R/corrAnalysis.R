@@ -109,10 +109,10 @@ envCorrAnalysis <- function(taxon = "",
     if (dir.exists(outPath))
     {
       ggplot2::ggsave(ggcorrplot::ggcorrplot(corr, hc.order = TRUE, method = "circle"),
-                      file = outFile,
+                      file = paste0(outPath, "/", outFile),
                       device = "png",
-                      width = 100,
-                      height = 100,
+                      width = 200,
+                      height = 200,
                       units = "mm")
     }
 
@@ -207,10 +207,10 @@ envCorrAnalysis_SWD <- function(taxon = "",
     if (dir.exists(outPath))
     {
       ggplot2::ggsave(ggcorrplot::ggcorrplot(corr, hc.order = TRUE, method = "circle"),
-                      file = outFile,
+                      file = paste0(outPath, "/", outFile),
                       device = "png",
-                      width = 100,
-                      height = 100,
+                      width = 200,
+                      height = 200,
                       units = "mm")
     }
 
