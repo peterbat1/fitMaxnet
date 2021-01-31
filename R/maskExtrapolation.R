@@ -11,11 +11,12 @@
 #' Compute and apply a mask of areas within which strict extrapolation has been detected
 #'
 #' @param maxnetModel Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.
-#' @param envPath Character. Path to a set of environmental rasters showing the environment onto which the model has been projected.
+#' @param envStack Raster stack object. Stack of environmental rasters onto which the model has been projected.
 #' @param projRas RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.
 #' @param maskOutpath Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written
 #' @param fileLabel Character. Label to be used to distinguish the filename of the saved mask raster.
 #' @param makePlots Logical. Make basic plots of raster objects for interpretation, review and quality control? Default is TRUE.
+#' @param silent Logical. If TRUE (default), no progress messages are written to the console.
 #'
 #' @details {
 #' The nominated MaxEnt model object produced by \link{fit_maxnet} is interrogated to find the list of variables used in the model. The function then proceeds to:
@@ -39,12 +40,28 @@
 #'                   "furryCreature_run1.tif", makePlots = FALSE)
 #' }
 #' }
-maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirname(projRas), fileLabel = NULL, makePlots = TRUE)
+maskExtrapolation <- function(maxnetModel,
+                              envStack = NULL,
+                              projRas,
+                              maskOutpath = dirname(projRas),
+                              fileLabel = NULL,
+                              makePlots = TRUE)
 {
+  # Valid raster stack is available?
+  if (is.null(envStack)) stop("Parameter 'envStack' has not be given a value")
+  if (class(envStack) != "RasterStack") stop("Parameter 'envStack' must be class 'RasterStack'")
+
   # Fetch a fitted glmnet/maxnet model
-  cat("  Compute and apply extrapolation mask to ", basename(maxnetModel),":\n", sep = "")
-  cat("     Loading maxnet model object\n")
-  load(maxnetModel)
+  if (!silent)
+  {
+    cat("  Compute and apply extrapolation mask to ", basename(maxnetModel),":\n", sep = "")
+    cat("     Loading maxnet model object\n")
+  }
+
+  if (file.exists(maxnetModel))
+    load(maxnetModel)
+  else
+    stop("File referenced in 'maxnetModel' does not exist: check path")
 
   if (length(maxnet_model$betas) > 0)
   {
@@ -57,25 +74,22 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
     minVarVals <- maxnet_model$varmin[modelVars]
     maxVarVals <- maxnet_model$varmax[modelVars]
 
-    cat("     Loading environmental data layers as a raster stack\n")
-    envFiles <- list.files(envPath, "*.tif", full.names = TRUE)
-
     # Filter envFiles to remove rasters not need to evaluate the model
-    envFiles <- envFiles[base::match(modelVars, gsub(".tif", "",  basename(envFiles), fixed = TRUE))]
 
-    envStack <- raster::stack(envFiles)
+    envLayers <- base::match(modelVars, names(envStack))
+    localEnvStack <- raster::subset(envStack, envLaeyrs)
 
-    outStack <- envStack
+    outStack <- localEnvStack
 
     # Trim outStack by removing vars not found in the list of vars i.e. mmm
     # dropInd <- which(!(names(outStack) %in% modelVars))
     # outStack <- raster::dropLayer(outStack, dropInd)
 
-    cat("     Processing raster layers and coding extrapolated cells\n")
+    if (!silent) cat("     Processing raster layers and coding extrapolated cells\n")
 
     for (i in 1:length(modelVars))
     {
-      aRas <- envStack[[modelVars[i]]]
+      aRas <- localEnvStack[[modelVars[i]]]
       rasVals <- raster::getValues(aRas)
       naInd <- which(is.na(rasVals))
       #### ?.bincode
@@ -86,7 +100,7 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
       outStack[[modelVars[i]]] <- aRas
     }
 
-    cat("     Making mask raster layer\n")
+    if (!silent) cat("     Making mask raster layer\n")
     ans <- raster::calc(outStack, min)
     if (is.null(fileLabel))
       maskFile <- paste0(maskOutpath, "/extrapolationMask.tif")
@@ -105,7 +119,7 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
       dev.off()
     }
 
-    cat("     Applying mask raster to projected model raster\n")
+    if (!silent) cat("     Applying mask raster to projected model raster\n")
     ras <- raster::raster(projRas)
 
     offInd <- which(values(ans) != 1)
@@ -118,10 +132,10 @@ maskExtrapolation <- function(maxnetModel, envPath, projRas, maskOutpath = dirna
       dev.off()
     }
 
-    cat("     Saving masked projected raster\n")
+    if (!silent) cat("     Saving masked projected raster\n")
     outFilename <- gsub(".tif", "_masked.tif", projRas, fixed = TRUE)
     raster::writeRaster(ras, outFilename, format = "GTiff", overwrite = TRUE)
-    cat("     End of masking operation.\n\n")
+    if (!silent) cat("     End of masking operation.\n\n")
   }
   else
   {
