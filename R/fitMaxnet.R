@@ -19,4 +19,6 @@
 #' @importFrom energy eqdist.etest
 #' @importFrom splines ns
 #' @importFrom ggpubr ggarrange ggexport ggbarplot
+#' @importFrom dismo mess
+#' @importFrom PRROC pr.curve roc.curve
 NULL

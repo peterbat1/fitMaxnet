@@ -18,6 +18,7 @@ Imports: raster,
          sf,
          rgeos,
          ggplot2,
-         dplyr
+         dplyr,
+         dismo
 Depends: 
     R (>= 2.10)
