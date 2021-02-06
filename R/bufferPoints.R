@@ -4,7 +4,10 @@
 #' Produce a spatial polygon object representing the boundary within which background points will be sampled for ENM fitting
 #'
 #' @param occ_pts A data frame or matrix with at least two columns representing longitude and latitude (X and Y) of occurrence records
-#' @param bufferDist_km Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.
+#' @param bufferDist_km Numeric. Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.
+#' @param X_col Integer. Optionally given the column index of the X-coordinate.
+#' @param Y_col Integer. Optionally given the column index of the Y-coordinate.
+#' @param epsg Integer. Optionally specify the EPSG integer code for the projection. If not specified, an attempt is made to determine the CRS from the X and Y coordinate values.
 #' @param trace Logical. Should messages be emitted to assist progress tracking or debugging
 #'
 #' @details {
@@ -22,28 +25,35 @@
 #'
 #' @examples
 #' \dontrun{}
-bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
+bufferPoints <- function(occ_pts, bufferDist_km = 200, X_col = NULL, Y_col = NULL, crs = NULL, trace = FALSE)
 {
   # Convert buffer distance from kilometres to metres
   bufferDist <- 1000 * bufferDist_km
 
-  if (any(grepl("LONG|LAT", toupper(colnames(occ_pts)))))
-    pts_crs <- 4326
-  else
-    pts_crs <- 3577
-
   # Try to identify longitude (X) and latitude (Y) columns
-  ind <- grep("LONG|X", toupper(colnames(occ_pts)))
+  ind <- grep("LONG|^X$", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
     X_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "longitude"
   else
     stop("Cannot identify the 'longitude' or 'X' column in 'occ_pts'")
 
-  ind <- grep("LAT|Y", toupper(colnames(occ_pts)))
+  if (trace) cat("X_ind =", X_ind, "\n")
+
+  ind <- grep("LAT|^Y$", toupper(colnames(occ_pts)))
   if (length(ind) >= 1)
     Y_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "latitude"
   else
     stop("Cannot identify the 'latitude' or 'Y' column in 'occ_pts'")
+
+  if (trace) cat("Y_ind =", Y_ind, "\n")
+
+  # Are the X-coords > 360? If so, then assume crs = 3577
+  if (all(occ_pts[, X_ind] > 360))
+    pts_crs <- 3577
+  else
+    pts_crs <- 4326
+
+  if (trace) cat("pt_crs set to", pts_crs, "\n")
 
   occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c(X_ind, Y_ind), crs = pts_crs)
   #sf::st_crs(occ_pts_sf) <- pts_crs

@@ -4,14 +4,27 @@
 \alias{bufferPoints}
 \title{Make buffer around occurrence points}
 \usage{
-bufferPoints(occ_pts, bufferDist_km = 200, trace = FALSE)
+bufferPoints(
+  occ_pts,
+  bufferDist_km = 200,
+  X_col = NULL,
+  Y_col = NULL,
+  crs = NULL,
+  trace = FALSE
+)
 }
 \arguments{
 \item{occ_pts}{A data frame or matrix with at least two columns representing longitude and latitude (X and Y) of occurrence records}
 
-\item{bufferDist_km}{Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.}
+\item{bufferDist_km}{Numeric. Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.}
+
+\item{X_col}{Integer. Optionally given the column index of the X-coordinate.}
+
+\item{Y_col}{Integer. Optionally given the column index of the Y-coordinate.}
 
 \item{trace}{Logical. Should messages be emitted to assist progress tracking or debugging}
+
+\item{epsg}{Integer. Optionally specify the EPSG integer code for the projection. If not specified, an attempt is made to determine the CRS from the X and Y coordinate values.}
 }
 \value{
 A spatial polygon object from the package \emph{sf}

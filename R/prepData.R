@@ -70,14 +70,14 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
     }
 
     # Automagically try to identify longitude and latitude columns:
-    Xind <- grep("LONG|X", toupper(colnames(occData)))[1]
+    Xind <- grep("LONG|^X$", toupper(colnames(occData)))[1]
     if (length(Xind) == 0) stop("Cannot identify a 'longitude' or 'X' column in occurrence data file")
     if (length(Xind) > 1)
     {
       warning("Cannot identify a unique 'longitude' column in occurrence data file; using first hit come-what-may...")
     }
 
-    Yind <- grep("LAT|Y", toupper(colnames(occData)))[1]
+    Yind <- grep("LAT|^Y$", toupper(colnames(occData)))[1]
     if (length(Yind) == 0) stop("Cannot identify a 'latitude' or 'Y' column in occurrence data file")
     if (length(Yind) > 1)
     {

@@ -82,13 +82,15 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
 
   #availableCells <- which(values(baseRaster) == 1)
 
-  selectedCells <- NULL
-  for (i in 1:nBkgSamples)
-  {
-    newInd <- sample(1:length(availableCells), 1)
-    selectedCells <- c(selectedCells, availableCells[newInd])
-    availableCells <- availableCells[-newInd]
-  }
+  # selectedCells <- NULL
+  # for (i in 1:nBkgSamples)
+  # {
+  #   newInd <- sample(1:length(availableCells), 1)
+  #   selectedCells <- c(selectedCells, availableCells[newInd])
+  #   availableCells <- availableCells[-newInd]
+  # }
+
+  selectedCells <- sample(availableCells, nBkgSamples)
 
   return(selectedCells)
 }
