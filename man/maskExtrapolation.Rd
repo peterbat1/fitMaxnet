@@ -6,7 +6,7 @@
 \usage{
 maskExtrapolation(
   maxnetModel,
-  envPath,
+  envStack = NULL,
   projRas,
   maskOutpath = dirname(projRas),
   fileLabel = NULL,
@@ -16,7 +16,7 @@ maskExtrapolation(
 \arguments{
 \item{maxnetModel}{Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.}
 
-\item{envPath}{Character. Path to a set of environmental rasters showing the environment onto which the model has been projected.}
+\item{envStack}{Raster stack object. Stack of environmental rasters onto which the model has been projected.}
 
 \item{projRas}{RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.}
 
@@ -25,6 +25,8 @@ maskExtrapolation(
 \item{fileLabel}{Character. Label to be used to distinguish the filename of the saved mask raster.}
 
 \item{makePlots}{Logical. Make basic plots of raster objects for interpretation, review and quality control? Default is TRUE.}
+
+\item{silent}{Logical. If TRUE (default), no progress messages are written to the console.}
 }
 \value{
 Nothing but has side-effect of writing two raster files: mask raster and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.

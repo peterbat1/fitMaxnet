@@ -30,41 +30,65 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, X_col = NULL, Y_col = NUL
   # Convert buffer distance from kilometres to metres
   bufferDist <- 1000 * bufferDist_km
 
-  # Try to identify longitude (X) and latitude (Y) columns
-  ind <- grep("LONG|^X$", toupper(colnames(occ_pts)))
-  if (length(ind) >= 1)
-    X_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "longitude"
+  if ("sf" %in% class(occ_pts))
+  {
+    pts_crs <- gsub("EPSG:", "", st_crs(occ_pts)$input, fixed = TRUE)
+    if (pts_crs != 3577)
+      occ_pts_albers <- st_transform(occ_pts, 3577)
+    else
+      occ_pts_albers <- occ_pts
+  }
   else
-    stop("Cannot identify the 'longitude' or 'X' column in 'occ_pts'")
+  {
+    if ("SpatialPointsDataFrame" %in% class(occ_pts))
+    {
+      occ_pts <- st_as_sf(occ_pts)
+      pts_crs <- gsub("EPSG:", "", st_crs(occ_pts)$input, fixed = TRUE)
+      if (st_crs(occ_pts) != 3577)
+      {
+        #pts_crs <- st_crs(occ_pts)
+        occ_pts_albers <- st_transform(occ_pts, 3577)
+      }
+    }
+    else
+    {
+      # Try to identify longitude (X) and latitude (Y) columns
+      ind <- grep("LONG|^X$", toupper(colnames(occ_pts)))
+      if (length(ind) >= 1)
+        X_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "longitude"
+      else
+        stop("Cannot identify the 'longitude' or 'X' column in 'occ_pts'")
 
-  if (trace) cat("X_ind =", X_ind, "\n")
+      if (trace) cat("X_ind =", X_ind, "\n")
 
-  ind <- grep("LAT|^Y$", toupper(colnames(occ_pts)))
-  if (length(ind) >= 1)
-    Y_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "latitude"
-  else
-    stop("Cannot identify the 'latitude' or 'Y' column in 'occ_pts'")
+      ind <- grep("LAT|^Y$", toupper(colnames(occ_pts)))
+      if (length(ind) >= 1)
+        Y_ind <- ind[1] #colnames(occ_pts)[ind[1]] <- "latitude"
+      else
+        stop("Cannot identify the 'latitude' or 'Y' column in 'occ_pts'")
 
-  if (trace) cat("Y_ind =", Y_ind, "\n")
+      if (trace) cat("Y_ind =", Y_ind, "\n")
 
-  # Are the X-coords > 360? If so, then assume crs = 3577
-  if (all(occ_pts[, X_ind] > 360))
-    pts_crs <- 3577
-  else
-    pts_crs <- 4326
+      # Are the X-coords > 360? If so, then assume crs = 3577
+      if (all(occ_pts[, X_ind] > 360))
+        pts_crs <- 3577
+      else
+        pts_crs <- 4326
 
-  if (trace) cat("pt_crs set to", pts_crs, "\n")
+      if (trace) cat("pt_crs set to", pts_crs, "\n")
 
-  occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c(X_ind, Y_ind), crs = pts_crs)
-  #sf::st_crs(occ_pts_sf) <- pts_crs
+      occ_pts_sf <- sf::st_as_sf(occ_pts, coords = c(X_ind, Y_ind), crs = pts_crs)
+      #sf::st_crs(occ_pts_sf) <- pts_crs
 
-  if (trace) cat("step 1\n")
-  if (pts_crs == 4326)
-    occ_pts_albers <- sf::st_transform(occ_pts_sf, crs = 3577)
-  else
-    occ_pts_albers <- occ_pts_sf
+      if (trace) cat("step 1\n")
+      if (pts_crs == 4326)
+        occ_pts_albers <- sf::st_transform(occ_pts_sf, crs = 3577)
+      else
+        occ_pts_albers <- occ_pts_sf
+    }
+  }
 
-  if (trace) cat("step 2\n")
+  if (trace) cat("make buffer polyogn\n")
   ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_albers, dist = bufferDist))
 
   if (trace)
@@ -83,6 +107,6 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, X_col = NULL, Y_col = NUL
   clippedBuffer <- sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577)))
 
   if (trace) cat("step 4\n")
-  if (pts_crs == 4326) clippedBuffer <- sf::st_transform(clippedBuffer, crs = 4326)
+  if (pts_crs != 3577) clippedBuffer <- sf::st_transform(clippedBuffer, crs = pts_crs)
   return(clippedBuffer)
 }
