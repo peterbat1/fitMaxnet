@@ -131,7 +131,11 @@ smoothdist <- function(pred,
 #'
 #' }
 #'
-#' @return Data frame of results from the smoothing process
+#' @return A named list with the follow elements:
+#' \describe{
+#' \item{predd}{Data frame of results from the smoothing process; columns are: x = predicted probability of presence, y = (modelled) probability of presence, se = std error of the y-value at each x-value}
+#' \item{mse}{A numeric object giving the Mean Squared Error between the line of equality between probability of presence (y) and predicted probability of presence (x) and the y-values}
+#' }
 #' @export
 #'
 #' @examples
@@ -161,6 +165,6 @@ POCplot <- function(pred,
 
   calibplot(predd, negrug = back, posrug = pred, ideal = ideal, ylabel = ylab,
              capuci = capUpperValues, title = title, filename = filename)
-  invisible(predd)
+  invisible(list(predd = predd, mse = sum((predd$y - predd$x)^2)/nrow(predd)))
 }
 

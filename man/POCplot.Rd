@@ -27,7 +27,11 @@ POCplot(
 \item{title.}{Character. Title to appear in the plot. Default is a generic "Calibration plot".}
 }
 \value{
-Data frame of results from the smoothing process
+A named list with the follow elements:
+\describe{
+\item{predd}{Data frame of results from the smoothing process; columns are: x = predicted probability of presence, y = (modelled) probability of presence, se = std error of the y-value at each x-value}
+\item{mse}{A numeric object giving the Mean Squared Error between the line of equality between probability of presence (y) and predicted probability of presence (x) and the y-values}
+}
 }
 \description{
 Produce a smoothed calibration plot for a presence-only model
