@@ -63,7 +63,7 @@ calibplot <- function(pred,
     ylim(ylim) +
     xlab(xlabel) +
     ylab(ylabel) +
-    annotate("rug", x = negrug, sides = "b", colour = "black") +
+    annotate("rug", x = negrug, sides = "t", colour = "black") +
     annotate("rug", x = posrug, sides = "b", colour = "orange") +
     theme(plot.title = element_text(face = "bold", size = 14))
 
