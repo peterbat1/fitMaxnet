@@ -29,7 +29,7 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 
   if ("sf" %in% class(occ_pts))
   {
-    pts_crs <- gsub("EPSG:", "", st_crs(occ_pts)$input, fixed = TRUE)
+    pts_crs <- as.integer(gsub("EPSG:", "", st_crs(occ_pts)$input, fixed = TRUE))
     if (pts_crs != 3577)
       occ_pts_albers <- st_transform(occ_pts, 3577)
     else
@@ -46,7 +46,7 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 
   # Clip the buffer polygon to the Australian coastline
   if (trace) cat("clip buffer polygon to OZ coastline\n")
-  clippedBuffer <- st_sf(sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))))
+  clippedBuffer <<- st_sf(sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))))
 
 
   if (trace) cat("transform clipped buffer to CRS of occ_pts\n")
