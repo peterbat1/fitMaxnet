@@ -77,7 +77,7 @@ maskExtrapolation <- function(maxnetModel,
     # Filter envFiles to remove rasters not need to evaluate the model
 
     envLayers <- base::match(modelVars, names(envStack))
-    localEnvStack <- raster::subset(envStack, envLaeyrs)
+    localEnvStack <- raster::subset(envStack, envLayers)
 
     outStack <- localEnvStack
 
