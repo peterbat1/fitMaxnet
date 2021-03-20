@@ -12,6 +12,7 @@
 #' @param baseOutputPath String. Full path to the output folder to receive the produced raster.
 #' @param fileLabel String. An identifying tag to be included in the output filename.
 #' @param makeTaxonFolder Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?
+#' @param quiet Logical. Procede without emitting progress messages?
 #'
 #' @return Nothing
 #' @export
@@ -23,27 +24,28 @@ projectMaxnet <- function(taxonName = NULL,
                           type = "exponential",
                           baseOutputPath,
                           fileLabel = NULL,
-                          makeTaxonFolder = FALSE)
+                          makeTaxonFolder = FALSE,
+                          quiet = TRUE)
 {
   # Check params...
   if(!(type %in% c('link', 'exponential', 'cloglog', 'logistic')))
     stop("'type' must be one of 'link', 'exponential', 'cloglog', 'logistic'")
 
-  # Check for existence of projStack, etc in the global environment...
+  # Check for existence of projData, etc in the global environment...
+  if (!exists("projData")) stop("Object projData not found in global environment. Please run 'prepProjData'")
+  if (!exists("rasTemplate")) stop("Object rasTemplate not found in global environment. Please run 'prepProjData'")
 
-  #featureSet_names <- names(maxnet_model$betas)
-  #varNames <- sort(unique(unlist(strsplit(gsub("^2)","",gsub("I(","",featureSet_names, fixed = TRUE), fixed = TRUE), ":", fixed = TRUE))))
-  cat("Maxnet model projection:\n    Loading model object\n")
+  if (!quiet) cat("Maxnet model projection:\n    Loading model object\n")
 
   load(maxnetModel)
 
   goodRows <- which(!is.na(rowSums(projData)))
 
-  cat("    Projecting model\n")
+  if (!quiet) cat("    Projecting model\n")
   projMod <- predict(maxnet_model, projData[goodRows, ], type = type)
 
-  cat("    Preparing and saving projection raster\n")
-  projRas <- rasTemplate #projStack[[1]]
+  if (!quiet) cat("    Preparing and saving projection raster\n")
+  projRas <- rasTemplate
   raster::values(projRas) <- NA
   raster::values(projRas)[goodRows] <- projMod[,1]
 
@@ -60,6 +62,6 @@ projectMaxnet <- function(taxonName = NULL,
     outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_",fileLabel,".tif")
 
   raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE)
-  #plot(projRas, main = paste0("Regularization = ", thisRegVal))
-  cat("  End model projection\n\n")
+
+  if (!quiet) cat("  End model projection\n\n")
 }

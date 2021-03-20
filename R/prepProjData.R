@@ -11,7 +11,7 @@
 #'  }
 #'
 #' @param dataPath String giving the file system path to the folder containing the geoTIFF rasters representing the environmental layers to be used to spatially project a fitted maxnet model
-#' @param quiet Logical. Default of TRUE supresses progress messages.
+#' @param quiet Logical. Default of TRUE suppresses progress messages.
 #' @return Invisibly returns NULL but has the side effect of creating several objects in the R global environment.
 #' @export
 #'
@@ -31,5 +31,6 @@ prepProjData <- function(dataPath, quiet = TRUE)
   # "Export" a template raster layer
   rasTemplate <<- projStack[[1]]
   if (!quiet) cat(length(projStack), " layers loaded\n")
+
   invisible(NULL)
 }
