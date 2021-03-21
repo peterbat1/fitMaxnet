@@ -9,7 +9,7 @@ prepProjData(dataPath, quiet = TRUE)
 \arguments{
 \item{dataPath}{String giving the file system path to the folder containing the geoTIFF rasters representing the environmental layers to be used to spatially project a fitted maxnet model}
 
-\item{quiet}{Logical. Default of TRUE supresses progress messages.}
+\item{quiet}{Logical. Default of TRUE suppresses progress messages.}
 }
 \value{
 Invisibly returns NULL but has the side effect of creating several objects in the R global environment.

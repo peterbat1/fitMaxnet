@@ -6,17 +6,16 @@
 \usage{
 maskExtrapolation(
   maxnetModel,
-  envStack = NULL,
   projRas,
   maskOutpath = dirname(projRas),
   fileLabel = NULL,
-  makePlots = TRUE
+  makePlots = TRUE,
+  saveMask = TRUE,
+  silent = TRUE
 )
 }
 \arguments{
 \item{maxnetModel}{Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.}
-
-\item{envStack}{Raster stack object. Stack of environmental rasters onto which the model has been projected.}
 
 \item{projRas}{RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.}
 
@@ -26,10 +25,14 @@ maskExtrapolation(
 
 \item{makePlots}{Logical. Make basic plots of raster objects for interpretation, review and quality control? Default is TRUE.}
 
+\item{saveMask}{Logical. Should the mask raster (as distinct from the the masked version of projRas) be saved? Default is TRUE.}
+
 \item{silent}{Logical. If TRUE (default), no progress messages are written to the console.}
+
+\item{envStack}{Raster stack object. Stack of environmental rasters onto which the model has been projected.}
 }
 \value{
-Nothing but has side-effect of writing two raster files: mask raster and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.
+Nothing but has side-effect of writing up to two raster files: mask raster (if saveMask == TRUE) and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.
 }
 \description{
 Compute and apply a mask of areas within which strict extrapolation has been detected
@@ -39,7 +42,7 @@ Compute and apply a mask of areas within which strict extrapolation has been det
 The nominated MaxEnt model object produced by \link{fit_maxnet} is interrogated to find the list of variables used in the model. The function then proceeds to:
 \enumerate{
 \item Load a raster stack of these variables
-\item Code each non-NA cell a raster layer 1 if it is within the range of the variable recorded in the model object, 0 otherwise
+\item Code each non-NA cell in a raster layer 1 if it is within the range of the variable recorded in the model object, 0 otherwise
 \item Compute an output raster with only cells set to 1 when all values in the stack are 1, 0 otherwise and NA cells retained
 \item Save the output raster
 }
