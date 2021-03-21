@@ -127,9 +127,9 @@ maskExtrapolation <- function(maxnetModel,
         maskFile <- paste0(maskOutpath, "/extrapolationMask.tif")
       else
         maskFile <- paste0(maskOutpath, "/extrapolationMask_", fileLabel, ".tif")
-    }
 
-    raster::writeRaster(ans, maskFile, overwrite = TRUE)
+      raster::writeRaster(ans, maskFile, overwrite = TRUE)
+    }
 
     if (!silent) cat("     Applying mask raster to projected model raster\n")
     offInd <- which(raster::values(ans) != 1)
