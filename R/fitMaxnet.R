@@ -21,4 +21,5 @@
 #' @importFrom ggpubr ggarrange ggexport ggbarplot
 #' @importFrom dismo mess
 #' @importFrom PRROC pr.curve roc.curve
+#' @importFrom Rfast rowsums
 NULL
