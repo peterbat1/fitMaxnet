@@ -35,16 +35,16 @@
 #' }
 
 maskExtrapolation <- function(maxnetModel,
-                                   projRas,
-                                   maskOutpath = dirname(projRas),
-                                   fileLabel = NULL,
-                                   makePlots = TRUE,
-                                   silent = TRUE)
+                              projRas,
+                              maskOutpath = dirname(projRas),
+                              fileLabel = NULL,
+                              makePlots = TRUE,
+                              silent = TRUE)
 {
   if (!exists("projData")) stop("Global object 'projData' not found. Please run 'prepProjData'")
 
   if (file.exists(projRas))
-  ras <- raster::raster(projRas)
+    ras <- raster::raster(projRas)
   else
     stop("Can find projection raster specified in 'projRas'")
 
@@ -139,7 +139,10 @@ maskExtrapolation <- function(maxnetModel,
 
     ##########################################
     if (!silent) cat("     Saving masked projected raster\n")
-    outFilename <- gsub(".tif", "_masked_hacked.tif", projRas, fixed = TRUE)
+    if (is.null(fileLabel))
+      outFilename <- gsub(".tif", "_masked.tif", projRas, fixed = TRUE)
+    else
+      outFilename <- gsub(".tif", paste0("_masked_", fileLabel, ".tif"), projRas, fixed = TRUE)
     raster::writeRaster(ras, outFilename, format = "GTiff", overwrite = TRUE)
     if (!silent) cat("     End of masking operation.\n\n")
   }
