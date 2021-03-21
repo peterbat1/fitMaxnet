@@ -1,10 +1,3 @@
-# Explore methods for marking rasters with areas exhibiting strict extrapolation
-# after fitting a model using the maxnet package
-#
-#
-# Peter D. Wilson
-#
-# 2019-10-15
 
 #' Mask a projection raster removing extrapolation areas
 #'
@@ -22,7 +15,7 @@
 #' The nominated MaxEnt model object produced by \link{fit_maxnet} is interrogated to find the list of variables used in the model. The function then proceeds to:
 #' \enumerate{
 #' \item Load a raster stack of these variables
-#' \item Code each non-NA cell a raster layer 1 if it is within the range of the variable recorded in the model object, 0 otherwise
+#' \item Code each non-NA cell in a raster layer 1 if it is within the range of the variable recorded in the model object, 0 otherwise
 #' \item Compute an output raster with only cells set to 1 when all values in the stack are 1, 0 otherwise and NA cells retained
 #' \item Save the output raster
 #'}
@@ -40,16 +33,24 @@
 #'                   "furryCreature_run1.tif", makePlots = FALSE)
 #' }
 #' }
+
 maskExtrapolation <- function(maxnetModel,
-                              envStack = NULL,
-                              projRas,
-                              maskOutpath = dirname(projRas),
-                              fileLabel = NULL,
-                              makePlots = TRUE)
+                                   projRas,
+                                   maskOutpath = dirname(projRas),
+                                   fileLabel = NULL,
+                                   makePlots = TRUE,
+                                   silent = TRUE)
 {
-  # Valid raster stack is available?
-  if (is.null(envStack)) stop("Parameter 'envStack' has not be given a value")
-  if (class(envStack) != "RasterStack") stop("Parameter 'envStack' must be class 'RasterStack'")
+  if (!exists("projData")) stop("Global object 'projData' not found. Please run 'prepProjData'")
+
+  if (file.exists(projRas))
+  ras <- raster::raster(projRas)
+  else
+    stop("Can find projection raster specified in 'projRas'")
+
+
+  if (!all(as.vector(raster::extent(rasTemplate)) == as.vector(raster::extent(ras))))
+    stop("Raster parameters of global object 'rasTemplate' are not same as parameters for 'projRas'")
 
   # Fetch a fitted glmnet/maxnet model
   if (!silent)
@@ -75,42 +76,41 @@ maskExtrapolation <- function(maxnetModel,
     maxVarVals <- maxnet_model$varmax[modelVars]
 
     # Filter envFiles to remove rasters not need to evaluate the model
+    envLayers <- base::match(modelVars, colnames(projData))
+    localProjData <- projData[, envLayers]
 
-    envLayers <- base::match(modelVars, names(envStack))
-    localEnvStack <- raster::subset(envStack, envLayers)
-
-    outStack <- localEnvStack
-
-    # Trim outStack by removing vars not found in the list of vars i.e. mmm
-    # dropInd <- which(!(names(outStack) %in% modelVars))
-    # outStack <- raster::dropLayer(outStack, dropInd)
+    # Cell indices of NA values in the raster template
+    naInd <- which(is.na(rasTemplate[]))
 
     if (!silent) cat("     Processing raster layers and coding extrapolated cells\n")
 
     for (i in 1:length(modelVars))
     {
-      aRas <- localEnvStack[[modelVars[i]]]
-      rasVals <- raster::getValues(aRas)
-      naInd <- which(is.na(rasVals))
-      #### ?.bincode
-      rasVals[(rasVals >= minVarVals[modelVars[i]]) & (rasVals <= maxVarVals[modelVars[i]])] <- 1
-      rasVals[rasVals != 1] <- 0
-      rasVals[naInd] <- NA
-      raster::values(aRas) <- rasVals
-      outStack[[modelVars[i]]] <- aRas
+      rasVals <- localProjData[, i]
+      localProjData[, i] <- ifelse((rasVals >= minVarVals[modelVars[i]]) & (rasVals <= maxVarVals[modelVars[i]]), 1, 0)
     }
 
     if (!silent) cat("     Making mask raster layer\n")
-    ans <- raster::calc(outStack, min)
-    if (is.null(fileLabel))
-      maskFile <- paste0(maskOutpath, "/extrapolationMask.tif")
-    else
-      maskFile <- paste0(maskOutpath, "/extrapolationMask_", fileLabel, ".tif")
 
-    raster::writeRaster(ans, maskFile, overwrite = TRUE)
+    ans <- rasTemplate
+    ans[] <- 1
+    tmpVals <- Rfast::rowsums(localProjData)
+    ans[which(tmpVals != length(modelVars))] <- 0
+    ans[naInd] <- NA
 
     if (makePlots)
     {
+      outStack <- raster::stack()
+
+      for (i in 1:length(modelVars))
+      {
+        localProjData[naInd, i] <- NA
+        outStack <- raster::stack(outStack, rasTemplate)
+        outStack[[i]][] <- localProjData[, i]
+      }
+
+      names(outStack) <- modelVars
+
       png(paste0(maskOutpath, "/layer_masks.png"))
       plot(outStack)
       dev.off()
@@ -119,10 +119,15 @@ maskExtrapolation <- function(maxnetModel,
       dev.off()
     }
 
-    if (!silent) cat("     Applying mask raster to projected model raster\n")
-    ras <- raster::raster(projRas)
+    if (is.null(fileLabel))
+      maskFile <- paste0(maskOutpath, "/extrapolationMask.tif")
+    else
+      maskFile <- paste0(maskOutpath, "/extrapolationMask_", fileLabel, ".tif")
 
-    offInd <- which(values(ans) != 1)
+    raster::writeRaster(ans, maskFile, overwrite = TRUE)
+
+    if (!silent) cat("     Applying mask raster to projected model raster\n")
+    offInd <- which(raster::values(ans) != 1)
     raster::values(ras)[offInd] <- 0
 
     if (makePlots)
@@ -132,8 +137,9 @@ maskExtrapolation <- function(maxnetModel,
       dev.off()
     }
 
+    ##########################################
     if (!silent) cat("     Saving masked projected raster\n")
-    outFilename <- gsub(".tif", "_masked.tif", projRas, fixed = TRUE)
+    outFilename <- gsub(".tif", "_masked_hacked.tif", projRas, fixed = TRUE)
     raster::writeRaster(ras, outFilename, format = "GTiff", overwrite = TRUE)
     if (!silent) cat("     End of masking operation.\n\n")
   }
