@@ -9,6 +9,7 @@
 #' @param maskOutpath Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written
 #' @param fileLabel Character. Label to be used to distinguish the filename of the saved mask raster.
 #' @param makePlots Logical. Make basic plots of raster objects for interpretation, review and quality control? Default is TRUE.
+#' @param saveMask Logical. Should the mask raster (as distinct from the the masked version of projRas) be saved? Default is TRUE.
 #' @param silent Logical. If TRUE (default), no progress messages are written to the console.
 #'
 #' @details {
@@ -22,7 +23,7 @@
 #' The file name for the output raster defaults to 'extrapolationMask.tif'. If \emph{fileLabel} is not NULL, then the output file name is 'extrapolationMask_' + '\emph{fileLabel}' + '.tif'.
 #' }
 #'
-#' @return Nothing but has side-effect of writing two raster files: mask raster and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.
+#' @return Nothing but has side-effect of writing up to two raster files: mask raster (if saveMask == TRUE) and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.
 #' @export
 #'
 #' @examples
@@ -39,6 +40,7 @@ maskExtrapolation <- function(maxnetModel,
                               maskOutpath = dirname(projRas),
                               fileLabel = NULL,
                               makePlots = TRUE,
+                              saveMask = TRUE,
                               silent = TRUE)
 {
   if (!exists("projData")) stop("Global object 'projData' not found. Please run 'prepProjData'")
