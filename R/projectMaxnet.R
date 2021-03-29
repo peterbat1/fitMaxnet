@@ -4,7 +4,12 @@
 #' Project a maxnet model fitted using fitModel
 #'
 #' @details {
-#' Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.}
+#' Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
+#'
+#' \strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating hte taxon name spaces repalced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
+#'
+#' \strong{If a file with this name already exists in the output folder, it will be overwritten.}
+#' }
 #'
 #' @param taxonName String. Taxonomic name associated with this model; used to construct a file name for the output raster file.
 #' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.
@@ -12,7 +17,7 @@
 #' @param baseOutputPath String. Full path to the output folder to receive the produced raster.
 #' @param fileLabel String. An identifying tag to be included in the output filename.
 #' @param makeTaxonFolder Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?
-#' @param quiet Logical. Procede without emitting progress messages?
+#' @param quiet Logical. Proceed without emitting progress messages?
 #'
 #' @return Nothing
 #' @export
