@@ -25,7 +25,7 @@ projectMaxnet(
 
 \item{makeTaxonFolder}{Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?}
 
-\item{quiet}{Logical. Procede without emitting progress messages?}
+\item{quiet}{Logical. Proceed without emitting progress messages?}
 
 \item{type.}{String. The type of scaling applied to predicted model values.}
 }
@@ -37,7 +37,12 @@ Project a maxnet model fitted using fitModel
 }
 \details{
 {
-Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.}
+Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
+
+\strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating hte taxon name spaces repalced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
+
+\strong{If a file with this name already exists in the output folder, it will be overwritten.}
+}
 }
 \examples{
 \dontrun{}
