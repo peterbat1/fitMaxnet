@@ -4,18 +4,27 @@
 \alias{computeMESS}
 \title{Compute MESS rasters}
 \usage{
-computeMESS(thisModel, envDataPath, outPath, MESSonly, ...)
+computeMESS(
+  thisModel = NULL,
+  envDataPath = "",
+  swdFilename = "",
+  outPath = "",
+  MESSonly = TRUE,
+  ...
+)
 }
 \arguments{
-\item{thisModel}{A maxnet model object.}
+\item{thisModel}{A maxnet model object}
 
-\item{envDataPath}{Character. Path to folder storing the environmental predictor raster layers used to fit the maxnet model.}
+\item{envDataPath}{Character. Path to folder storing the environmental predictor raster layers used to fit the maxnet model}
 
-\item{outPath}{Character. Path to folder into which output layers will be written.}
+\item{swdFilename}{Character. Full path to an SWD-format file}
+
+\item{outPath}{Character. Path to folder into which output raster layers will be written}
 
 \item{MESSonly}{Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed}
 
-\item{...}{Optional parameters passed to the raster function writeRaster.}
+\item{...}{Optional parameters passed to the raster function writeRaster}
 }
 \value{
 Nothing

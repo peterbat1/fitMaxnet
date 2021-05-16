@@ -9,11 +9,12 @@
 #'
 #' Compute set of MESS rasters for a maxnet model
 #'
-#' @param thisModel A maxnet model object.
-#' @param envDataPath Character. Path to folder storing the environmental predictor raster layers used to fit the maxnet model.
-#' @param outPath Character. Path to folder into which output layers will be written.
+#' @param thisModel A maxnet model object
+#' @param envDataPath Character. Path to folder storing the environmental predictor raster layers used to fit the maxnet model
+#' @param swdFilename Character. Full path to an SWD-format file
+#' @param outPath Character. Path to folder into which output raster layers will be written
 #' @param MESSonly Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed
-#' @param ... Optional parameters passed to the raster function writeRaster.
+#' @param ... Optional parameters passed to the raster function writeRaster
 #' @details
 #'
 #' A MESS computation is performed using the function mess in the package dismo. This function is a wrapper which orchestrates a call to the mess function using information stored in the maxnet model object.
@@ -27,13 +28,46 @@
 #' @examples
 #' \dontrun{}
 #'
-computeMESS <- function(thisModel, envDataPath, outPath, MESSonly, ...)
+computeMESS <- function(thisModel = NULL, envDataPath = "", swdFilename = "", outPath = "", MESSonly = TRUE, ...)
 {
+  if (!("maxnet" %in% class(thisModel)))
+    stop("'thisModel' is not a maxnet model object")
+
+  if (!dir.exists(envDataPath))
+    stop("Cannot find folder given in 'envDataPath'")
+
+  if (!file.exists(swdFilename))
+    stop("Cannot find SWD file referenced in 'swdFilename'")
 
   # Which variables where used in the model fit?
+  featureBetas <- thisModel$betas
 
+  # Trim to non-zero coefficient values
+  if (any(featureBetas == 0))
+    featureBetas <- featureBetas[-which(featureBetas == 0)]
 
-  # Load only the required variables into a raster stack:
+  tmpNames <- gsub("I(", "", names(featureBetas), fixed = TRUE)
+  ii <- grep("^2)", tmpNames, fixed = TRUE)
+  tmpNames[ii] <- gsub("^2)", "", tmpNames[ii], fixed = TRUE)
+  tmpNames[ii] <- paste0(tmpNames[ii],":", tmpNames[ii])
 
-  #ans <- dismo::mess()
+  varNames <- sort(unique(unlist(strsplit(tmpNames, ":", fixed = TRUE))))
+
+  # Load as a raster stack only those variables in the model
+  envDataFiles <- list.files(envDataPath, pattern = "tif", full.names = TRUE)
+
+  keepInd <- unlist(lapply(varNames, function(el) { grep(el, basename(envDataFiles)) }))
+
+  envData <- raster::stack(envDataFiles[keepInd])
+
+  # Load SWD file and do variable check
+  refData <- read.csv(swdFilename, stringsAsFactors = FALSE)[, -c(1:3)]
+  if (!all(varNames %in% colnames(refData)))
+    stop("Variable names in model do not match variables names in the SWD file")
+  else
+  {
+    refData <- refData[, varNames]
+  }
+
+  ans <- dismo::mess(x = envData, v = refData, full = MESSonly)
 }
