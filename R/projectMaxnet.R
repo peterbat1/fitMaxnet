@@ -13,7 +13,8 @@
 #'
 #' @param taxonName String. Taxonomic name associated with this model; used to construct a file name for the output raster file.
 #' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.
-#' @param type. String. The type of scaling applied to predicted model values.
+#' @param type String. The type of scaling applied to predicted model values.
+#' @param doClamp Logical. Should values of predictors (covariates) be clamped to those seen during model fitting? Default is FASLE, no clamping.
 #' @param baseOutputPath String. Full path to the output folder to receive the produced raster.
 #' @param fileLabel String. An identifying tag to be included in the output filename.
 #' @param makeTaxonFolder Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?
@@ -27,6 +28,7 @@
 projectMaxnet <- function(taxonName = NULL,
                           maxnetModel,
                           type = "exponential",
+                          doClamp = FALSE,
                           baseOutputPath,
                           fileLabel = NULL,
                           makeTaxonFolder = FALSE,
@@ -47,7 +49,7 @@ projectMaxnet <- function(taxonName = NULL,
   goodRows <- which(!is.na(rowSums(projData)))
 
   if (!quiet) cat("    Projecting model\n")
-  projMod <- predict(maxnet_model, projData[goodRows, ], type = type)
+  projMod <- predict(maxnet_model, projData[goodRows, ], type = type, clamp = doClamp)
 
   if (!quiet) cat("    Preparing and saving projection raster\n")
   projRas <- rasTemplate

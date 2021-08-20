@@ -8,6 +8,7 @@ projectMaxnet(
   taxonName = NULL,
   maxnetModel,
   type = "exponential",
+  doClamp = FALSE,
   baseOutputPath,
   fileLabel = NULL,
   makeTaxonFolder = FALSE,
