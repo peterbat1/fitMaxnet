@@ -2,7 +2,7 @@
 % Please edit documentation in R/computePR.R
 \name{computePRcurve}
 \alias{computePRcurve}
-\title{Compute Precision-Rrecall curve}
+\title{Compute Precision-Recall curve}
 \usage{
 computePRcurve(thisModel, pres, bkg)
 }

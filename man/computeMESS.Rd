@@ -16,15 +16,15 @@ computeMESS(
 \arguments{
 \item{thisModel}{A maxnet model object}
 
+\item{envData}{raster stack. The environmental predictor raster layers used to fit the maxnet model}
+
+\item{swdData}{data.frame. SWD data used in model fitting and here used as tyhe reference data set to compute the MESS raster}
+
 \item{outPath}{Character. Path to folder into which output raster layers will be written}
 
 \item{MESSonly}{Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed}
 
 \item{...}{Optional parameters passed to the raster function writeRaster}
-
-\item{envDataPath}{Character. Path to folder storing the environmental predictor raster layers used to fit the maxnet model}
-
-\item{swdFilename}{Character. Full path to an SWD-format file}
 }
 \value{
 Stuff like what is produced by dismo::mess()

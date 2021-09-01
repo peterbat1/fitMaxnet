@@ -22,9 +22,9 @@ POCplot(
 
 \item{capUpperValues}{Logical. Should computed values in smoother fit be clamped to 1?}
 
-\item{filename}{Character. Full path to a file into which the calibration plot will be written. Default (NULL) will cause the plot to appear on the standard graphics device.}
+\item{title}{Character. Title to appear in the plot. Default is a generic "Calibration plot".}
 
-\item{title.}{Character. Title to appear in the plot. Default is a generic "Calibration plot".}
+\item{filename}{Character. Full path to a file into which the calibration plot will be written. Default (NULL) will cause the plot to appear on the standard graphics device.}
 }
 \value{
 A named list with the follow elements:

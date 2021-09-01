@@ -4,7 +4,6 @@
 #' Compute and apply a mask of areas within which strict extrapolation has been detected
 #'
 #' @param maxnetModel Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.
-#' @param envStack Raster stack object. Stack of environmental rasters onto which the model has been projected.
 #' @param projRas RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.
 #' @param maskOutpath Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written
 #' @param fileLabel Character. Label to be used to distinguish the filename of the saved mask raster.

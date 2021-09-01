@@ -7,7 +7,9 @@
 plotPRcurve(PRobj, plotFilename = NULL)
 }
 \arguments{
-\item{plotFilename}{}
+\item{PRobj}{Something}
+
+\item{plotFilename}{Something}
 }
 \value{
 

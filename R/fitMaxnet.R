@@ -22,4 +22,5 @@
 #' @importFrom dismo mess
 #' @importFrom PRROC pr.curve roc.curve
 #' @importFrom Rfast rowsums
+#' @importFrom ggsci pal_npg
 NULL

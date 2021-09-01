@@ -84,7 +84,7 @@ fitModels <- function(taxonName = NULL,
                         outputType = outputType)
 
       cat("    Projecting model\n")
-      projMod <- maxnet::predict(ans, projData, type = outputType)
+      projMod <- predict(ans, projData, type = outputType)
 
       cat("    Preparing and saving projection raster\n")
       projRas <- projStack[[1]]

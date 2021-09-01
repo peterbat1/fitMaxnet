@@ -19,6 +19,12 @@ Imports: raster,
          rgeos,
          ggplot2,
          dplyr,
-         dismo
-Depends: 
-    R (>= 3.5)
+         dismo,
+         PRROC,
+         Rfast,
+         energy,
+         ggcorrplot,
+         ggpubr,
+         ggsci
+Depends:
+    R (>= 4.0)

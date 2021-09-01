@@ -1,7 +1,7 @@
 
 
 
-#' Compute Precision-Rrecall curve
+#' Compute Precision-Recall curve
 #'
 #' Compute a Precision-Recall (PR) curve and AUC value for a maxnet model
 #'
@@ -19,7 +19,7 @@ computePRcurve <- function(thisModel, pres, bkg)
 {
 
 
-  projMod <- predict(maxnet_model, projData[goodRows, ], type = type)
+  #projMod <- predict(maxnet_model, projData[goodRows, ], type = type)
 
 }
 
@@ -27,8 +27,8 @@ computePRcurve <- function(thisModel, pres, bkg)
 
 #' Title
 #'
-#' @param PRobj
-#' @param plotFilename
+#' @param PRobj Something
+#' @param plotFilename Something
 #'
 #' @return
 #' @export

@@ -122,7 +122,7 @@ smoothdist <- function(pred,
 #' @param back Numeric. Vector of model predictions at background points.
 #' @param linearize Logical. Should the logistic transform be applied to model predictions? The default is FALSE; see Details.
 #' @param capUpperValues Logical. Should computed values in smoother fit be clamped to 1?
-#' @param title. Character. Title to appear in the plot. Default is a generic "Calibration plot".
+#' @param title Character. Title to appear in the plot. Default is a generic "Calibration plot".
 #' @param filename Character. Full path to a file into which the calibration plot will be written. Default (NULL) will cause the plot to appear on the standard graphics device.
 #' @details {
 #' This is an adaptation of code published by Phillips and Elith (2010. POC plots: calibrating species distribution models with presence-only data. Ecology 91:2476–2484).

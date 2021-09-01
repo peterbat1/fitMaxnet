@@ -28,8 +28,6 @@ maskExtrapolation(
 \item{saveMask}{Logical. Should the mask raster (as distinct from the the masked version of projRas) be saved? Default is TRUE.}
 
 \item{silent}{Logical. If TRUE (default), no progress messages are written to the console.}
-
-\item{envStack}{Raster stack object. Stack of environmental rasters onto which the model has been projected.}
 }
 \value{
 Nothing but has side-effect of writing up to two raster files: mask raster (if saveMask == TRUE) and projection raster with mask applied plus, if \emph{makePlots} == TRUE, a set of PNG graphics files.

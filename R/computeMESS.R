@@ -10,8 +10,8 @@
 #' Compute set of MESS rasters for a maxnet model
 #'
 #' @param thisModel A maxnet model object
-#' @param envDataPath Character. Path to folder storing the environmental predictor raster layers used to fit the maxnet model
-#' @param swdFilename Character. Full path to an SWD-format file
+#' @param envData raster stack. The environmental predictor raster layers used to fit the maxnet model
+#' @param swdData data.frame. SWD data used in model fitting and here used as tyhe reference data set to compute the MESS raster
 #' @param outPath Character. Path to folder into which output raster layers will be written
 #' @param MESSonly Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed
 #' @param ... Optional parameters passed to the raster function writeRaster
