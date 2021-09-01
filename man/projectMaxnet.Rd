@@ -20,6 +20,10 @@ projectMaxnet(
 
 \item{maxnetModel}{String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.}
 
+\item{type}{String. The type of scaling applied to predicted model values.}
+
+\item{doClamp}{Logical. Should values of predictors (covariates) be clamped to those seen during model fitting? Default is FASLE, no clamping.}
+
 \item{baseOutputPath}{String. Full path to the output folder to receive the produced raster.}
 
 \item{fileLabel}{String. An identifying tag to be included in the output filename.}
@@ -27,8 +31,6 @@ projectMaxnet(
 \item{makeTaxonFolder}{Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?}
 
 \item{quiet}{Logical. Proceed without emitting progress messages?}
-
-\item{type.}{String. The type of scaling applied to predicted model values.}
 }
 \value{
 Nothing

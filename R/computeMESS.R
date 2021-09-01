@@ -22,22 +22,22 @@
 #' To facilitate the processing of very large, high-resolution rasters, only those variables which are used in the final model are included in the computation of MESS output.
 #'
 #'
-#' @return Nothing
+#' @return Stuff like what is produced by dismo::mess()
 #' @export
 #'
 #' @examples
 #' \dontrun{}
 #'
-computeMESS <- function(thisModel = NULL, envDataPath = "", swdFilename = "", outPath = "", MESSonly = TRUE, ...)
+computeMESS <- function(thisModel = NULL, envData = "", swdData = "", outPath = "", MESSonly = TRUE, ...)
 {
   if (!("maxnet" %in% class(thisModel)))
     stop("'thisModel' is not a maxnet model object")
 
-  if (!dir.exists(envDataPath))
-    stop("Cannot find folder given in 'envDataPath'")
-
-  if (!file.exists(swdFilename))
-    stop("Cannot find SWD file referenced in 'swdFilename'")
+  # if (!dir.exists(envDataPath))
+  #   stop("Cannot find folder given in 'envDataPath'")
+  #
+  # if (!file.exists(swdFilename))
+  #   stop("Cannot find SWD file referenced in 'swdFilename'")
 
   # Which variables where used in the model fit?
   featureBetas <- thisModel$betas
@@ -54,14 +54,19 @@ computeMESS <- function(thisModel = NULL, envDataPath = "", swdFilename = "", ou
   varNames <- sort(unique(unlist(strsplit(tmpNames, ":", fixed = TRUE))))
 
   # Load as a raster stack only those variables in the model
-  envDataFiles <- list.files(envDataPath, pattern = "tif", full.names = TRUE)
+  #envDataFiles <- list.files(envDataPath, pattern = "tif", full.names = TRUE)
 
-  keepInd <- unlist(lapply(varNames, function(el) { grep(el, basename(envDataFiles)) }))
+  #keepInd <- unlist(lapply(varNames, function(el) { grep(el, basename(envDataFiles)) }))
+  keepInd <- which(varNames %in% names(envData))
 
-  envData <- raster::stack(envDataFiles[keepInd])
+  #envData <- raster::stack(envDataFiles[keepInd])
+
+  envData <- envData[[keepInd]]
 
   # Load SWD file and do variable check
-  refData <- read.csv(swdFilename, stringsAsFactors = FALSE)[, -c(1:3)]
+  #refData <- read.csv(swdFilename, stringsAsFactors = FALSE)[, -c(1:3)]
+  refData <- swdData
+
   if (!all(varNames %in% colnames(refData)))
     stop("Variable names in model do not match variables names in the SWD file")
   else
