@@ -11,7 +11,6 @@
 #'
 #' @param thisModel A maxnet model object
 #' @param envData raster stack. The environmental predictor raster layers used to fit the maxnet model
-#' @param swdData data.frame. SWD data used in model fitting and here used as tyhe reference data set to compute the MESS raster
 #' @param outPath Character. Path to folder into which output raster layers will be written
 #' @param MESSonly Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed
 #' @param ... Optional parameters passed to the raster function writeRaster
@@ -28,7 +27,7 @@
 #' @examples
 #' \dontrun{}
 #'
-computeMESS <- function(thisModel = NULL, envData = "", swdData = "", outPath = "", MESSonly = TRUE, ...)
+computeMESS <- function(thisModel = NULL, envData = "", outPath = "", MESSonly = TRUE, ...)
 {
   if (!("maxnet" %in% class(thisModel)))
     stop("'thisModel' is not a maxnet model object")
@@ -62,6 +61,18 @@ computeMESS <- function(thisModel = NULL, envData = "", swdData = "", outPath = 
   #envData <- raster::stack(envDataFiles[keepInd])
 
   envData <- envData[[keepInd]]
+
+  goodCells <- which(!is.na(envData[[1]][]))
+  nGoodCells <- length(goodCells)
+
+  for (thisVar in varNames)
+  {
+varMin <- thisModel$varmin[thisVar]
+varMax <- thisModel$varmax[thisVar]
+#p_i <-
+  }
+
+
 
   # Load SWD file and do variable check
   #refData <- read.csv(swdFilename, stringsAsFactors = FALSE)[, -c(1:3)]

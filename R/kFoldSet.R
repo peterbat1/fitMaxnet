@@ -1,41 +1,32 @@
 
 #' Make k sets of indices to samples for k-fold cross-validation
 #'
-#' The function randomly allocates sample indices to k numeric vectors. The length of each vector is set initially to be the nearest whole number which, when multiplied by the number of folds, comes as close as possible to the number of samples. Any residual of un-allocated sample indices remaining after the initial allocation are distributed randomly to the k groups. Each selected group receives only 1 additional sample index.
+#' The function randomly allocates sample indices to k numeric vectors. The length of each vector is determined as the nearest integer to the number of samples times the test fraction.
+#'
 #'
 #' @param numSamples Integer. The number of samples to be partitioned into k folds.
 #' @param k Integer. The number of folds.
+#' @param trainSplit Numeric. The fraction of samples to be used in
 #'
-#' @return A list of numeric vectors of length k, where the elements of each vector are the indices of the samples to be included on that fold.
+#' @return A list of numeric vectors of length k, where the elements of each vector are the indices of the samples forming the TEST set for that fold.
 #' @export
 #'
 #' @examples
 #' \dontrun{ }
-makeFolds <- function(numSamples, k)
+makeFolds <- function(numSamples, k, testSplit = 0.2)
 {
   # Do checks...
 
-
   set.seed(1953)
-  targetGroupSize <- numSamples %/% k
+
+  sampleSize <- trunc(testSplit * numSamples)
   sampleInd <- 1:numSamples
+  foldMembers <- vector("list", k)
 
-  grpSizes <- rep(targetGroupSize, k)
-
-  numResidualSamples <- numSamples %% k
-
-  # Select numResidualSamples among the groups to receive one more sample
-  extraInd <- sample(1:k, numResidualSamples, replace = FALSE)
-
-  grpSizes[extraInd] <- grpSizes[extraInd] + 1
-
-  grpMembers <- vector("list", length(grpSizes))
-
-  for (i in 1:length(grpSizes))
+  for (i in 1:k)
   {
-    grpMembers[[i]] <- sample(sampleInd, grpSizes[i], replace = FALSE)
-    sampleInd <- sampleInd[-grpMembers[[i]]]
+    foldMembers[[i]] <- sample(sampleInd, sampleSize, replace = FALSE)
   }
 
-  return(grpMembers)
+  return(foldMembers)
 }

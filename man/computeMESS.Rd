@@ -4,21 +4,12 @@
 \alias{computeMESS}
 \title{Compute MESS rasters}
 \usage{
-computeMESS(
-  thisModel = NULL,
-  envData = "",
-  swdData = "",
-  outPath = "",
-  MESSonly = TRUE,
-  ...
-)
+computeMESS(thisModel = NULL, envData = "", outPath = "", MESSonly = TRUE, ...)
 }
 \arguments{
 \item{thisModel}{A maxnet model object}
 
 \item{envData}{raster stack. The environmental predictor raster layers used to fit the maxnet model}
-
-\item{swdData}{data.frame. SWD data used in model fitting and here used as tyhe reference data set to compute the MESS raster}
 
 \item{outPath}{Character. Path to folder into which output raster layers will be written}
 
