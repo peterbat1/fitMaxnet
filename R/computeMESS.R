@@ -108,7 +108,7 @@ computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImp
   MESS <- Rfast::rowMins(varMESS, value = TRUE)
 
   rasTemplate[goodRows] <- MESS
-  plot(rasTemplate, main = "MESS")
+  #plot(rasTemplate, main = "MESS")
 
   if (outPath != "")
   {
