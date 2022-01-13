@@ -4,18 +4,33 @@
 \alias{computeMESS}
 \title{Compute MESS rasters}
 \usage{
-computeMESS(thisModel = NULL, envData = "", outPath = "", MESSonly = TRUE, ...)
+computeMESS(
+  thisModel = NULL,
+  envPath = NULL,
+  occSWD,
+  bkgSWD,
+  varImpThresold = 0,
+  outPath = "",
+  MESSonly = TRUE,
+  ...
+)
 }
 \arguments{
 \item{thisModel}{A maxnet model object}
 
-\item{envData}{raster stack. The environmental predictor raster layers used to fit the maxnet model}
+\item{occSWD}{numeric matrix. Reference data; typically created by concatenating occurrence SWD and background SWD files used to fit the model}
+
+\item{bkgSWD}{numeric matrix}
 
 \item{outPath}{Character. Path to folder into which output raster layers will be written}
 
 \item{MESSonly}{Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed}
 
 \item{...}{Optional parameters passed to the raster function writeRaster}
+
+\item{envStack}{raster stack. The environmental predictor raster layers used to fit the maxnet model}
+
+\item{varImpThreshold}{Numeric. Value used to filter variables by their importance scores; percentage importance therefore ranges from 0 to 100.}
 }
 \value{
 Stuff like what is produced by dismo::mess()
@@ -24,7 +39,7 @@ Stuff like what is produced by dismo::mess()
 Compute set of MESS rasters for a maxnet model
 }
 \details{
-A MESS computation is performed using the function mess in the package dismo. This function is a wrapper which orchestrates a call to the mess function using information stored in the maxnet model object.
+A MESS computation is performed blah blah.
 
 To facilitate the processing of very large, high-resolution rasters, only those variables which are used in the final model are included in the computation of MESS output.
 }
