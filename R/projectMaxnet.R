@@ -6,15 +6,18 @@
 #' @details {
 #' Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
 #'
-#' \strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating hte taxon name spaces repalced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
+#' \strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating the taxon name spaces replaced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
 #'
 #' \strong{If a file with this name already exists in the output folder, it will be overwritten.}
+#'
+#' If dataType = "INT4S" is given, output is multiplied by 1,000 and truncated to an integer. Therefore, real values (to 4 dec. places) must be regenerated after loading the TIFF file by dividing the raster values by 1,000.
 #' }
 #'
 #' @param taxonName String. Taxonomic name associated with this model; used to construct a file name for the output raster file.
 #' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.
 #' @param type String. The type of scaling applied to predicted model values.
 #' @param doClamp Logical. Should values of predictors (covariates) be clamped to those seen during model fitting? Default is FASLE, no clamping.
+#' @param dataType String. Data format to be used. Default is "FLT4S". Only alternative at moment is "INT2S".
 #' @param baseOutputPath String. Full path to the output folder to receive the produced raster.
 #' @param fileLabel String. An identifying tag to be included in the output filename.
 #' @param makeTaxonFolder Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?
@@ -29,6 +32,7 @@ projectMaxnet <- function(taxonName = NULL,
                           maxnetModel,
                           type = "exponential",
                           doClamp = FALSE,
+                          dataType = "FLT4S",
                           baseOutputPath,
                           fileLabel = NULL,
                           makeTaxonFolder = FALSE,
@@ -68,7 +72,7 @@ projectMaxnet <- function(taxonName = NULL,
   else
     outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_",fileLabel,".tif")
 
-  raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE, options = "COMPRESS=LZW")
+  raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE, options = "COMPRESS=DFLATE")
 
   if (!quiet) cat("  End model projection\n\n")
 }

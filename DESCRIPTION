@@ -1,6 +1,6 @@
 Package: fitMaxnet
 Title: Fit MaxEnt Niche Models Using maxnet
-Version: 0.4.4
+Version: 0.4.5
 Authors@R: 
     person(given = "Peter D.",
            family = "Wilson",
