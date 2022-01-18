@@ -54,7 +54,7 @@ projectMaxnet <- function(taxonName = NULL,
   if (!quiet) cat("    Preparing and saving projection raster\n")
   projRas <- rasTemplate
   raster::values(projRas) <- NA
-  raster::values(projRas)[goodRows] <- projMod[,1]
+  raster::values(projRas)[goodRows] <- round(projMod[,1], 4)
 
   if (makeTaxonFolder)
     outputPath <- paste0(baseOutputPath, "/", taxonName)
