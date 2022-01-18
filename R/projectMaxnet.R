@@ -68,7 +68,7 @@ projectMaxnet <- function(taxonName = NULL,
   else
     outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_",fileLabel,".tif")
 
-  raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE, options = "COMPRESS=DEFLATE")
+  raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE, options = "COMPRESS=LZW")
 
   if (!quiet) cat("  End model projection\n\n")
 }
