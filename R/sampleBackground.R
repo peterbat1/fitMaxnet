@@ -52,7 +52,7 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
   else
     stop("Cannot identify the 'latitude' or 'Y' column in 'occData'")
 
-  occCells <- raster::cellFromXY(baseRaster, occData[, c(X_ind, Y_ind)])
+  occCells <- terra::cellFromXY(baseRaster, occData[, c(X_ind, Y_ind)])
 
   if (trace)
   {
@@ -60,13 +60,13 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
     cat("----------------------------------------------------\n")
   }
 
-  raster::values(baseRaster)[which(!is.na(raster::values(baseRaster)))] <- 1
+  terra::values(baseRaster)[which(!is.na(terra::values(baseRaster)))] <- 1
 
   # Remove occupied cells from the set available for selection
   raster::values(baseRaster)[occCells] <- NA
 
-  activeArea <- raster::mask(baseRaster, boundsPolygon)
-  availableCells <- which(raster::values(activeArea) == 1)
+  activeArea <- terra::mask(baseRaster, boundsPolygon)
+  availableCells <- which(terra::values(activeArea) == 1)
 
   if (trace)
   {

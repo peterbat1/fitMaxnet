@@ -17,7 +17,7 @@
 #' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.
 #' @param type String. The type of scaling applied to predicted model values.
 #' @param doClamp Logical. Should values of predictors (covariates) be clamped to those seen during model fitting? Default is FASLE, no clamping.
-#' @param dataType String. Data format to be used. Default is "FLT4S". Only alternative at moment is "INT2S".
+#' @param dataType String. Data format to be used. Default is "FLT4S". Only alternative at moment is "INT4S".
 #' @param baseOutputPath String. Full path to the output folder to receive the produced raster.
 #' @param fileLabel String. An identifying tag to be included in the output filename.
 #' @param makeTaxonFolder Logical. Should a sub-folder on \emph{baseOutputPath} be created using \emph{taxonName}?
@@ -50,15 +50,15 @@ projectMaxnet <- function(taxonName = NULL,
 
   load(maxnetModel)
 
-  goodRows <- which(!is.na(rowSums(projData)))
+  goodRows <- which(!is.na(Rfast::rowsums(projData)))
 
   if (!quiet) cat("    Projecting model\n")
   projMod <- predict(maxnet_model, projData[goodRows, ], type = type, clamp = doClamp)
 
   if (!quiet) cat("    Preparing and saving projection raster\n")
   projRas <- rasTemplate
-  raster::values(projRas) <- NA
-  raster::values(projRas)[goodRows] <- round(projMod[,1], 4)
+  terra::values(projRas) <- NA
+  terra::values(projRas)[goodRows] <- round(projMod[,1], 4)
 
   if (makeTaxonFolder)
     outputPath <- paste0(baseOutputPath, "/", taxonName)
@@ -70,9 +70,14 @@ projectMaxnet <- function(taxonName = NULL,
   if (is.null(fileLabel))
     outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection.tif")
   else
-    outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_",fileLabel,".tif")
+    outputPath <- paste0(outputPath, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE)), "_projection_", fileLabel, ".tif")
 
-  raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE, options = "COMPRESS=DEFLATE")
+  terra::writeRaster(projRas,
+                     outputPath,
+                     filetype = "GTiff",
+                     overwrite = TRUE,
+                     datatype = dataType,
+                     gdal = "COMPRESS=DEFLATE")
 
   if (!quiet) cat("  End model projection\n\n")
 }

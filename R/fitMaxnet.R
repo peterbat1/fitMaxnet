@@ -10,6 +10,7 @@
 #' @import dplyr
 #' @importFrom stats prcomp
 #' @importFrom grDevices chull png
+#' @importFrom terra cellFromXY xyFromCell subset extract nlyr values writeRaster
 #' @importFrom raster xyFromCell cellFromXY extract plot stack values mask dropLayer calc writeRaster subset
 #' @importFrom utils read.csv write.csv
 #' @importFrom sp spTransform coordinates CRS spDistsN1

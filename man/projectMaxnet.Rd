@@ -9,6 +9,7 @@ projectMaxnet(
   maxnetModel,
   type = "exponential",
   doClamp = FALSE,
+  dataType = "FLT4S",
   baseOutputPath,
   fileLabel = NULL,
   makeTaxonFolder = FALSE,
@@ -23,6 +24,8 @@ projectMaxnet(
 \item{type}{String. The type of scaling applied to predicted model values.}
 
 \item{doClamp}{Logical. Should values of predictors (covariates) be clamped to those seen during model fitting? Default is FASLE, no clamping.}
+
+\item{dataType}{String. Data format to be used. Default is "FLT4S". Only alternative at moment is "INT4S".}
 
 \item{baseOutputPath}{String. Full path to the output folder to receive the produced raster.}
 
@@ -42,9 +45,11 @@ Project a maxnet model fitted using fitModel
 {
 Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
 
-\strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating hte taxon name spaces repalced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
+\strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating the taxon name spaces replaced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
 
 \strong{If a file with this name already exists in the output folder, it will be overwritten.}
+
+If dataType = "INT4S" is given, output is multiplied by 1,000 and truncated to an integer. Therefore, real values (to 4 dec. places) must be regenerated after loading the TIFF file by dividing the raster values by 1,000.
 }
 }
 \examples{

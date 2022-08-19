@@ -45,12 +45,12 @@ maskExtrapolation <- function(maxnetModel,
   if (!exists("projData")) stop("Global object 'projData' not found. Please run 'prepProjData'")
 
   if (file.exists(projRas))
-    ras <- raster::raster(projRas)
+    ras <- terra::rast(projRas)
   else
     stop("Can find projection raster specified in 'projRas'")
 
 
-  if (!all(as.vector(raster::extent(rasTemplate)) == as.vector(raster::extent(ras))))
+  if (!all(as.vector(terra::ext(rasTemplate)) == as.vector(terra::ext(ras))))
     stop("Raster parameters of global object 'rasTemplate' are not same as parameters for 'projRas'")
 
   # Fetch a fitted glmnet/maxnet model
@@ -101,21 +101,21 @@ maskExtrapolation <- function(maxnetModel,
 
     if (makePlots)
     {
-      outStack <- raster::stack()
+      outStack <- terra::rast()
 
       for (i in 1:length(modelVars))
       {
         localProjData[naInd, i] <- NA
-        outStack <- raster::stack(outStack, rasTemplate)
+        outStack <- terra::rast(outStack, rasTemplate)
         outStack[[i]][] <- localProjData[, i]
       }
 
       names(outStack) <- modelVars
 
-      png(paste0(maskOutpath, "/layer_masks.png"))
+      grDevices::png(paste0(maskOutpath, "/layer_masks.png"))
       plot(outStack)
       dev.off()
-      png(paste0(maskOutpath, "/mask_layer.png"))
+      grDevices::png(paste0(maskOutpath, "/mask_layer.png"))
       plot(ans, main = "Mask layer")
       dev.off()
     }
@@ -127,12 +127,12 @@ maskExtrapolation <- function(maxnetModel,
       else
         maskFile <- paste0(maskOutpath, "/extrapolationMask_", fileLabel, ".tif")
 
-      raster::writeRaster(ans, maskFile, overwrite = TRUE)
+      terra::writeRaster(ans, maskFile, overwrite = TRUE)
     }
 
     if (!silent) cat("     Applying mask raster to projected model raster\n")
-    offInd <- which(raster::values(ans) != 1)
-    raster::values(ras)[offInd] <- 0
+    offInd <- which(terra::values(ans) != 1)
+    terra::values(ras)[offInd] <- 0
 
     if (makePlots)
     {
@@ -147,7 +147,7 @@ maskExtrapolation <- function(maxnetModel,
       outFilename <- gsub(".tif", "_masked.tif", projRas, fixed = TRUE)
     else
       outFilename <- gsub(".tif", paste0("_masked_", fileLabel, ".tif"), projRas, fixed = TRUE)
-    raster::writeRaster(ras, outFilename, format = "GTiff", overwrite = TRUE)
+    terra::writeRaster(ras, outFilename, filetype = "GTiff", overwrite = TRUE)
     if (!silent) cat("     End of masking operation.\n\n")
   }
   else

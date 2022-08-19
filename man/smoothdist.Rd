@@ -13,9 +13,6 @@ smoothdist(pred, res, smoothing_df = 4)
 
 \item{smoothing_df}{Numeric. Degrees of freedom for a natural cubic spline fitted to model predictions at combined occurrence and background locations.}
 }
-\value{
-
-}
 \description{
 A function to generate a smoothed density function of observed probability of presence
 }

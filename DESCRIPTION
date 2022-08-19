@@ -11,8 +11,9 @@ Description: An ensemble of functions to fit Environmental Niche Models (ENMs) u
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Imports: raster,
+         terra,
          maxnet,
          sp,
          sf,

@@ -45,6 +45,7 @@ calibplot <- function(pred,
   ylow <- pred$y - 2 * pred$se
   ylow[ylow < 0] <- 0
   yhigh <- pred$y + 2 * pred$se
+
   if (capuci) yhigh[yhigh > 1] <- 1
 
   plotData <- data.frame(x = pred$x,

@@ -41,9 +41,6 @@ calibplot(
 
 \item{title}{Character. Title for the plot. Default is a generic "Calibration plot".}
 }
-\value{
-
-}
 \description{
 Make a smoothed calibration plot for a presence-only model.
 }

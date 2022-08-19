@@ -11,9 +11,6 @@ plotPRcurve(PRobj, plotFilename = NULL)
 
 \item{plotFilename}{Something}
 }
-\value{
-
-}
 \description{
 Title
 }

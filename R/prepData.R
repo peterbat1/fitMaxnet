@@ -35,7 +35,7 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
       stop("Cannot find any geoTIFF files in the folder given in 'envDataPath'")
     else
     {
-      envStack <- raster::stack(dataFileSet)
+      envStack <- terra::rast(dataFileSet)
     }
 
     # Trim envStack using excludedVars
@@ -54,14 +54,14 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
 
         if (trace)
           {
-          cat("\nTotal indices in stack =", nlayers(envStack), "\n")
+          cat("\nTotal indices in stack =", terra::nlyr(envStack), "\n")
           cat("Drop var indices:\n")
           print(dropInd)
-          cat("\nTotal indices in stack =", nlayers(envStack), "\n")
+          cat("\nTotal indices in stack =", terra::nlyr(envStack), "\n")
           cat("----------------------------------------------------\n")
         }
 
-         envStack <- raster::dropLayer(envStack, dropInd)
+         envStack <- terra::subset(envStack, dropInd, negate = TRUE)
       }
       else
       {
@@ -132,7 +132,7 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
       cat("----------------------------------------------------\n")
     }
 
-    bkg.xy <- xyFromCell(envStack[[1]], bkg.cells)        #print(names(bkg.latlong))
+    bkg.xy <- terra::xyFromCell(envStack[[1]], bkg.cells)        #print(names(bkg.latlong))
 
     if (trace)
     {
@@ -144,13 +144,13 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
       bkgData <- data.frame(species = rep("background", length(bkg.cells)),
                             longitude = bkg.xy[, 1],
                             latitude = bkg.xy[, 2],
-                            extract(envStack, bkg.cells),
+                            terra::extract(envStack, bkg.cells),
                             stringsAsFactors = FALSE)
     else
       bkgData <- data.frame(species = rep("background", length(bkg.cells)),
                             x = bkg.xy[, 1],
                             y = bkg.xy[, 2],
-                            extract(envStack, bkg.cells),
+                            terra::extract(envStack, bkg.cells),
                             stringsAsFactors = FALSE)
 
     if (trace)
@@ -166,20 +166,20 @@ prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
 
     cat("   Extracting data for occupied grid cells...")
     # Find grid cell row, col coordinates of occupied grid cells:
-    occ.cells <- cellFromXY(envStack[[1]], cbind(occData[, Xind], occData[, Yind]))
+    occ.cells <- terra::cellFromXY(envStack[[1]], cbind(occData[, Xind], occData[, Yind]))
     #nPresence <- length(occ.cells)
 
     if (isLatLong)
       occData <- data.frame(species = rep(taxon_Name, length(occ.cells)),
                             longitude = occData[, Xind],
                             latitude = occData[, Yind],
-                            extract(envStack, occ.cells),
+                            terra::extract(envStack, occ.cells),
                             stringsAsFactors = FALSE)
     else
       occData <- data.frame(species = rep(taxon_Name, length(occ.cells)),
                             x = occData[, Xind],
                             y = occData[, Yind],
-                            extract(envStack, occ.cells),
+                            terra::extract(envStack, occ.cells),
                             stringsAsFactors = FALSE)
 
     if (trace)
