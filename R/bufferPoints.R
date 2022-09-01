@@ -44,10 +44,11 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
   ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_albers, dist = bufferDist))
 
   # Clip the buffer polygon to the Australian coastline
-  if (trace) cat("clip buffer polygon to OZ coastline\n")
-  clippedBuffer <<- sf::st_sf(sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))))
-
-  if (trace) cat("transform clipped buffer to CRS of occ_pts\n")
-  if (pts_crs != 8859) clippedBuffer <- sf::st_transform(clippedBuffer, crs = pts_crs) # 3577
-  return(clippedBuffer)
+  # if (trace) cat("clip buffer polygon to OZ coastline\n")
+  # clippedBuffer <- sf::st_sf(sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))))
+  #
+  # if (trace) cat("transform clipped buffer to CRS of occ_pts\n")
+  # if (pts_crs != 8859) clippedBuffer <- sf::st_transform(clippedBuffer, crs = pts_crs) # 3577
+  # return(clippedBuffer)
+  if (pts_crs != 8859) ptsBuffer <- sf::st_transform(ptsBuffer, crs = pts_crs)
 }
