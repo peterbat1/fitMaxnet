@@ -3,7 +3,7 @@
 #'
 #' Produce an sf polygon object representing the boundary within which background points will be sampled for ENM fitting
 #'
-#' @param occ_pts A data frame or matrix with at least two columns representing longitude and latitude (X and Y) of occurrence records
+#' @param occ_pts An sf points object providing the X- and Y-coordinates of occurrence records
 #' @param bufferDist_km Numeric. Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.
 #' @param trace Logical. Should messages be emitted to assist progress tracking or debugging
 #'
@@ -30,8 +30,8 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
   if ("sf" %in% class(occ_pts))
   {
     pts_crs <- as.integer(gsub("EPSG:", "", st_crs(occ_pts)$input, fixed = TRUE))
-    if (pts_crs != 3577)
-      occ_pts_albers <- st_transform(occ_pts, 3577)
+    if (pts_crs != 8859) # 3577
+      occ_pts_albers <- st_transform(occ_pts, 8859) # 3577
     else
       occ_pts_albers <- occ_pts
   }
@@ -45,9 +45,9 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 
   # Clip the buffer polygon to the Australian coastline
   if (trace) cat("clip buffer polygon to OZ coastline\n")
-  clippedBuffer <<- st_sf(sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))))
+  clippedBuffer <<- sf::st_sf(sf::st_union(sf::st_intersection(ptsBuffer, sf::st_transform(ozPolygon, 3577))))
 
   if (trace) cat("transform clipped buffer to CRS of occ_pts\n")
-  if (pts_crs != 3577) clippedBuffer <- sf::st_transform(clippedBuffer, crs = pts_crs)
+  if (pts_crs != 8859) clippedBuffer <- sf::st_transform(clippedBuffer, crs = pts_crs) # 3577
   return(clippedBuffer)
 }

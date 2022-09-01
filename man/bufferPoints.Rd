@@ -7,7 +7,7 @@
 bufferPoints(occ_pts, bufferDist_km = 200, trace = FALSE)
 }
 \arguments{
-\item{occ_pts}{A data frame or matrix with at least two columns representing longitude and latitude (X and Y) of occurrence records}
+\item{occ_pts}{An sf points object providing the X- and Y-coordinates of occurrence records}
 
 \item{bufferDist_km}{Numeric. Size of buffer to be built around the occurrence points in kilometres. Default value of 200 km follows the advice of VanDerWal et al. (2009). See details below.}
 
