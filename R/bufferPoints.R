@@ -31,7 +31,7 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
   {
     pts_crs <- as.integer(gsub("EPSG:", "", st_crs(occ_pts)$input, fixed = TRUE))
     if (pts_crs != 8859) # 3577
-      occ_pts_albers <- st_transform(occ_pts, 8859) # 3577
+      occ_pts_albers <- sf::st_transform(occ_pts, 8859) # 3577
     else
       occ_pts_albers <- occ_pts
   }
