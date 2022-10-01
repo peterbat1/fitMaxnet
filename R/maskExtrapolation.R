@@ -4,8 +4,8 @@
 #' Compute and apply a mask of areas within which strict extrapolation has been detected
 #'
 #' @param maxnetModel Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.
-#' @param projRas RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.
-#' @param maskOutpath Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written
+#' @param projRasFile Character. Path to a raster of the projected maxnet model to which the computed extrapolation mask will be applied.
+#' @param maskOutpath Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written.
 #' @param fileLabel Character. Label to be used to distinguish the filename of the saved mask raster.
 #' @param makePlots Logical. Make basic plots of raster objects for interpretation, review and quality control? Default is TRUE.
 #' @param saveMask Logical. Should the mask raster (as distinct from the the masked version of projRas) be saved? Default is TRUE.
@@ -35,8 +35,8 @@
 #' }
 
 maskExtrapolation <- function(maxnetModel,
-                              projRas,
-                              maskOutpath = dirname(projRas),
+                              projRasFile,
+                              maskOutpath = dirname(projRasFile),
                               fileLabel = NULL,
                               makePlots = TRUE,
                               saveMask = TRUE,
@@ -44,8 +44,8 @@ maskExtrapolation <- function(maxnetModel,
 {
   if (!exists("projData")) stop("Global object 'projData' not found. Please run 'prepProjData'")
 
-  if (file.exists(projRas))
-    ras <- terra::rast(projRas)
+  if (file.exists(projRasFile))
+    ras <- terra::rast(projRasFile)
   else
     stop("Can find projection raster specified in 'projRas'")
 

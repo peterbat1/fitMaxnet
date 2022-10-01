@@ -6,8 +6,8 @@
 \usage{
 maskExtrapolation(
   maxnetModel,
-  projRas,
-  maskOutpath = dirname(projRas),
+  projRasFile,
+  maskOutpath = dirname(projRasFile),
   fileLabel = NULL,
   makePlots = TRUE,
   saveMask = TRUE,
@@ -17,9 +17,9 @@ maskExtrapolation(
 \arguments{
 \item{maxnetModel}{Character. Full path to a maxnet model fitted by \link{fit_maxnet} and saved as an .Rd file.}
 
-\item{projRas}{RasterLayer. Raster of the projected maxnet model to which the computed extrapolation mask will be applied.}
+\item{projRasFile}{Character. Path to a raster of the projected maxnet model to which the computed extrapolation mask will be applied.}
 
-\item{maskOutpath}{Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written}
+\item{maskOutpath}{Character. Full path to the folder into which the mask raster and projection raster with mask applied will be written.}
 
 \item{fileLabel}{Character. Label to be used to distinguish the filename of the saved mask raster.}
 
