@@ -144,9 +144,10 @@ maskExtrapolation <- function(maxnetModel,
     ##########################################
     if (!silent) cat("     Saving masked projected raster\n")
     if (is.null(fileLabel))
-      outFilename <- gsub(".tif", "_masked.tif", projRas, fixed = TRUE)
+      outFilename <- gsub(".tif", "_masked.tif", projRasFile, fixed = TRUE)
     else
-      outFilename <- gsub(".tif", paste0("_masked_", fileLabel, ".tif"), projRas, fixed = TRUE)
+      outFilename <- gsub(".tif", paste0("_masked_", fileLabel, ".tif"), projRasFile, fixed = TRUE)
+
     terra::writeRaster(ras, outFilename, filetype = "GTiff", overwrite = TRUE)
     if (!silent) cat("     End of masking operation.\n\n")
   }
