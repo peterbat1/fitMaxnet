@@ -34,7 +34,7 @@ A named list with the follow elements:
 }
 }
 \description{
-Produce a smoothed calibration plot for a presence-only model
+Produce a smoothed calibration plot for a presence-only model by the method of Phillips and Elith
 }
 \details{
 {

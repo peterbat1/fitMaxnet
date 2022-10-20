@@ -109,13 +109,13 @@ responsePlot <- function(thisModel,
     else
     {
       plotyBits[[thisVar]] <- ggplot2::ggplot(plotData, aes(x = plotData[, thisVar], y = prediction)) +
-        geom_line(colour = "blue", size = 1) + ylab(ylabel) + xlab(thisVar) + ylim(ylimits) +
-        theme(axis.title.x = element_text(size = 8),
+        ggplot2::geom_smooth(colour = "blue", size = 1) + ggplot2::ylab(ylabel) + ggplot2::xlab(thisVar) + ggplot2::ylim(ylimits) +
+        ggplot2::theme(axis.title.x = element_text(size = 8),
               axis.title.y = element_text(size = 8),
               axis.text.x = element_text(size = 6),
               axis.text.y = element_text(size = 6),
               plot.title = element_text(size = 8)) +
-        ggtitle(paste0("Importance: ", varImp[thisVar], "%"))
+        ggplot2::ggtitle(paste0("Importance: ", varImp[thisVar], "%"))
     }
   }
 

@@ -45,7 +45,7 @@ Explore correlation relationships between environmental predictor values at occu
 {
 Multicollinearity (high correlation between predictor variables or covariates) is a major issue for correlative models such as ecological niche models (ENMs). From the earliest days of modern statistical analysis, multicollinearity has been a major concern for fitting liner models such as ANOVAs and linear regressions since very high correlations cause complete numerical failure of the model fitting process. Machine learning methods such as MaxEnt are not likely to fail in the same (numerically spectacular) way, but are nevertheless prone to some adverse impacts caused by high levels of correlation between covariates.
 
-Impacts include: model complexity, instability, incorrect inferences about variable/feature importance
+Although it is still subject to research for machine learning methods such as MaxEnt, impacts of multicollinearity \emph{could} include: high model complexity, instability in models (e.g. unstable indications of variable importance/contribution) possibly leading to incorrect inferences about variable/feature importance.
 }
 }
 \examples{

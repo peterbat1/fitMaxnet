@@ -2,7 +2,7 @@
 
 #' Make a smoothed calibration plot
 #'
-#' Make a smoothed calibration plot for a presence-only model.
+#' Make a smoothed calibration plot for a presence-only model using the method by Phillips and Elith
 #'
 #' @param pred Data frame. Predicted probability of presence at occurrence and background locations
 #' @param negrug Numeric. Model prediction of presence at background points.
@@ -117,7 +117,7 @@ smoothdist <- function(pred,
 
 #' Presence-only smoothed calibration plot
 #'
-#' Produce a smoothed calibration plot for a presence-only model
+#' Produce a smoothed calibration plot for a presence-only model by the method of Phillips and Elith
 #'
 #' @param pred Numeric. Vector of model predictions at occurrence points.
 #' @param back Numeric. Vector of model predictions at background points.

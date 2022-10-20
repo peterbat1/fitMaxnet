@@ -42,7 +42,7 @@ calibplot(
 \item{title}{Character. Title for the plot. Default is a generic "Calibration plot".}
 }
 \description{
-Make a smoothed calibration plot for a presence-only model.
+Make a smoothed calibration plot for a presence-only model using the method by Phillips and Elith
 }
 \details{
 {

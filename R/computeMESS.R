@@ -29,7 +29,7 @@ computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImp
     stop("'thisModel' is not a maxnet model object")
 
   envFileSet <- list.files(envPath, "*.tif", full.names = TRUE)
-  envStack <- raster::stack(envFileSet)
+  envStack <- terra::rast(envFileSet)
 
   varImp <- fitMaxnet::varImportance(thisModel, occSWD, bkgSWD, "cloglog")
 
@@ -50,7 +50,7 @@ computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImp
 
   rasTemplate <- envStack[[1]]
 
-  envMat <- raster::as.matrix(envStack)
+  envMat <- terra::as.matrix(envStack)
   #print(colnames(envMat))
   envMat <- envMat[, goodVars]
 
@@ -107,14 +107,12 @@ computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImp
 
   MESS <- Rfast::rowMins(varMESS, value = TRUE)
 
-  rasTemplate[goodRows] <- MESS
-  #plot(rasTemplate, main = "MESS")
-
   if (outPath != "")
   {
+    rasTemplate[goodRows] <- MESS
     if (!dir.exists(outPath)) dir.create(outPath, recursive = TRUE)
     outFilename <- file.path(outPath, "MESS.tif")
-    raster::writeRaster(rasTemplate, overwrite = TRUE, options = "COMPRESS=DEFLATE")
+    terra::writeRaster(rasTemplate, overwrite = TRUE, options = "COMPRESS=DEFLATE")
   }
 
   return(MESS)
