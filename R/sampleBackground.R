@@ -29,7 +29,10 @@
 #' \dontrun{}
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000, trace = FALSE)
 {
-  if (class(baseRaster) != "RasterLayer") stop("'baseRaster' must be a RasterLayer object")
+  if (!inherits(baseRaster, c("RasterLayer", "SpatRaster"))) stop("'baseRaster' must be a sp::RasterLayer or terra::SpatRaster object")
+
+  # Convert to class terra::SpatRaster
+  if (inherits(baseRaster, "RasterLayer")) baseRaster <- terra::rast(baseRaster)
 
   if (any(grepl("sf|sfc", class(boundsPolygon))))
   {
@@ -40,19 +43,19 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
     stop("'boundsPolygon' must be a sf, SpatialPolygons, or SpatialPolygonsDataFrame object")
 
   # Try to identify longitude and latitude, or X & Y, columns in occData
-  ind <- grep("LONG|X", toupper(colnames(occData)))
+  ind <- grep("LONG|X$", toupper(colnames(occData)))
   if (length(ind) >= 1)
     X_ind <- ind #colnames(occData)[ind[1]] <- "longitude"
   else
     stop("Cannot identify the 'longitude' or 'X' column in 'occData'")
 
-  ind <- grep("LAT|Y", toupper(colnames(occData)))
+  ind <- grep("LAT|Y$", toupper(colnames(occData)))
   if (length(ind) >= 1)
     Y_ind <- ind #colnames(occData)[ind[1]] <- "latitude"
   else
     stop("Cannot identify the 'latitude' or 'Y' column in 'occData'")
 
-  occCells <- terra::cellFromXY(baseRaster, occData[, c(X_ind, Y_ind)])
+  occCells <- terra::cellFromXY(baseRaster, as.matrix(occData[, c(X_ind, Y_ind)]))
 
   if (trace)
   {
@@ -63,9 +66,9 @@ sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = m
   terra::values(baseRaster)[which(!is.na(terra::values(baseRaster)))] <- 1
 
   # Remove occupied cells from the set available for selection
-  raster::values(baseRaster)[occCells] <- NA
+  terra::values(baseRaster)[occCells] <- NA
 
-  activeArea <- terra::mask(baseRaster, boundsPolygon)
+  activeArea <- terra::mask(baseRaster, terra::vect(boundsPolygon))
   availableCells <- which(terra::values(activeArea) == 1)
 
   if (trace)
