@@ -50,5 +50,6 @@ bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
   # if (trace) cat("transform clipped buffer to CRS of occ_pts\n")
   # if (pts_crs != 8859) clippedBuffer <- sf::st_transform(clippedBuffer, crs = pts_crs) # 3577
   # return(clippedBuffer)
-  if (pts_crs != 8859) ptsBuffer <- sf::st_transform(ptsBuffer, crs = pts_crs)
+  ptsBuffer <- sf::st_sf(data.frame(id = 1:length(ptsBuffer), geom = ptsBuffer))
+  if (pts_crs != 8859)  sf::st_transform(ptsBuffer, crs = pts_crs)
 }
