@@ -22,7 +22,9 @@ prepProjData <- function(dataPath, quiet = TRUE)
   if (!dir.exists(dataPath)) stop("dataPath not found")
 
   if (!quiet) cat("Preparing projection data: ")
-  projStack <- terra::rast(list.files(dataPath, "*.tif", full.names = TRUE))
+  theFilePaths <- list.files(dataPath, "*.tif", full.names = TRUE)
+  projStack <- terra::rast(theFilePaths)
+  names(projStack) <- gsub(".tif$", "", basename(theFilePaths))
 
   # "Export" data as a large matrix where rows are raster cells and columns are environmental variables
   projData <<- terra::values(projStack)
