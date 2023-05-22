@@ -18,7 +18,7 @@
 #'
 #' Comments from the original function:
 #' \tabular{ll}{
-#'     ## \tab written by Olivier Broennimann. Departement of Ecology and Evolution (DEE).\cr
+#'     ## \tab written by Olivier Broennimann. Department of Ecology and Evolution (DEE).\cr
 #'     ## \tab October 09. University of Lausanne. Switzerland\cr
 #'     ## \tab  \cr
 #'     ## \tab DESCRIPTION\cr
