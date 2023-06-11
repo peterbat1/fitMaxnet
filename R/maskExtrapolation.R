@@ -47,7 +47,7 @@ maskExtrapolation <- function(maxnetModel,
   if (file.exists(projRasFile))
     ras <- terra::rast(projRasFile)
   else
-    stop("Can find projection raster specified in 'projRas'")
+    stop("Cannot find projection raster specified in 'projRas'")
 
 
   if (!all(as.vector(terra::ext(rasTemplate)) == as.vector(terra::ext(ras))))
