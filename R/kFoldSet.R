@@ -6,7 +6,7 @@
 #'
 #' @param numSamples Integer. The number of samples to be partitioned into k folds.
 #' @param k Integer. The number of folds.
-#' @param trainSplit Numeric. The fraction of samples to be used in
+#' @param testSplit Numeric. The fraction of samples to be used in making the test set
 #'
 #' @return A list of numeric vectors of length k, where the elements of each vector are the indices of the samples forming the TEST set for that fold.
 #' @export
