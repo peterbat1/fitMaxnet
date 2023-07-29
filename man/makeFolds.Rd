@@ -11,7 +11,7 @@ makeFolds(numSamples, k, testSplit = 0.2)
 
 \item{k}{Integer. The number of folds.}
 
-\item{trainSplit}{Numeric. The fraction of samples to be used in}
+\item{testSplit}{Numeric. The fraction of samples to be used in making the test set}
 }
 \value{
 A list of numeric vectors of length k, where the elements of each vector are the indices of the samples forming the TEST set for that fold.

@@ -9,7 +9,7 @@ removeDuplicates(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet = FALSE)
 \arguments{
 \item{data}{A data.frame or matrix with at least a latitude and longitude column.}
 
-\item{baseGrid}{A RasterLayer object representing the grid for enforcing one record per cell when \emph{byGrid} = TRUE.}
+\item{baseGrid}{A RasterLayer or SpatRaster object representing the grid for enforcing one record per cell when \emph{byGrid} = TRUE.}
 
 \item{byGrid}{Logical. If TRUE then use the rasterLayer passed in \emph{baseGrid} to select opne record per cell. If FALSE (default) then ignore anything passed in \emph{baseGrid} and remove exact duplicates based on there coordinates.}
 

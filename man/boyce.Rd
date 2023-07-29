@@ -7,7 +7,7 @@
 boyce(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot = FALSE)
 }
 \arguments{
-\item{fit}{A numeric vector or Raster-Layer containing the predicted suitability values}
+\item{fit}{A numeric vector or RasterLayer or SpatRaster containing the predicted suitability values}
 
 \item{obs}{A numeric vector containing the predicted suitability values or xy-coordinates (if fit is a Raster-Layer) of the validation points (presence records)}
 

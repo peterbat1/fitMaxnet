@@ -29,7 +29,8 @@
 #' \dontrun{}
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000, trace = FALSE)
 {
-  if (!inherits(baseRaster, c("RasterLayer", "SpatRaster"))) stop("'baseRaster' must be a sp::RasterLayer or terra::SpatRaster object")
+  if (!inherits(baseRaster, c("RasterLayer", "SpatRaster")))
+    stop("'baseRaster' must be a sp::RasterLayer or terra::SpatRaster object")
 
   # Convert to class terra::SpatRaster
   if (inherits(baseRaster, "RasterLayer")) baseRaster <- terra::rast(baseRaster)

@@ -59,7 +59,7 @@ fast_boycei <- function(interval, obs, fit)
 
 #' Boyce's continuous index
 #'
-#' @param fit A numeric vector or Raster-Layer containing the predicted suitability values
+#' @param fit A numeric vector or RasterLayer or SpatRaster containing the predicted suitability values
 #' @param obs A numeric vector containing the predicted suitability values or xy-coordinates (if fit is a Raster-Layer) of the validation points (presence records)
 #' @param nclass Numeric. Number of classes or vector with classes threshold. If nclass=0, Boyce index is calculated with a moving window (see next parameters)
 #' @param window.w Numeric. Width of the moving window (by default 1/10 of the suitability range)
@@ -79,11 +79,17 @@ fast_boycei <- function(interval, obs, fit)
 #' \dontrun{}
 boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot = FALSE)
 {
-  if (class(fit) == "RasterLayer")
+
+  if (!inherits(fit, c("RasterLayer", "SpatRaster")))
+    stop("removeDuplicates: byGrid = TRUE so parameter baseGrid must of class RasterLayer or class SpatRaster.")
+  else
   {
+    # Convert to class terra::SpatRaster
+    if (inherits(fit, "RasterLayer")) baseRaster <- terra::rast(fit)
+
     if (class(obs) == "data.frame" | class(obs) == "matrix")
     {
-      obs <- extract(fit, obs)
+      obs <- terra::extract(fit, obs)
     }
 
     fit <- fit[]

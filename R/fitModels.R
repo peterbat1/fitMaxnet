@@ -88,9 +88,9 @@ fitModels <- function(taxonName = NULL,
 
       cat("    Preparing and saving projection raster\n")
       projRas <- projStack[[1]]
-      goodCellInd <- which(!is.na(raster::values(projStack[[1]])))
-      raster::values(projRas) <- NA
-      raster::values(projRas)[goodCellInd] <- projMod[,1]
+      goodCellInd <- which(!is.na(terra::values(projStack[[1]])))
+      terra::values(projRas) <- NA
+      terra::values(projRas)[goodCellInd] <- projMod[,1]
 
       outputPath <- paste0(baseOutputPath, "/", taxonName)
       if (!is.null(thisTag)) outputPath <- paste0(outputPath, "/", thisTag)
@@ -99,7 +99,7 @@ fitModels <- function(taxonName = NULL,
       regStr <- paste0("reg_", gsub(".","_", thisRegVal, fixed = TRUE))
 
       outputPath <- paste0(outputPath, "/", regStr, "/", paste0(gsub(" ", "_", taxonName, fixed = TRUE), ifelse(is.null(thisTag), "", paste0("_", thisTag)), "_", thisRegStr, ".tif"))
-      raster::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE)
+      terra::writeRaster(projRas, outputPath, format = "GTiff", overwrite = TRUE, gdal = "COMPRESS=DEFLATE")
       #plot(projRas, main = paste0("Regularization = ", thisRegVal))
       cat("  End model fit\n\n")
     }

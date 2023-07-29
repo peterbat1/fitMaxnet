@@ -80,8 +80,8 @@ envCorrAnalysis <- function(taxon = "",
     }
   }
 
-  rasStack <- raster::stack(list.files(envDataPath, "*.*", full.names = TRUE))
-  envData <- raster::extract(rasStack, cbind(x = xCoords, y = yCoords))
+  rasStack <- terra::rast(list.files(envDataPath, "*.*", full.names = TRUE))
+  envData <- terra::extract(rasStack, cbind(x = xCoords, y = yCoords))
 
   badInd <- which(is.na(envData), arr.ind = TRUE)
   if (nrow(badInd) > 0) envData <- envData[-badInd[, 1], ]

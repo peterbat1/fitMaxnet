@@ -12,7 +12,7 @@
 #' Remove duplicate occurrence records by exact coordinate matching or by ensuring only one record per grid cell of a raster. Coordinates are assumed be geographic coordinates (i.e. latitude and longitude) on the WGS84 datum
 #'
 #' @param data A data.frame or matrix with at least a latitude and longitude column.
-#' @param baseGrid A RasterLayer object representing the grid for enforcing one record per cell when \emph{byGrid} = TRUE.
+#' @param baseGrid A RasterLayer or SpatRaster object representing the grid for enforcing one record per cell when \emph{byGrid} = TRUE.
 #' @param byGrid Logical. If TRUE then use the rasterLayer passed in \emph{baseGrid} to select opne record per cell. If FALSE (default) then ignore anything passed in \emph{baseGrid} and remove exact duplicates based on there coordinates.
 #' @param quiet Logical. If TRUE then emit some progress message. If FALSE (default) procede quietly.
 #'
@@ -33,16 +33,16 @@ removeDuplicates <- function(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet
   if (length(ind) >= 1)
     X_ind <- ind[1]
   else
-    stop("Cannot identify the 'longitude' or 'X' column in 'data'")
+    stop("removeDuplicates: Cannot identify the 'longitude' or 'X' column in 'data'")
 
   ind <- grep("LAT|Y", toupper(colnames(data)))
   if (length(ind) >= 1)
     Y_ind <- ind[1]
   else
-    stop("Cannot identify the 'latitude' or 'Y' column in 'data'")
+    stop("removeDuplicates: Cannot identify the 'latitude' or 'Y' column in 'data'")
 
   # Remove NA lat-longs
-  na.latlong <- union(which(is.na(data[, Y_ind])),which(is.na(data[, X_ind])))
+  na.latlong <- union(which(is.na(data[, Y_ind])), which(is.na(data[, X_ind])))
   if (length(na.latlong) > 0)
   {
     data <- data[-na.latlong,]
@@ -55,32 +55,31 @@ removeDuplicates <- function(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet
 
   if (byGrid)
   {
-    if (class(baseGrid) == "RasterLayer")
+    if (!inherits(baseGrid, c("RasterLayer", "SpatRaster")))
+      stop("removeDuplicates: byGrid = TRUE so parameter baseGrid must of class RasterLayer or class SpatRaster.")
+
+    # Convert to class terra::SpatRaster
+    if (inherits(baseGrid, "RasterLayer")) baseRaster <- terra::rast(baseGrid)
+
+    cellInd <- terra::cellFromXY(baseGrid, cbind(data[, X_ind], data[, Y_ind]))
+    dataInd <- 1:nrow(data)
+
+    # Test to see if all lat and all long are out of bounds - it does happen sometimes!
+    if (all(is.na(cellInd)))
     {
-      cellInd <- cellFromXY(baseGrid, cbind(data[, X_ind], data[, Y_ind]))
-      dataInd <- 1:nrow(data)
-
-      # Test to see if all lat and all long are out of bounds - it does happen sometimes!
-      if (all(is.na(cellInd)))
-      {
-        if (!quiet) message("removeDuplicates: Degenerate data matrix: all lat or all long values are NAs - no processing performed.")
-        return(NULL)
-      }
-
-      # Remove out-of-bounds lat-longs
-      na.latlong <- which(is.na(cellInd))
-      if (length(na.latlong) > 0)
-      {
-        data <- data[-na.latlong,]
-        cellInd <- cellInd[-na.latlong]
-      }
-
-      duplicates <- which(duplicated(cellInd))
+      if (!quiet) message("removeDuplicates: Degenerate data matrix: all lat or all long values are NAs - no processing performed.")
+      return(NULL)
     }
-    else
+
+    # Remove out-of-bounds lat-longs
+    na.latlong <- which(is.na(cellInd))
+    if (length(na.latlong) > 0)
     {
-      stop("removeDuplicates: byGrid = TRUE so parameter baseGrid must of class RasterLayer.")
+      data <- data[-na.latlong,]
+      cellInd <- cellInd[-na.latlong]
     }
+
+    duplicates <- which(duplicated(cellInd))
   }
   else
   {

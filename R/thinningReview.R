@@ -118,10 +118,10 @@ thinningReview <- function(taxon = "",
     isLatLong <- FALSE
 
   if (!quiet) cat("  loading env data\n")
-  envStack <- raster::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
+  envStack <- terra::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
 
   if (!quiet) cat("  checking for duplicated occupied cells and removing any that are found\n")
-  duplInd <- which(duplicated(cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])))
+  duplInd <- which(duplicated(terra::cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])))
   if (length(duplInd) > 0)
   {
     if (!quiet) cat("    (removed", length(duplInd), "duplicates)\n")
@@ -129,7 +129,7 @@ thinningReview <- function(taxon = "",
   }
 
   if (!quiet) cat("  extracting env data at occ locations\n")
-  envData_orig <- raster::extract(envStack, theseOccData[, c(xColInd, yColInd)])
+  envData_orig <- terra::extract(envStack, theseOccData[, c(xColInd, yColInd)])
   rownames(envData_orig) <- rownames(theseOccData) # align rownames for later use
 
   badRows <- which(is.na(rowSums(envData_orig)))
