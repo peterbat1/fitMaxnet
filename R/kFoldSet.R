@@ -12,12 +12,21 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{ }
+#' \dontrun{ ## Default testSplit
+#' these_folds <- fitMaxnet::makeFolds(324, 5)
+#' ## User-selected testSplit
+#' these_folds <- fitMaxnet::makeFolds(261, 5, 0.3) }
 makeFolds <- function(numSamples, k, testSplit = 0.2)
 {
   # Do checks...
+  if (numSamples < 0) stop("'numSamples' must be a positive integer")
+  k <- trunc(k)
+  if (k < 1) stop("'k' must be a positive integer or truncate to one")
+  if ((testSplit <= 0) | (testSplit > 1)) stop("'testSplit' must be a decimal fraction (ie between 0 and 1)")
 
-  set.seed(1953)
+  # Enforce a reset of the RNG to default settings so that full stochastic
+  # selection is made on each iteration and for each call of the function
+  set.seed(NULL)
 
   sampleSize <- trunc(testSplit * numSamples)
   sampleInd <- 1:numSamples
