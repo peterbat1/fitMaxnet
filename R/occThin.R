@@ -52,26 +52,21 @@ occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong 
     stop ("NA values in argument 'occ'.")
   }
 
-  # if (!quiet)
-  # {
-  #   print(class(occ))
-  #   print(occ)
-  # }
-
   train <- occ
   keep <- NULL
 
-  #while (!is.null(nrow(train))) #&(nrow(train) > 1))
   repeat
   {
     #if (!quiet) cat("Before nrow(train): ", nrow(train), "\n")
 
     i <- sample(1:nrow(train), 1)
 
-    distVals <- sp::spDistsN1(as.matrix(train[, c(xCol, yCol)]), pt = unlist(train[i, c(xCol, yCol)]), longlat = isLatLong)
-
-    # If isLatLong == FALSE, returned distance will be in metres, so convert to kilometres:
-    if (!isLatLong) distVals <- distVals/1000
+    #distVals <- sp::spDistsN1(as.matrix(train[, c(xCol, yCol)]), pt = unlist(train[i, c(xCol, yCol)]), longlat = isLatLong)
+    # Returned distance will be in metres, so convert to kilometres:
+    if (isLatLong)
+    distVals <- geodist::geodist(train[, c(xCol, yCol)], train[i, c(xCol, yCol)], measure = "geodesic")[, 1]/1000
+    else
+      distVals <- geodist::geodist(train[, c(xCol, yCol)], train[i, c(xCol, yCol)], measure = "cheap")[, 1]/1000
 
     # Test if the only distance in distVals <= thinDist is the distance 0.0
     # representing the distance between the test point and itself:
