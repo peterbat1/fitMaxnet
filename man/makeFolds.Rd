@@ -20,5 +20,8 @@ A list of numeric vectors of length k, where the elements of each vector are the
 The function randomly allocates sample indices to k numeric vectors. The length of each vector is determined as the nearest integer to the number of samples times the test fraction.
 }
 \examples{
-\dontrun{ }
+\dontrun{ ## Default testSplit
+these_folds <- fitMaxnet::makeFolds(324, 5)
+## User-selected testSplit
+these_folds <- fitMaxnet::makeFolds(261, 5, 0.3) }
 }

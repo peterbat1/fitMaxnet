@@ -118,7 +118,7 @@ thinningReview <- function(taxon = "",
     isLatLong <- FALSE
 
   if (!quiet) cat("  loading env data\n")
-  envStack <- terra::stack(list.files(envDataPath, "*.tif", full.names = TRUE))
+  envStack <- terra::rast(list.files(envDataPath, "*.tif", full.names = TRUE))
 
   if (!quiet) cat("  checking for duplicated occupied cells and removing any that are found\n")
   duplInd <- which(duplicated(terra::cellFromXY(envStack[[1]], theseOccData[, c(xColInd, yColInd)])))

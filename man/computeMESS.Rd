@@ -9,7 +9,7 @@ computeMESS(
   envPath = NULL,
   occSWD,
   bkgSWD,
-  varImpThresold = 0,
+  varImpThreshold = 0,
   outPath = "",
   MESSonly = TRUE,
   ...
@@ -18,19 +18,19 @@ computeMESS(
 \arguments{
 \item{thisModel}{A maxnet model object}
 
+\item{envPath}{Full specified path to the environmental predictor raster layers used to fit the maxnet model}
+
 \item{occSWD}{numeric matrix. Reference data; typically created by concatenating occurrence SWD and background SWD files used to fit the model}
 
 \item{bkgSWD}{numeric matrix}
+
+\item{varImpThreshold}{Numeric. Value used to filter variables by their importance scores; percentage importance therefore ranges from 0 to 100.}
 
 \item{outPath}{Character. Path to folder into which output raster layers will be written}
 
 \item{MESSonly}{Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed}
 
 \item{...}{Optional parameters passed to the raster function writeRaster}
-
-\item{envStack}{raster stack. The environmental predictor raster layers used to fit the maxnet model}
-
-\item{varImpThreshold}{Numeric. Value used to filter variables by their importance scores; percentage importance therefore ranges from 0 to 100.}
 }
 \value{
 Stuff like what is produced by dismo::mess()

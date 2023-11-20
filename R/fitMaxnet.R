@@ -8,8 +8,9 @@
 #' @import maxnet
 #' @import ggplot2
 #' @import dplyr
-#' @importFrom stats prcomp
-#' @importFrom grDevices chull png
+#' @importFrom stats prcomp binomial cor ecdf glm na.omit predict
+#' @importFrom grDevices chull png dev.off
+#' @importFrom graphics points
 #' @importFrom terra cellFromXY xyFromCell subset extract nlyr values writeRaster
 #' @importFrom geodist geodist
 #' @importFrom utils read.csv write.csv

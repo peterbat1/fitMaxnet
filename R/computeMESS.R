@@ -3,7 +3,7 @@
 #' Compute set of MESS rasters for a maxnet model
 #'
 #' @param thisModel A maxnet model object
-#' @param envStack raster stack. The environmental predictor raster layers used to fit the maxnet model
+#' @param envPath Full specified path to the environmental predictor raster layers used to fit the maxnet model
 #' @param occSWD numeric matrix. Reference data; typically created by concatenating occurrence SWD and background SWD files used to fit the model
 #' @param bkgSWD numeric matrix
 #' @param outPath Character. Path to folder into which output raster layers will be written
@@ -23,7 +23,7 @@
 #' @examples
 #' \dontrun{}
 #'
-computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImpThresold = 0, outPath = "", MESSonly = TRUE, ...)
+computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImpThreshold = 0, outPath = "", MESSonly = TRUE, ...)
 {
   if (!("maxnet" %in% class(thisModel)))
     stop("'thisModel' is not a maxnet model object")
