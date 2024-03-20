@@ -3,21 +3,26 @@
 #' Compute set of MESS rasters for a maxnet model
 #'
 #' @param thisModel A maxnet model object
-#' @param envPath Full specified path to the environmental predictor raster layers used to fit the maxnet model
-#' @param occSWD numeric matrix. Reference data; typically created by concatenating occurrence SWD and background SWD files used to fit the model
-#' @param bkgSWD numeric matrix
+#' @param envPath String (character). Full specified path to the environmental predictor raster layers used to fit the maxnet model
+#' @param occSWD Numeric matrix. Reference environmental data at the occurrence locations used to fit the model in MaxEnt SWD format
+#' @param bkgSWD Numeric matrix. Reference environmental data for the occurrence locations used as background points used to fit the model in MaxEnt SWD format
 #' @param outPath Character. Path to folder into which output raster layers will be written
 #' @param varImpThreshold Numeric. Value used to filter variables by their importance scores; percentage importance therefore ranges from 0 to 100.
 #' @param MESSonly Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed
-#' @param ... Optional parameters passed to the raster function writeRaster
+#' @param ... Optional parameters passed to the terra::writeRaster()
 #' @details
 #'
-#' A MESS computation is performed blah blah.
+#' A MESS computation is performed using the supplied maxnet model and set of environmental rasters.
 #'
 #' To facilitate the processing of very large, high-resolution rasters, only those variables which are used in the final model are included in the computation of MESS output.
 #'
 #'
-#' @return Stuff like what is produced by dismo::mess()
+#' @return A named list:
+#' \describe{
+#' \item{MESS}{Matrix of OVERALL MESS scores}
+#' \item{varMESS}{Matrix of MESS scores for each included variable}
+#' }
+#'
 #' @export
 #'
 #' @examples
@@ -33,7 +38,7 @@ computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImp
 
   varImp <- fitMaxnet::varImportance(thisModel, occSWD, bkgSWD, "cloglog")
 
-  goodVars <- names(varImp)[varImp > varImpThresold]
+  goodVars <- names(varImp)[varImp > varImpThreshold]
 
   refMat <- as.matrix(rbind(occSWD[, 4:ncol(occSWD)],
                             bkgSWD[, 4:ncol(bkgSWD)]))
@@ -109,11 +114,23 @@ computeMESS <- function(thisModel = NULL, envPath = NULL, occSWD, bkgSWD, varImp
 
   if (outPath != "")
   {
+    # Overall MESS raster is ALWAYS produced...
     rasTemplate[goodRows] <- MESS
     if (!dir.exists(outPath)) dir.create(outPath, recursive = TRUE)
     outFilename <- file.path(outPath, "MESS.tif")
-    terra::writeRaster(rasTemplate, overwrite = TRUE, options = "COMPRESS=DEFLATE")
+    terra::writeRaster(rasTemplate, outFilename, overwrite = TRUE, options = "COMPRESS=DEFLATE", ...)
+
+    # Optionally, produce MESS raster for each included variable
+    if (!MESSonly)
+    {
+      for (thisVar in goodVars)
+      {
+        rasTemplate[goodRows] <- varMESS[, thisVar]
+        outFilename <- file.path(outPath, paste0("MESS_", thisVar, ".tif"))
+        terra::writeRaster(rasTemplate, outFilename, overwrite = TRUE, gdal = "COMPRESS=DEFLATE")
+      }
+    }
   }
 
-  return(MESS)
+  return(list(MESS = MESS, varMESS = varMESS))
 }
