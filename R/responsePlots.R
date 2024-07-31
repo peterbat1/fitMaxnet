@@ -6,8 +6,9 @@
 #'
 #' @param thisModel A maxnet model object.
 #' @param variable Character. Names of one or more variables present in the model object. The default of 'all' causes all variables to included.
+#' @param importance_threshold Numeric. Percentage value to serve as a cut-off for variables to be included.
 #' @param responseType Character. Response type (scaling of model output) to be used.
-#' @param ylimits Numeric vector. Limits to be used on the plot y-axis.
+#' @param plot_ylimits Numeric vector. Limits to be used on the plot y-axis.
 #' @param ylabel Character. Label to be used on the \emph{y}-axis replacing the default value formed from the prefix "Response" and the value of \emph{responseType}.
 #' @param filename Character. Filename (with full path) into which graphics will be plotted.
 #' @param occSWD Data.frame. Environmental data at occurrence locations in SWD format; used to compute variable importance.
@@ -28,23 +29,23 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
+#'
 responsePlot <- function(thisModel,
                          variable = "all",
-                         responseType = "",
-                         ylimits = c(0, 1),
+                         importance_threshold = NULL,
+                         responseType = c("link", "exponential", "cloglog", "logistic"),
+                         plot_ylimits = c(0, 1),
                          ylabel = NULL,
                          filename = NULL,
                          occSWD = NULL,
                          bkgSWD = NULL)
 {
-  if (!("maxnet" %in% class(thisModel))) stop("Paramater 'thisModel' must class 'maxnet'")
+  if (!("maxnet" %in% class(thisModel))) stop("Paramater 'thisModel' must be class 'maxnet'")
 
-  responseInd <- pmatch(responseType, c("link","exponential","cloglog","logistic"))
-
-  if ((is.na(responseInd)) | (length(responseInd) > 1))
-    stop("Cannot understand value passed in parameter 'responseType'")
-  else
-    responseType <- c("link","exponential","cloglog","logistic")[responseInd]
+  responseType <- match.arg(responseType, c("link","exponential","cloglog","logistic"))
+  if (!(responseType %in% c("link","exponential","cloglog","logistic")))
+    stop("Parameter 'responseType' must be one of link, exponential, cloglog or logistic (may be abbreviated)")
 
   if (variable == "all")
   {
@@ -64,13 +65,17 @@ responsePlot <- function(thisModel,
 
   # Compute variable importance scores
   varImp <- varImportance(thisModel, occSWD, bkgSWD, responseType = responseType)
-  names(varImp) <- varList
+  #names(varImp) <- varList
   varImpOrder <- order(varImp, decreasing = TRUE)
 
   # Reorder varList so plots, etc are sorted in descending order of variable
   # importance or contribution to the model fit
-  varList <- varList[varImpOrder]
+  #varList <- varList[varImpOrder]
   varImp <- varImp[varImpOrder]
+
+  # If required, trim varList and varImp
+  #### Identify variables with mean importance above the threshold
+  if (!is.null(importance_threshold)) varList <- names(varImp)[which(varImp >= importance_threshold)]
 
   plotyBits <- vector("list", length(varList))
   names(plotyBits) <- varList
@@ -100,16 +105,20 @@ responsePlot <- function(thisModel,
       ylabel <- paste0("Response (", responseType, ")")
     predVals <- predict(thisModel, d, type = responseType)
 
-    plotData <- data.frame(prediction = predVals[,1], d)
+    plotData <- data.frame(prediction = predVals[, 1], d)
+    #### saveRDS
+    ##saveRDS(taxonResults, file = paste0(basePath, thisTaxon, "/", this_Taxon, "_response_plot_data.rds"))
 
     if (hasLevels)
     {
-      plotyBits[[thisVar]] <- ggpubr::ggbarplot(plotData, x = thisVar, y = "prediction", palette = ggsci::pal_npg, xlab = thisVar, ylab = ylab, ylim = ylim)
+      plotyBits[[thisVar]] <- ggpubr::ggbarplot(plotData, x = thisVar, y = "prediction",
+                                                palette = ggsci::pal_npg, xlab = thisVar,
+                                                ylab = ylab, ylim = ylim)
     }
     else
     {
-      plotyBits[[thisVar]] <- ggplot2::ggplot(plotData, aes(x = plotData[, thisVar], y = prediction)) +
-        ggplot2::geom_smooth(colour = "blue", size = 1) + ggplot2::ylab(ylabel) + ggplot2::xlab(thisVar) + ggplot2::ylim(ylimits) +
+      plotyBits[[thisVar]] <- ggplot2::ggplot(plotData, aes(x = plotData[, thisVar], y = .data$prediction)) +
+        ggplot2::geom_smooth(colour = "blue", size = 1) + ggplot2::ylab(ylabel) + ggplot2::xlab(thisVar) + ggplot2::ylim(plot_ylimits) +
         ggplot2::theme(axis.title.x = element_text(size = 8),
               axis.title.y = element_text(size = 8),
               axis.text.x = element_text(size = 6),

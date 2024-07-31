@@ -6,8 +6,8 @@
 \usage{
 varImportance(
   theModel,
-  occSWD,
-  bkgSWD,
+  occSWD = NULL,
+  bkgSWD = NULL,
   responseType = c("link", "exponential", "cloglog", "logistic"),
   numReplicates = 5
 )
@@ -39,4 +39,8 @@ At each permutation, a Pearson correlation is computed between reference predict
 
 A vector of mean scores for each variable expressed as a percentage of the sum of all mean scores is returned.
 }
+}
+\examples{
+\dontrun{}
+
 }

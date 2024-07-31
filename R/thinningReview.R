@@ -36,6 +36,7 @@
 #'
 #' @examples
 #' \dontrun{}
+#'
 thinningReview <- function(taxon = "",
                            occData = NULL,
                            envDataPath = NULL,
@@ -191,12 +192,12 @@ thinningReview <- function(taxon = "",
                            fracRetained = accumulResults[, "fracRetained"])
 
     grDevices::png(paste0(outPath, "/", taxon, "_thining_distanceExporation_resultSummary.png"))
-    p <- ggplot2::ggplot(plotData, aes(x = thinDist)) +
+    p <- ggplot2::ggplot(plotData, aes(x = .data$thinDist)) +
       ggplot2::geom_hline(yintercept = pThreshold, colour = "grey70", linetype = 3) +
       ggplot2::ylim(0, 1) +
-      ggplot2::geom_point(aes(y = probability, colour = "p_value")) +
+      ggplot2::geom_point(aes(y = .data$probability, colour = "p_value")) +
       ggplot2::ylab("Probability & Fraction retained") + xlab("Thinning distance (km)") +
-      ggplot2::geom_point(aes(y = fracRetained, colour = "fraction")) +
+      ggplot2::geom_point(aes(y = .data$fracRetained, colour = "fraction")) +
       ggplot2::ggtitle(taxon) +
       theme(plot.title = element_text(face = "bold.italic", size = 16)) +
       scale_colour_manual(name = "", values = colours)
@@ -205,10 +206,10 @@ thinningReview <- function(taxon = "",
   }
 
   # Produce a summary table and locate the best thinning distance using the default method
-  thinGroup <- dplyr::group_by(accumulResults, thinningDist)
+  thinGroup <- dplyr::group_by(accumulResults, .data$thinningDist)
   summaryTable <- dplyr::summarise(thinGroup,
-                                   mean_p_value = mean(energy_p_value),
-                                   mean_fracRetained = mean(fracRetained))
+                                   mean_p_value = mean(.data$energy_p_value),
+                                   mean_fracRetained = mean(.data$fracRetained))
   xx <- summaryTable$mean_p_value - pThreshold
   ii <- which(xx == min(xx[xx > 0]))
   bestDist = summaryTable$thinningDist[ii]

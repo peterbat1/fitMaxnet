@@ -6,42 +6,49 @@
 \usage{
 computeMESS(
   thisModel = NULL,
-  envPath = NULL,
+  envPath = "",
   occSWD,
   bkgSWD,
   varImpThreshold = 0,
   outPath = "",
-  MESSonly = TRUE,
-  ...
+  MESSonly = TRUE
 )
 }
 \arguments{
 \item{thisModel}{A maxnet model object}
 
-\item{envPath}{Full specified path to the environmental predictor raster layers used to fit the maxnet model}
+\item{envPath}{String (character). Full specified path to the environmental predictor raster layers used to fit the maxnet model}
 
-\item{occSWD}{numeric matrix. Reference data; typically created by concatenating occurrence SWD and background SWD files used to fit the model}
+\item{occSWD}{Data.frame. Reference environmental data at the occurrence locations used to fit the model in MaxEnt SWD format}
 
-\item{bkgSWD}{numeric matrix}
+\item{bkgSWD}{Data.frame. Reference environmental data for locations used as background points used to fit the model in MaxEnt SWD format}
 
 \item{varImpThreshold}{Numeric. Value used to filter variables by their importance scores; percentage importance therefore ranges from 0 to 100.}
 
 \item{outPath}{Character. Path to folder into which output raster layers will be written}
 
 \item{MESSonly}{Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed}
-
-\item{...}{Optional parameters passed to the raster function writeRaster}
 }
 \value{
-Stuff like what is produced by dismo::mess()
+A named list:
+\describe{
+\item{MESS}{Matrix of OVERALL MESS scores}
+\item{varMESS}{Matrix of MESS scores for each included variable}
+}
 }
 \description{
 Compute set of MESS rasters for a maxnet model
 }
 \details{
-A MESS computation is performed blah blah.
+Multivariate Environmental Similarity Surfaces (MESS) were introduced by Elith, Kearney & Phillips (2010; The art of modelling range-shifting species. Methods in Ecology and Evolution 1: 330-342) to assist in identifying the degree of similarity between the ranges of environmental predictors presented to model training (the 'reference' set)  and the values of those predictors across other areas. It's purpose is to identify areas of extrapolation. In the present implementation, the reference set is extracted from the tables of variable maximum and minimumthose in areas or times to which the model is projected.
 
-To facilitate the processing of very large, high-resolution rasters, only those variables which are used in the final model are included in the computation of MESS output.
+A MESS computation is performed using the supplied maxnet model and set of environmental rasters.
+
+To facilitate the processing of very large, high-resolution rasters, only those variables which pass the variable importance threshold are used in the final model are included in the computation of MESS output.
+
+Please note that this function is tailored to work with data structures and workflows associated with the primary model fitting function in this package, namely \link{fit_maxnet}. It can be used for MESS computations in other settings, but users will have to transform data into the required structure for each parameter. An alternate and more generic MEWS function in found in the R-package \emph{modEVA}.
+
+If output rasters are to be written, note that the following options are set as defaults for terra::writeRaster(): 'overwrite = TRUE', and 'gdal = "COMPRESS=DEFLATE"'
 }
 \examples{
 \dontrun{}

@@ -2,15 +2,18 @@
 % Please edit documentation in R/computePR.R
 \name{plotPRcurve}
 \alias{plotPRcurve}
-\title{Title}
+\title{Plot a Precision-Recall (PR) Curve}
 \usage{
 plotPRcurve(PRobj, plotFilename = NULL)
 }
 \arguments{
-\item{PRobj}{Something}
+\item{PRobj}{pr.curve object. A PR ROC object with type = "PR" produced by the function \link{pr.curve} in the package \pkg{PRROC} run with parameter curve = TRUE}
 
-\item{plotFilename}{Something}
+\item{plotFilename}{Character (string). Optional file name to save the plot output (as PNG formatted graphics file)}
+}
+\value{
+A ggplot2 object
 }
 \description{
-Title
+Plot a Precision-Recall (PR) Curve
 }

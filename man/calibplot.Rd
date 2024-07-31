@@ -41,6 +41,9 @@ calibplot(
 
 \item{title}{Character. Title for the plot. Default is a generic "Calibration plot".}
 }
+\value{
+A ggplot2 object
+}
 \description{
 Make a smoothed calibration plot for a presence-only model using the method by Phillips and Elith
 }
@@ -53,4 +56,7 @@ Although it is possible to call this function with user-generated parameter valu
 This implementation uses ggplot2 to render the plot.
 
 }
+}
+\examples{
+\dontrun{}
 }

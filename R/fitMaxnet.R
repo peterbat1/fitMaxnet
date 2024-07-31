@@ -4,7 +4,6 @@
 #' fitting MaxEnt models using the function maxnet in the R-package maxnet.
 #'
 #' @name fitMaxnet
-#' @docType package
 #' @import maxnet
 #' @import ggplot2
 #' @import dplyr
@@ -23,4 +22,5 @@
 #' @importFrom PRROC pr.curve roc.curve
 #' @importFrom Rfast rowsums
 #' @importFrom ggsci pal_npg
+#' @importFrom stringr str_pad
 NULL

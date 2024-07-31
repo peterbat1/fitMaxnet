@@ -37,7 +37,7 @@ fit_maxnet <- function(taxonName = NULL,
 
   if (length(predVar) == 0) stop("Array predVar contains no values")
 
-  if (class(predVar) != "numeric") stop("Array predVar must be numeric")
+  if (!inherits(predVar, "numeric")) stop("Array predVar must be numeric")
 
   if ((nrow(envData) == 0) || (is.null(envData))) stop("Matrix envData contains no values")
 

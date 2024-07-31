@@ -24,24 +24,22 @@
 #' \dontrun{}
 bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 {
+  if (!("sf" %in% class(occ_pts))) stop("Parameter 'occ_pts' must be an sf object")
+  if (!sf::st_is(occ_pts, "POINT")) stop("Parameter 'occ_pts' must be an sf POINT object")
+  if (!is.numeric(bufferDist_km)) stop("Numeric value required for parameter 'bufferDist_km'")
+
   # Convert buffer distance from kilometres to metres
   bufferDist <- 1000 * bufferDist_km
 
-  if ("sf" %in% class(occ_pts))
-  {
-    pts_crs <- as.integer(gsub("EPSG:", "", toupper(sf::st_crs(occ_pts)$input), fixed = TRUE))
-    if (pts_crs != 8859) # 3577
-      occ_pts_albers <- sf::st_transform(occ_pts, 8859) # 3577
-    else
-      occ_pts_albers <- occ_pts
-  }
+  # Record the original CRS, and transform to "EPSG:8859 WGS84/Equal Earth Asia-Pacific"
+  pts_crs <- as.integer(gsub("EPSG:", "", toupper(sf::st_crs(occ_pts)$input), fixed = TRUE))
+  if (pts_crs != 8859) # 3577
+    occ_pts_8859 <- sf::st_transform(occ_pts, 8859) # 3577
   else
-  {
-    stop("occ_pts must be class 'sf'")
-  }
+    occ_pts_8859 <- occ_pts
 
   if (trace) cat("make buffer polygon\n")
-  ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_albers, dist = bufferDist))
+  ptsBuffer <- sf::st_union(sf::st_buffer(occ_pts_8859, dist = bufferDist))
 
   # Clip the buffer polygon to the Australian coastline
   # if (trace) cat("clip buffer polygon to OZ coastline\n")

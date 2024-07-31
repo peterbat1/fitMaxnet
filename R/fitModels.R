@@ -30,7 +30,7 @@ fitModels <- function(taxonName = NULL,
   if (is.null(occPath)) stop("occPath must have a value")
   if (is.null(backgroundPath)) stop("backgroundPath must have a value")
   if (is.null(baseOutputPath)) stop("baseOutputPath must have a value")
-  if (class(multSet) != "numeric") stop("multSet must be an array of one or more numeric values")
+  if (!inherits(multSet, "numeric")) stop("multSet must be an array of one or more numeric values")
   if (!(outputType %in% c("link", "exponential", "logistic", "cloglog"))) stop("Unkown value in 'outputType'")
 
   if (!file.exists(occPath)) stop("Cannot find file referenced in parameter 'occPath'")

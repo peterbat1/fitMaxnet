@@ -7,8 +7,9 @@
 responsePlot(
   thisModel,
   variable = "all",
-  responseType = "",
-  ylimits = c(0, 1),
+  importance_threshold = NULL,
+  responseType = c("link", "exponential", "cloglog", "logistic"),
+  plot_ylimits = c(0, 1),
   ylabel = NULL,
   filename = NULL,
   occSWD = NULL,
@@ -20,9 +21,11 @@ responsePlot(
 
 \item{variable}{Character. Names of one or more variables present in the model object. The default of 'all' causes all variables to included.}
 
+\item{importance_threshold}{Numeric. Percentage value to serve as a cut-off for variables to be included.}
+
 \item{responseType}{Character. Response type (scaling of model output) to be used.}
 
-\item{ylimits}{Numeric vector. Limits to be used on the plot y-axis.}
+\item{plot_ylimits}{Numeric vector. Limits to be used on the plot y-axis.}
 
 \item{ylabel}{Character. Label to be used on the \emph{y}-axis replacing the default value formed from the prefix "Response" and the value of \emph{responseType}.}
 
@@ -49,4 +52,8 @@ Features of this function include:
 \item Ability to produce a plot for \emph{all} variables in the maxnet model or a selection
 }
 }
+}
+\examples{
+\dontrun{}
+
 }

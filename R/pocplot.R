@@ -26,9 +26,13 @@
 #' }
 #'
 #' @return
+#' A ggplot2 object
+#'
 #' @export
 #'
 #' @examples
+#' \dontrun{}
+
 calibplot <- function(pred,
                        negrug,
                        posrug,
@@ -53,7 +57,7 @@ calibplot <- function(pred,
                          ylow = ylow,
                          yhigh = yhigh)
 
-  p <- ggplot2::ggplot(plotData, aes(x = x, y = y)) +
+  p <- ggplot2::ggplot(plotData, aes(x = .data$x, y = .data$y)) +
     ggplot2::geom_point(colour = "blue") +
     ggplot2::geom_segment(x = 0, y = 0, xend = 1, yend = 1, colour = "grey30", linetype = 3) +
     ggplot2::annotate("line", x = plotData[, "x"], y = plotData[, "ylow"], linetype = 1, size = 1, colour = "orange") +
@@ -80,7 +84,7 @@ calibplot <- function(pred,
 }
 
 
-
+####################################################################
 #' Smoothed density distribution
 #'
 #' A function to generate a smoothed density function of observed probability of presence
@@ -98,9 +102,17 @@ calibplot <- function(pred,
 #' }
 #'
 #' @return
+#' A data.frame with three columns:
+#' \describe{
+#' \item{x}{The values used to fit the smotthing function}
+#' \item{y}{The y-values of the computed smoothing function}
+#' \item{se}{The standard error of y-values of the computed smoothing function
+#' }
+#'
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 smoothdist <- function(pred,
                        res,
                        smoothing_df = 4)
@@ -140,6 +152,7 @@ smoothdist <- function(pred,
 #' @export
 #'
 #' @examples
+#' \dontrun{}
 POCplot <- function(pred,
                     back,
                     linearize = FALSE,

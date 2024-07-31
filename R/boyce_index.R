@@ -87,7 +87,7 @@ boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot 
     # Convert to class terra::SpatRaster
     if (inherits(fit, "RasterLayer")) baseRaster <- terra::rast(fit)
 
-    if (class(obs) == "data.frame" | class(obs) == "matrix")
+    if (inherits(obs, "data.frame") | inherits(obs, "matrix"))
     {
       obs <- terra::extract(fit, obs)
     }

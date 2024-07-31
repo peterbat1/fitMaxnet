@@ -24,12 +24,22 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{}
+#'
 varImportance <- function(theModel,
-                          occSWD,
-                          bkgSWD,
+                          occSWD = NULL,
+                          bkgSWD = NULL,
                           responseType = c("link","exponential","cloglog","logistic"),
                           numReplicates = 5)
 {
+  if (!("maxnet" %in% class(theModel))) stop("Parameter 'theModel' is a naxnet object")
+  if (is.null(occSWD)) stop("occSWD cannot be NULL")
+  if (is.null(bkgSWD)) stop("bkgSWD cannot be NULL")
+
+  responseType <- match.arg(responseType, c("link","exponential","cloglog","logistic"))
+  if (!(responseType %in% c("link","exponential","cloglog","logistic")))
+    stop("Parameter 'responseType' must be one of link, exponential, cloglog or logistic (may be abbreviated)")
+
   varList <- names(theModel$samplemeans)
 
   importance <- vector("numeric", length(varList))
@@ -37,7 +47,7 @@ varImportance <- function(theModel,
 
   envData <- rbind(occSWD[, -c(1:3)], bkgSWD[, -c(1:3)])
 
-  fullModelVals <- predict(theModel, envData)
+  fullModelVals <- predict(theModel, envData, type = responseType)
 
   for (thisVar in varList)
   {

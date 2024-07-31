@@ -58,4 +58,5 @@ An approach which seems to be useful is to start with half the width of a grid c
 }
 \examples{
 \dontrun{}
+
 }
