@@ -31,7 +31,10 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{
+#'
+#' this_plot <- calibplot()
+#' }
 
 calibplot <- function(pred,
                        negrug,
