@@ -33,7 +33,7 @@
 #' @examples
 #' \dontrun{
 #'
-#' this_plot <- calibplot(prediction_data)
+#' this_plot <- calibplot(prediction_data, bkg_prediction, occ_prediction)
 #' }
 
 calibplot <- function(pred,
