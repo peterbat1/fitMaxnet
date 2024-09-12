@@ -25,7 +25,7 @@
 bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 {
   if (!("sf" %in% class(occ_pts))) stop("Parameter 'occ_pts' must be an sf object")
-  if (!sf::st_is(occ_pts, "POINT")) stop("Parameter 'occ_pts' must be an sf POINT object")
+  if (!all(sf::st_is(occ_pts, "POINT"))) stop("Parameter 'occ_pts' must be an sf POINT object")
   if (!is.numeric(bufferDist_km)) stop("Numeric value required for parameter 'bufferDist_km'")
 
   # Convert buffer distance from kilometres to metres
