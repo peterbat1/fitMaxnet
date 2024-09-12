@@ -38,8 +38,7 @@ computeMESS <- function(thisModel = NULL,
                         bkgSWD,
                         varImpThreshold = 0,
                         outPath = "",
-                        MESSonly = TRUE) #,
-#                        ...)
+                        MESSonly = TRUE)
 {
   if (!inherits(thisModel, "maxnet"))
     stop("'thisModel' is not a maxnet model object")
@@ -89,26 +88,14 @@ computeMESS <- function(thisModel = NULL,
   varMax <- thisModel$varmax
   varRange <- varMax - varMin
 
-  # refMat <- as.matrix(rbind(occSWD[, 4:ncol(occSWD)],
-  #                           bkgSWD[, 4:ncol(bkgSWD)]))
-  # refMat <- refMat[, goodVars]
-  #
-  # varMin <- Rfast::colMins(refMat[, goodVars], value = TRUE)
-  # names(varMin) <- goodVars
-  #
-  # varMax <- Rfast::colMaxs(refMat[, goodVars], value = TRUE)
-  # names(varMax) <- goodVars
-
   varRange <- varMax - varMin
   names(varRange) <- goodVars
 
   rasTemplate <- envStack[[1]]
 
   envMat <- terra::as.matrix(envStack)
-  #print(colnames(envMat))
   envMat <- envMat[, goodVars]
 
-  #remove(envStack)
   rowStatus <- Rfast::rowAll(!is.na(envMat))
 
   goodRows <- which(rowStatus)
@@ -124,7 +111,6 @@ computeMESS <- function(thisModel = NULL,
   colnames(f) <- goodVars
 
   p <- envMat[goodRows, goodVars]
-  #colnames(p) <- goodVars
 
   # Borrow a clever idea from ecospat MESS implementation:
   varECDF <- vector("list", nRefVars)
