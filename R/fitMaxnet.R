@@ -13,7 +13,7 @@
 #' @importFrom terra cellFromXY xyFromCell subset extract nlyr values writeRaster
 #' @importFrom geodist geodist
 #' @importFrom utils read.csv write.csv
-#' @importFrom sf st_geometry st_transform st_as_sf as_Spatial st_intersection st_crs st_buffer st_union
+#' @importFrom sf st_geometry st_transform st_as_sf as_Spatial st_intersection st_crs st_buffer st_union st_is
 #' @importFrom ggcorrplot ggcorrplot
 #' @importFrom energy eqdist.etest
 #' @importFrom splines ns
