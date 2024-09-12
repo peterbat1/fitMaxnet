@@ -26,7 +26,11 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{
+#'
+#' bkg_ind <- sampleBackground(occ_data, example_raster, bounds_poly)
+#'
+#' }
 sampleBackground <- function(occData, baseRaster, boundsPolygon, nBkgSamples = maxBkgSamples, maxBkgSamples = 10000, trace = FALSE)
 {
   if (!inherits(baseRaster, c("RasterLayer", "SpatRaster")))
