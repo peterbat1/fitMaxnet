@@ -55,8 +55,7 @@ fit_maxnet <- function(taxonName = NULL,
   maxnet_model <- maxnet::maxnet(predVar,
                                  envData,
                                  f = maxnet::maxnet.formula(predVar, envData, classes = featureTypes),
-                                 regmult = regMult) #,
-                                 #type = outputType)
+                                 regmult = regMult)
 
   # Save object
   if (createFolders)
@@ -64,7 +63,7 @@ fit_maxnet <- function(taxonName = NULL,
     outputFolder <- paste0(baseOutputPath, "/", taxonName)
     if (!is.null(replTag)) outputFolder <- paste0(outputFolder, "/", replTag)
     outputFolder <- paste0(outputFolder, "/", regTag)
-    #print(outputFolder)
+
     if (!dir.exists(outputFolder)) dir.create(outputFolder, recursive = TRUE)
   }
   else
