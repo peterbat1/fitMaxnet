@@ -28,7 +28,6 @@ prepProjData <- function(dataPath, quiet = TRUE)
 
   # "Export" data as a large matrix where rows are raster cells and columns are environmental variables
   projData <<- terra::values(projStack)
-  #goodCellInd <<- which(!is.na(rowSums(projData)))
 
   # "Export" a template raster layer
   rasTemplate <<- projStack[[1]]

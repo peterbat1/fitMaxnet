@@ -17,8 +17,6 @@
 #'  }
 #' }
 #'
-#'
-#'
 #' @return  A data.frame with exactly the same column structure as passed in parameter \emph{occ}, but with rows for occurrence records less than \emph{thinDist} from nearest neighbours removed.
 #'
 #' @export
