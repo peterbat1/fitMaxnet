@@ -24,7 +24,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{
+#'
+#' load("a_model_obj.Rd")
+#'
+#' imp_values <- varImportance(maxnet_model, occ_data, bkg_data, "cloglog")
+#' }
 #'
 varImportance <- function(theModel,
                           occSWD = NULL,
