@@ -65,12 +65,10 @@ responsePlot <- function(thisModel,
 
   # Compute variable importance scores
   varImp <- varImportance(thisModel, occSWD, bkgSWD, responseType = responseType)
-  #names(varImp) <- varList
   varImpOrder <- order(varImp, decreasing = TRUE)
 
   # Reorder varList so plots, etc are sorted in descending order of variable
   # importance or contribution to the model fit
-  #varList <- varList[varImpOrder]
   varImp <- varImp[varImpOrder]
 
   # If required, trim varList and varImp
@@ -106,8 +104,6 @@ responsePlot <- function(thisModel,
     predVals <- predict(thisModel, d, type = responseType)
 
     plotData <- data.frame(prediction = predVals[, 1], d)
-    #### saveRDS
-    ##saveRDS(taxonResults, file = paste0(basePath, thisTaxon, "/", this_Taxon, "_response_plot_data.rds"))
 
     if (hasLevels)
     {
