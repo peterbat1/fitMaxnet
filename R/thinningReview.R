@@ -35,7 +35,11 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{
+#'
+#' big_dist <- thinningReview("Myotis australis", occ_data_table, "/my_stuff/env_folder/", "/my_stuff/results/")
+#'
+#'   }
 #'
 thinningReview <- function(taxon = "",
                            occData = NULL,
