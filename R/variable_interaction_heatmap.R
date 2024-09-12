@@ -19,7 +19,13 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{}
+#' \dontrun{
+#'
+#' ### Generate a feature summary table
+#' this_table <- feature_summary(model_files = c("model_replicate_1.Rd", "model_replicate_2.Rd))
+#'
+#' my_heatmap <- interaction_heatmap(this_table, 5, c("var_1", "var_2", "var_3"))
+#' }
 #'
 interaction_heatmap <- function(feature_summary_table = "",
                                 num_repl = NULL,
