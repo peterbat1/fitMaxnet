@@ -51,12 +51,15 @@ Make a smoothed calibration plot for a presence-only model using the method by P
 {
 This is an adaptation of code published by Phillips and Elith (2010. POC plots: calibrating species distribution models with presence-only data. Ecology 91:2476–2484).
 
-Although it is possible to call this function with user-generated parameter values, it is ideally designed to be called by the function \link{POCplot}.
+Although it is possible to call this function with user-generated parameter values, it is designed to be called by the function \link{POCplot}.
 
 This implementation uses ggplot2 to render the plot.
 
 }
 }
 \examples{
-\dontrun{}
+\dontrun{
+
+this_plot <- calibplot(prediction_data, bkg_prediction, occ_prediction)
+}
 }

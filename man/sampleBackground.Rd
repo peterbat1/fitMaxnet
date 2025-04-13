@@ -42,5 +42,9 @@ For many taxa, sampling a constrained area means that less than 10,000 cells wil
 }
 }
 \examples{
-\dontrun{}
+\dontrun{
+
+bkg_ind <- sampleBackground(occ_data, example_raster, bounds_poly)
+
+}
 }

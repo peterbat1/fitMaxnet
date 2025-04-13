@@ -41,6 +41,11 @@ A vector of mean scores for each variable expressed as a percentage of the sum o
 }
 }
 \examples{
-\dontrun{}
+\dontrun{
+
+load("a_model_obj.Rd")
+
+imp_values <- varImportance(maxnet_model, occ_data, bkg_data, "cloglog")
+}
 
 }

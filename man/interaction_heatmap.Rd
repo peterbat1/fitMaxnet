@@ -38,7 +38,3 @@ It might be possible to compute an estimate of feature importance using the same
 
 This function is based on code found here: https://r-graph-gallery.com/79-levelplot-with-ggplot2.html
 }
-\examples{
-\dontrun{}
-
-}
