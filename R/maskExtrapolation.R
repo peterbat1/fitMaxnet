@@ -107,8 +107,8 @@ maskExtrapolation <- function(maxnetModel,
       {
         localProjData[naInd, i] <- NA
         #outStack <- terra::rast(outStack, rasTemplate)
-        outStack <- c(outStack, rasTemplate)
-        outStack[[i]][] <- localProjData[, i]
+        outStack <- c(outStack, rasTemplate, warn = FALSE)
+        terra::values(outStack[[i]]) <- localProjData[, i]
       }
 
       names(outStack) <- modelVars
