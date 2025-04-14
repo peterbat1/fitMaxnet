@@ -142,7 +142,7 @@ maskExtrapolation <- function(maxnetModel,
     if (makePlots)
     {
       png(paste0(maskOutpath, "/Masked_projected_raster.png"))
-      plot(ras, main = "Masked projected raster")
+      terra::plot(ras, main = "Masked projected raster")
       dev.off()
     }
 
