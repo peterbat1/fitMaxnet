@@ -49,7 +49,6 @@ maskExtrapolation <- function(maxnetModel,
   else
     stop("Cannot find projection raster specified in 'projRas'")
 
-
   if (!all(as.vector(terra::ext(rasTemplate)) == as.vector(terra::ext(ras))))
     stop("Raster parameters of global object 'rasTemplate' are not same as parameters for 'projRas'")
 
@@ -69,7 +68,7 @@ maskExtrapolation <- function(maxnetModel,
   {
     modelFeatures <- names(maxnet_model$betas)
 
-    mm <- gsub("I(","",modelFeatures, fixed = TRUE)
+    mm <- gsub("I(", "", modelFeatures, fixed = TRUE)
     mm <- gsub("^2)", "", mm, fixed = TRUE)
     modelVars <- sort(unique(unlist(strsplit(mm, ":", fixed = TRUE))))
 
@@ -93,31 +92,36 @@ maskExtrapolation <- function(maxnetModel,
 
     if (!silent) cat("     Making mask raster layer\n")
 
-    ans <- rasTemplate
-    ans[] <- 1
+    mask_ras <- rasTemplate
+    mask_ras[] <- 1
     tmpVals <- Rfast::rowsums(localProjData)
-    ans[which(tmpVals != length(modelVars))] <- 0
-    ans[naInd] <- NA
+    mask_ras[which(tmpVals != length(modelVars))] <- 0
+    mask_ras[naInd] <- NA
 
     if (makePlots)
     {
       outStack <- terra::rast()
 
-      for (i in 1:length(modelVars))
-      {
-        localProjData[naInd, i] <- NA
-        #outStack <- terra::rast(outStack, rasTemplate)
-        outStack <- c(outStack, rasTemplate, warn = FALSE)
-        terra::values(outStack[[i]]) <- localProjData[, i]
-      }
+      layer_ras <- rasTemplate
 
-      names(outStack) <- modelVars
+      localProjData[naInd, i] <- NA
 
-      grDevices::png(paste0(maskOutpath, "/layer_masks.png"))
-      plot(outStack)
+      terra::values(layer_ras) <- localProjData[, i]
+
+      grDevices::png(paste0(maskOutpath, "/layer_mask_", modelVars[i], ".png"))
+      plot(layer_ras,
+           main = modelVars[i],
+           col = c("orange", "grey40"),
+           type = "classes",
+           levels = c("Extrapolation", "OK"))
       dev.off()
+
       grDevices::png(paste0(maskOutpath, "/mask_layer.png"))
-      plot(ans, main = "Mask layer")
+      plot(mask_ras,
+           main = "Mask layer",
+           col = c("orange", "grey40"),
+           type = "classes",
+           levels = c("Extrapolation", "OK"))
       dev.off()
     }
 
@@ -128,11 +132,11 @@ maskExtrapolation <- function(maxnetModel,
       else
         maskFile <- paste0(maskOutpath, "/extrapolationMask_", fileLabel, ".tif")
 
-      terra::writeRaster(ans, maskFile, overwrite = TRUE)
+      terra::writeRaster(mask_ras, maskFile, overwrite = TRUE)
     }
 
     if (!silent) cat("     Applying mask raster to projected model raster\n")
-    offInd <- which(terra::values(ans) != 1)
+    offInd <- which(terra::values(mask_ras) != 1)
     terra::values(ras)[offInd] <- 0
 
     if (makePlots)
