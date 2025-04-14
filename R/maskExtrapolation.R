@@ -109,19 +109,19 @@ maskExtrapolation <- function(maxnetModel,
       terra::values(layer_ras) <- localProjData[, i]
 
       grDevices::png(paste0(maskOutpath, "/layer_mask_", modelVars[i], ".png"))
-      plot(layer_ras,
-           main = modelVars[i],
-           col = c("orange", "grey40"),
-           type = "classes",
-           levels = c("Extrapolation", "OK"))
+      terra::plot(layer_ras,
+                  main = modelVars[i],
+                  col = c("orange", "grey40"),
+                  type = "classes",
+                  levels = c("Extrapolation", "OK"))
       dev.off()
 
       grDevices::png(paste0(maskOutpath, "/mask_layer.png"))
-      plot(mask_ras,
-           main = "Mask layer",
-           col = c("orange", "grey40"),
-           type = "classes",
-           levels = c("Extrapolation", "OK"))
+      terra::plot(mask_ras,
+                  main = "Mask layer",
+                  col = c("orange", "grey40"),
+                  type = "classes",
+                  levels = c("Extrapolation", "OK"))
       dev.off()
     }
 
