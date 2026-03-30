@@ -1,6 +1,6 @@
 Package: fitMaxnet
 Title: Fit MaxEnt Niche Models Using maxnet
-Version: 0.4.8
+Version: 0.4.9
 Authors@R: 
     person(given = "Peter D.",
            family = "Wilson",
@@ -10,7 +10,6 @@ Authors@R:
 Description: An ensemble of functions to fit Environmental Niche Models (ENMs) using the maxnet implementation of the MaxEnt method. Functions are provided to constrain background point selection, account for spatial sampling bias in occurrence data using optimised spatial thinning, implement k-fold cross-validation, and mask regions of model extrapolation beyond the range of environmental predictors used in model fitting. Unlike the original MaxEnt Java implementation, and most other wrappers around maxnet, the functions in this package can work with projected predictor variables (e.g. equal area projections).
 License: GPL-3
 Encoding: UTF-8
-LazyData: true
 RoxygenNote: 7.3.3
 Imports: terra,
          maxnet,

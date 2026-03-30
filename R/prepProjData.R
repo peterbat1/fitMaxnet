@@ -15,8 +15,6 @@
 #' @return Invisibly returns NULL but has the side effect of creating several objects in the R global environment.
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 prepProjData <- function(dataPath, quiet = TRUE)
 {
   if (!dir.exists(dataPath)) stop("dataPath not found")

@@ -20,8 +20,6 @@
 #' @return An sf polygon object from the package \emph{sf}
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 bufferPoints <- function(occ_pts, bufferDist_km = 200, trace = FALSE)
 {
   if (!("sf" %in% class(occ_pts))) stop("Parameter 'occ_pts' must be an sf object")

@@ -20,6 +20,7 @@
 #' @return  A data.frame with exactly the same column structure as passed in parameter \emph{occ}, but with rows for occurrence records less than \emph{thinDist} from nearest neighbours removed.
 #'
 #' @export
+#'
 occThin <- function(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0, isLatLong = TRUE, quiet = TRUE)
 {
   #if (is.na(occ)) stop("No data supplied in paramater 'occ'")

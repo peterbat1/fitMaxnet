@@ -114,8 +114,6 @@ calibplot <- function(pred,
 #'
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 smoothdist <- function(pred,
                        res,
                        smoothing_df = 4)
@@ -154,8 +152,7 @@ smoothdist <- function(pred,
 #' }
 #' @export
 #'
-#' @examples
-#' \dontrun{}
+
 POCplot <- function(pred,
                     back,
                     linearize = FALSE,

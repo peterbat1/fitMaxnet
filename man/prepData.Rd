@@ -43,6 +43,3 @@ Load raster stack of environmental data layers to be used for fitting a maxnet m
 
 NOTE: No checks are made that the projection of occurrence lat/longs or X/Y values matches the raster layers used for environmental data. You must ensure they match before calling this function.
 }
-\examples{
-\dontrun{}
-}

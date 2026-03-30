@@ -17,8 +17,6 @@
 #' @return A maxnet object
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 fit_maxnet <- function(taxonName = NULL,
                        replTag = NULL,
                        regTag = paste0("reg_", gsub(".","_", regMult, fixed = TRUE)),

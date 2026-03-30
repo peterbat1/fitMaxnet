@@ -6,8 +6,6 @@
 #'
 #' NOTE: No checks are made that the projection of occurrence lat/longs or X/Y values matches the raster layers used for environmental data. You must ensure they match before calling this function.
 #'
-#'
-#'
 #' @param taxonName String (character object) giving the taxonomic name of the entity for which data is being supplied.
 #' @param occData A numeric matrix or data.frame with at least two columns holding latitude and longitude values for occurrence records. Column names are matched against 'lat' (or 'Y") and 'long' (or 'X') in a effort to automagically identify these columns.
 #' @param boundsPoly An sf or SpatialPolygons* object defining the region within which background points will be selected.
@@ -19,8 +17,6 @@
 #' @return Invisibly returns NULL but has side-effect of outputting data files
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 prepData <- function(taxonName, occData, excludedVars = NULL, boundsPoly,
                      envDataPath, outputPath, appendDate = FALSE, trace = FALSE)
 {

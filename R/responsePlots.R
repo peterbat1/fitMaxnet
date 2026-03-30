@@ -20,16 +20,13 @@
 #' Features of this function include:
 #' \itemize{
 #' \item Returns a list of ggplot objects allowing individual plots to be extracted and used for other purposes
-#' \item Following the approach in package \pkg{gbm}, incorporation of variable importance scores supplied by the companion function \link{varImportance}
+#' \item Following the approach in package \pkg{gbm}, incorporation of variable importance scores supplied by the companion function \link[fitMaxnet]{varImportance}
 #' \item Ability to produce a plot for \emph{all} variables in the maxnet model or a selection
 #' }
 #' }
 #'
 #' @return A named list of ggplot graphics objects ordered in decreasing variable importance, plus the side-effect of a pdf of plots.
 #' @export
-#'
-#' @examples
-#' \dontrun{}
 #'
 responsePlot <- function(thisModel,
                          variable = "all",

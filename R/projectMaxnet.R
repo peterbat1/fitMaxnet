@@ -4,7 +4,7 @@
 #' Project a maxnet model fitted using fitModel
 #'
 #' @details {
-#' Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
+#' Function \link[fitMaxnet]{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
 #'
 #' \strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating the taxon name spaces replaced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
 #'
@@ -14,7 +14,7 @@
 #' }
 #'
 #' @param taxonName String. Taxonomic name associated with this model; used to construct a file name for the output raster file.
-#' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.
+#' @param maxnetModel String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link[fitMaxnet]{fit_maxnet} and \link[fitMaxnet]{fitModels}.
 #' @param type String. The type of scaling applied to predicted model values.
 #' @param doClamp Logical. Should values of predictors (covariates) be clamped to those seen during model fitting? Default is FASLE, no clamping.
 #' @param dataType String. Data format to be used. Default is "FLT4S". Only alternative at moment is "INT4S".
@@ -26,8 +26,6 @@
 #' @return Nothing
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 projectMaxnet <- function(taxonName = NULL,
                           maxnetModel,
                           type = "exponential",

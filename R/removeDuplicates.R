@@ -19,8 +19,6 @@
 #' @return A version of \emph{data} with duplicates removed
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 removeDuplicates <- function(data = NULL, baseGrid = NULL, byGrid = FALSE, quiet = FALSE)
 {
   if (is.null(data) || (nrow(data) < 2) || (ncol(data) < 2))

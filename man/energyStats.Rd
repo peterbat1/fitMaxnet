@@ -16,12 +16,12 @@ energyStats(
 
 \item{sample2}{Numeric. Matrix or data.frame with a second example of values sampled from a multivariate distribution.}
 
-\item{edist_method}{Character. Selects the method used in a call to function \link{eqdist.etest} in the package \emph{energy}.}
+\item{edist_method}{Character. Selects the method used in a call to function \link[energy]{eqdist.etest} in the package \emph{energy}.}
 
 \item{edist_replicates}{Numeric (integer). Number of replicates used in energy statistics calculation. Default is 199 which appears to give reliable results without significant computational cost.}
 }
 \value{
-An object of class \emph{htest} as returned by function \link{eqdist.etest}.
+An object of class \emph{htest} as returned by function \link[energy]{eqdist.etest}.
 }
 \description{
 Compute difference between two multivariate samples

@@ -33,6 +33,3 @@ It is normally called by the function \link{POCplot}.
 The original script used a default smoothing degrees of freedom (\emph{smoothing_df}) of 6, but trials during development of this implementation suggest that a better default value is 4.
 }
 }
-\examples{
-\dontrun{}
-}

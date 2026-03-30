@@ -48,6 +48,3 @@ Multicollinearity (high correlation between predictor variables or covariates) i
 Although it is still subject to research for machine learning methods such as MaxEnt, impacts of multicollinearity \emph{could} include: high model complexity, instability in models (e.g. unstable indications of variable importance/contribution) possibly leading to incorrect inferences about variable/feature importance.
 }
 }
-\examples{
-\dontrun{#}
-}

@@ -44,6 +44,3 @@ The original script set the default value of the parameter \emph{linearize} to T
 
 }
 }
-\examples{
-\dontrun{}
-}

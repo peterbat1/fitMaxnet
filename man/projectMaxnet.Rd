@@ -19,7 +19,7 @@ projectMaxnet(
 \arguments{
 \item{taxonName}{String. Taxonomic name associated with this model; used to construct a file name for the output raster file.}
 
-\item{maxnetModel}{String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link{fit_maxnet} and \link{fitModels}.}
+\item{maxnetModel}{String. \emph{Full} path name to the .Rd file storing a fitted maxnet model produced by the companion functions \link[fitMaxnet]{fit_maxnet} and \link[fitMaxnet]{fitModels}.}
 
 \item{type}{String. The type of scaling applied to predicted model values.}
 
@@ -43,7 +43,7 @@ Project a maxnet model fitted using fitModel
 }
 \details{
 {
-Function \link{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
+Function \link[fitMaxnet]{prepProjData} \strong{MUST} be run before calling this function to prepare global data objects needed for the projection.
 
 \strong{NOTE:} The resulting raster is written to the specified output folder with the file name composed by concatenating the taxon name spaces replaced by underscores), "projection" and, if supplied, the character object \emph{fileTag}.
 
@@ -51,7 +51,4 @@ Function \link{prepProjData} \strong{MUST} be run before calling this function t
 
 If dataType = "INT4S" is given, output is multiplied by 1,000 and truncated to an integer. Therefore, real values (to 4 dec. places) must be regenerated after loading the TIFF file by dividing the raster values by 1,000.
 }
-}
-\examples{
-\dontrun{}
 }

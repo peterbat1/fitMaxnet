@@ -11,7 +11,7 @@
 #' @param MESSonly Logical. Compute only the MESS raster layer? Default is TRUE. If FALSE, then MESS component rasters for each variable plus the MESS raster layer are computed
 #' @details
 #'
-#' Multivariate Environmental Similarity Surfaces (MESS) were introduced by Elith, Kearney & Phillips (2010; The art of modelling range-shifting species. Methods in Ecology and Evolution 1: 330-342) to assist in identifying the degree of similarity between the ranges of environmental predictors presented to model training (the 'reference' set)  and the values of those predictors across other areas. It's purpose is to identify areas of extrapolation. In the present implementation, the reference set is extracted from the tables of variable maximum and minimumthose in areas or times to which the model is projected.
+#' Multivariate Environmental Similarity Surfaces (MESS) were introduced by Elith, Kearney & Phillips (2010; The art of modelling range-shifting species. Methods in Ecology and Evolution 1: 330-342) to assist in identifying the degree of similarity between the ranges of environmental predictors presented to model training (the 'reference' set)  and the values of those predictors across other areas. It's purpose is to identify areas of extrapolation. In the present implementation, the reference set is extracted from the tables of variable maximum and minimum in the fitted model object and compared to those in areas or times to which the model is projected.
 #'
 #' A MESS computation is performed using the supplied maxnet model and set of environmental rasters.
 #'
@@ -28,9 +28,6 @@
 #' }
 #'
 #' @export
-#'
-#' @examples
-#' \dontrun{}
 #'
 computeMESS <- function(thisModel = NULL,
                         envPath = "",
@@ -153,7 +150,7 @@ computeMESS <- function(thisModel = NULL,
     rasTemplate[goodRows] <- MESS
     if (!dir.exists(outPath)) dir.create(outPath, recursive = TRUE)
     outFilename <- file.path(outPath, "MESS.tif")
-    terra::writeRaster(rasTemplate, outFilename, overwrite = TRUE, gdal = "COMPRESS=DEFLATE", ...)
+    terra::writeRaster(rasTemplate, outFilename, overwrite = TRUE, gdal = "COMPRESS=DEFLATE")
 
     # Optionally, produce MESS raster for each included variable
     if (!MESSonly)

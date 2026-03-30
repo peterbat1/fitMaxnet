@@ -39,6 +39,3 @@ Multicollinearity (high correlation between predictor variables or covariates) i
 Impacts include: model complexity, instability, incorrect inferences about variable/feature importance
 }
 }
-\examples{
-\dontrun{}
-}

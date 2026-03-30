@@ -40,7 +40,7 @@ A named list:
 Compute set of MESS rasters for a maxnet model
 }
 \details{
-Multivariate Environmental Similarity Surfaces (MESS) were introduced by Elith, Kearney & Phillips (2010; The art of modelling range-shifting species. Methods in Ecology and Evolution 1: 330-342) to assist in identifying the degree of similarity between the ranges of environmental predictors presented to model training (the 'reference' set)  and the values of those predictors across other areas. It's purpose is to identify areas of extrapolation. In the present implementation, the reference set is extracted from the tables of variable maximum and minimumthose in areas or times to which the model is projected.
+Multivariate Environmental Similarity Surfaces (MESS) were introduced by Elith, Kearney & Phillips (2010; The art of modelling range-shifting species. Methods in Ecology and Evolution 1: 330-342) to assist in identifying the degree of similarity between the ranges of environmental predictors presented to model training (the 'reference' set)  and the values of those predictors across other areas. It's purpose is to identify areas of extrapolation. In the present implementation, the reference set is extracted from the tables of variable maximum and minimum in the fitted model object and compared to those in areas or times to which the model is projected.
 
 A MESS computation is performed using the supplied maxnet model and set of environmental rasters.
 
@@ -49,8 +49,4 @@ To facilitate the processing of very large, high-resolution rasters, only those 
 Please note that this function is tailored to work with data structures and workflows associated with the primary model fitting function in this package, namely \link{fit_maxnet}. It can be used for MESS computations in other settings, but users will have to transform data into the required structure for each parameter. An alternate and more generic MEWS function in found in the R-package \emph{modEVA}.
 
 If output rasters are to be written, note that the following options are set as defaults for terra::writeRaster(): 'overwrite = TRUE', and 'gdal = "COMPRESS=DEFLATE"'
-}
-\examples{
-\dontrun{}
-
 }

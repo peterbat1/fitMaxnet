@@ -13,7 +13,7 @@ interaction_heatmap(
 )
 }
 \arguments{
-\item{feature_summary_table}{Data.frame. Data table produced by function \link{feature_summary}}
+\item{feature_summary_table}{Data.frame. Data table produced by function \link[fitMaxnet]{feature_summary}}
 
 \item{num_repl}{Integer. Number of replicate models used to prepare feature_summary_table}
 
@@ -32,19 +32,9 @@ Plot Variable Interaction Heatmap
 \details{
 The data provided in the parameter feature_summary_table is the number of replicate models in which each feature was retained (ie was given a non-zero coefficient).
 
-This does not represent feature importance. Some indirect inference about this may come from considering the importance of each of the two variables contributing to a feature as reported by \link{varImportance}.
+This does not represent feature importance. Some indirect inference about this may come from considering the importance of each of the two variables contributing to a feature as reported by \link[fitMaxnet]{varImportance}.
 
-It might be possible to compute an estimate of feature importance using the same approach implemented in \link{varImportance}.
+It might be possible to compute an estimate of feature importance using the same approach implemented in \link[fitMaxnet]{varImportance}.
 
-This function is based on code found here: https://r-graph-gallery.com/79-levelplot-with-ggplot2.html
-}
-\examples{
-\dontrun {
-
-### Generate a feature summary table
-this_table <- feature_summary(model_files = c("model_replicate_1.Rd", "model_replicate_2.Rd"))
-
-my_heatmap <- interaction_heatmap(this_table, 5, c("var_1", "var_2", "var_3"))
-}
-
+This function is based on code found here: "https://r-graph-gallery.com/79-levelplot-with-ggplot2.html"
 }

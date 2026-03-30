@@ -75,8 +75,6 @@ fast_boycei <- function(interval, obs, fit)
 #' @return A named list...
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 boyce <- function(fit, obs, nclass = 0, window.w = "default", res = 100, PEplot = FALSE)
 {
 

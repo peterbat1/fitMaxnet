@@ -16,9 +16,6 @@
 #' @return A data.frame with variables 'min", 'max' and 'votes' and row names representing variable and feature names, 'votes' is the number of replicate model fits which selected each feature.
 #' @export
 #'
-#' @examples
-#' \dontrun{}
-#'
 feature_summary <- function(model_files = "")
 {
 

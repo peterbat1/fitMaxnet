@@ -15,7 +15,3 @@ A data.frame with variables 'min", 'max' and 'votes' and row names representing 
 \description{
 Generate a feature summary table
 }
-\examples{
-\dontrun{}
-
-}

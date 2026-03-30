@@ -21,6 +21,3 @@ A version of \emph{data} with duplicates removed
 \description{
 Remove duplicate occurrence records by exact coordinate matching or by ensuring only one record per grid cell of a raster. Coordinates are assumed be geographic coordinates (i.e. latitude and longitude) on the WGS84 datum
 }
-\examples{
-\dontrun{}
-}

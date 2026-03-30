@@ -23,8 +23,6 @@
 #' @return A spatial polygon object from the package \emph{sf}
 #' @export
 #'
-#' @examples
-#' \dontrun{}
 bufferPoints_old <- function(occ_pts, bufferDist_km = 200, X_col = NULL, Y_col = NULL, epsg = NULL, trace = FALSE)
 {
   # Convert buffer distance from kilometres to metres

@@ -7,7 +7,7 @@
 plotPRcurve(PRobj, plotFilename = NULL)
 }
 \arguments{
-\item{PRobj}{pr.curve object. A PR ROC object with type = "PR" produced by the function \link{pr.curve} in the package \pkg{PRROC} run with parameter curve = TRUE}
+\item{PRobj}{pr.curve object. A PR ROC object with type = "PR" produced by the function \link[PRROC]{pr.curve} in the package \pkg{PRROC} run with parameter curve = TRUE}
 
 \item{plotFilename}{Character (string). Optional file name to save the plot output (as PNG formatted graphics file)}
 }

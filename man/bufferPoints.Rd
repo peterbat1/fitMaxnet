@@ -33,6 +33,3 @@ Currently, this function can only process \bold{occurrence data from the Austral
 The function outputs a simple features ('sf') polygon object on the same projection which was inferred when \emph{occ_pts} was parsed. That is, either EPSG:4326 (WGS84) if 'longitude' and 'latitude' column names were found, or EPSG:3577 (Australian ALber's Equal Area) if 'X' and 'Y' column names were found. If you need to use the buffer polygon on other projections, please re-project the returned object using, say, \emph{st_transform()} from the package \emph{sf}.
 }
 }
-\examples{
-\dontrun{}
-}
