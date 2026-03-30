@@ -14,8 +14,6 @@
 #'  A PR curve object produced by the function \emph{pr.curve} in the package \pkg{PRROC}
 #'
 #' @export
-#'
-#' @examples
 computePRcurve <- function(thisModel, occSWD, bkgSWD, responseType = "cloglog")
 {
 
@@ -56,8 +54,6 @@ computePRcurve <- function(thisModel, occSWD, bkgSWD, responseType = "cloglog")
 #' A ggplot2 object
 #'
 #' @export
-#'
-#' @examples
 plotPRcurve <- function(PRobj, plotFilename = NULL)
 {
 

@@ -109,7 +109,7 @@ calibplot <- function(pred,
 #' \describe{
 #' \item{x}{The values used to fit the smotthing function}
 #' \item{y}{The y-values of the computed smoothing function}
-#' \item{se}{The standard error of y-values of the computed smoothing function
+#' \item{se}{The standard error of y-values of the computed smoothing function}
 #' }
 #'
 #' @export

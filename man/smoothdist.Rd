@@ -14,7 +14,12 @@ smoothdist(pred, res, smoothing_df = 4)
 \item{smoothing_df}{Numeric. Degrees of freedom for a natural cubic spline fitted to model predictions at combined occurrence and background locations.}
 }
 \value{
-
+A data.frame with three columns:
+\describe{
+\item{x}{The values used to fit the smotthing function}
+\item{y}{The y-values of the computed smoothing function}
+\item{se}{The standard error of y-values of the computed smoothing function}
+}
 }
 \description{
 A function to generate a smoothed density function of observed probability of presence

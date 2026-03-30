@@ -38,3 +38,13 @@ It might be possible to compute an estimate of feature importance using the same
 
 This function is based on code found here: https://r-graph-gallery.com/79-levelplot-with-ggplot2.html
 }
+\examples{
+\dontrun {
+
+### Generate a feature summary table
+this_table <- feature_summary(model_files = c("model_replicate_1.Rd", "model_replicate_2.Rd"))
+
+my_heatmap <- interaction_heatmap(this_table, 5, c("var_1", "var_2", "var_3"))
+}
+
+}

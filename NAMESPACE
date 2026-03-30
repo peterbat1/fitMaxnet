@@ -3,6 +3,7 @@
 export(POCplot)
 export(boyce)
 export(bufferPoints)
+export(bufferPoints_old)
 export(calibplot)
 export(computeMESS)
 export(computePRcurve)
