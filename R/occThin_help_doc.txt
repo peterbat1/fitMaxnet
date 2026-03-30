@@ -1,0 +1,55 @@
+\name{occThin}
+\alias{occThin}
+\title{Occurrence thinning}
+\usage{
+  occThin(occ = NA, xCol = NULL, yCol = NULL, thinDist = 0,
+          plot = FALSE)
+}
+\arguments{
+  \item{occ}{A dataframe which at least two numeric variables or columns giving the x- and y-coordinates of a set of species occurrence records. There is no constraint at present on the units for x and y.}
+
+  \item{xCol}{Integer value giving the index of the column for the x-coordinate; \emph{or} a character object giving the name of the column.}
+
+  \item{yCol}{Integer value giving the index of the column for the y-coordinate; \emph{or} a character object giving the name of the column.}
+
+  \item{thinDist}{Distance in kilometers to be used to thin occurrence records.}
+
+  \item{plot}{Logical. Should a scatterplot be produced on the standard graphics device. Default is FALSE, do not create a plot.}
+}
+\value{
+  A dataframe with exactly the same column structure as passed in parameter \emph{occ}, but with rows for occurrence records less than \emph{thinDist} from nearest neighbours removed.
+}
+\description{
+  Function \emph{occThin()} performs a spatial thining of a set of species occurrence locations with the intention of reducing spatial sampling bias effects.
+}
+\details{
+  {
+    This function is based on source code for the function \emph{ecospat.occ.dessagregation()} written by Olivier Broennimann and included in the R-package \emph{ecospat}. The original comments from that source code are included below. I think that the original algorithm is extremely clever and very efficient; it out-performs the thin() function in package spThin by at least an order of magnitude, and is faster than my "fast" interpretation of the thin() algorithm by a factor of at least 5. However, the original code for this function had a number of quirks which made it tricky to use in a "production environment" ie for bulk processing hundreds or even thousands of species occurrence files. The following changes and improvements where made:
+      \itemize{
+        \item Plotting: The original source code made a number of non-standard intialisations of plotting canvases which mightly confused R-Studio (and potentially the standard R graphics device too). The plot parameter now initiates a simple and standard plot without drama.
+        \item Handling the full input dataframe: The original code used a rather odd and convoluted way of identifying and using columns representing the x- and y-coordinates which ultimately meant that the object returned was not the full input dataframe with 'bad' rows removed. This function does return the original dataframe with bad rows removed.
+        \item Parameters: Simplified the suite of parameters (or arguments) and giving them more meaningful names.
+      }
+    Peter D. Wilson, Evolutionary Ecology Section, Royal Botanic Gardens, Sydney
+
+    25 October 2015
+
+    Comments from the original function:
+```
+    ## written by Olivier Broennimann. Departement of Ecology and Evolution (DEE).
+    ## October 09. University of Lausanne. Switzerland
+    ##
+    ## DESCRIPTION
+    ##  remove occurences in a dataframe that are closer to each other than a specified distance threshold
+    ##
+    ## ARGUMENTS
+    ##       df: dataframe with x, y, and variables
+    ##    colxy: the range of columns for x and y in df
+    ##   colvar: the range of columns for variables in df
+    ## min.dist: minimun distance threshold in the sub-dataframe
+```
+  }
+}
+\examples{
+  \dontrun{}
+}

@@ -37,7 +37,7 @@ varImportance <- function(theModel,
                           responseType = c("link","exponential","cloglog","logistic"),
                           numReplicates = 5)
 {
-  if (!("maxnet" %in% class(theModel))) stop("Parameter 'theModel' is a naxnet object")
+  if (!("maxnet" %in% class(theModel))) stop("Parameter 'theModel' is a not a maxnet object")
   if (is.null(occSWD)) stop("occSWD cannot be NULL")
   if (is.null(bkgSWD)) stop("bkgSWD cannot be NULL")
 
@@ -63,7 +63,7 @@ varImportance <- function(theModel,
     {
       permInd <- sample(1:nrow(envData), nrow(envData))
       envData[, thisVar] <- origVals[permInd]
-      newModelVals <- predict(theModel, envData)
+      newModelVals <- predict(theModel, envData, type = responseType)
       correls[thisRep] <- cor(fullModelVals, newModelVals)
     }
 
